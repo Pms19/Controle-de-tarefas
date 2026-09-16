@@ -1,25 +1,418 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Controle de Tarefas</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f8f8f6;color:#1a1a18;min-height:100vh}.app{max-width:1100px;margin:0 auto;padding:2rem 1.5rem}.header{margin-bottom:1.75rem}.header h1{font-size:22px;font-weight:500;margin-bottom:4px}.header p{font-size:14px;color:#6b6b68}.toolbar{display:flex;gap:10px;margin-bottom:1.5rem;align-items:center;flex-wrap:wrap}.toolbar input{flex:1;min-width:180px;font-size:14px;height:36px;padding:0 12px;border:.5px solid #c8c8c4;border-radius:8px;background:#fff;outline:none}.btn-primary{display:flex;align-items:center;gap:6px;padding:0 14px;height:36px;font-size:14px;font-weight:500;cursor:pointer;background:#1a1a18;color:#fff;border:0;border-radius:8px}.table-wrap{border:.5px solid #e0deda;border-radius:12px;overflow:hidden;background:#fff}table{width:100%;border-collapse:collapse}th{font-size:11px;font-weight:500;color:#6b6b68;padding:9px 12px;text-align:left;border-bottom:.5px solid #e0deda;text-transform:uppercase}td{font-size:13px;padding:10px 12px;border-bottom:.5px solid #e0deda}.badge{display:inline-block;font-size:11px;padding:3px 9px;border-radius:20px}.b-p{background:#FAEEDA;color:#854F0B}.b-a{background:#E6F1FB;color:#185FA5}.b-c{background:#EAF3DE;color:#3B6D11}.status{font-size:12px;color:#3B6D11;background:#EAF3DE;padding:7px 10px;border-radius:20px;display:inline-block}
-</style></head>
-<body><div class="app">
-<div class="header"><h1>Controle de tarefas</h1><p>Acompanhamento mensal · sincronização automática</p></div>
-<div class="toolbar"><input id="busca" placeholder="Buscar por atividade ou responsável…"><button class="btn-primary" id="novo"><i class="ti ti-plus"></i> Nova tarefa</button></div>
-<div class="table-wrap"><table><thead><tr><th>Assunto</th><th>Atividade</th><th>Responsável</th><th>Onde parou</th><th>Status</th></tr></thead><tbody id="lista"><tr><td colspan="5">Carregando…</td></tr></tbody></table></div>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8f8f6; color: #1a1a18; min-height: 100vh; }
+.app { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
+.header { margin-bottom: 1.75rem; }
+.header h1 { font-size: 22px; font-weight: 500; color: #1a1a18; margin-bottom: 4px; }
+.header p { font-size: 14px; color: #6b6b68; }
+
+.toolbar { display: flex; gap: 10px; margin-bottom: 1.5rem; align-items: center; flex-wrap: wrap; }
+.toolbar input[type="text"] { flex: 1; min-width: 180px; font-size: 14px; height: 36px; padding: 0 12px; border: 0.5px solid #c8c8c4; border-radius: 8px; background: #fff; color: #1a1a18; outline: none; }
+.toolbar input[type="text"]:focus { border-color: #888; box-shadow: 0 0 0 3px rgba(0,0,0,0.06); }
+.btn-primary { display: flex; align-items: center; gap: 6px; padding: 0 14px; height: 36px; font-size: 14px; font-weight: 500; white-space: nowrap; cursor: pointer; background: #1a1a18; color: #fff; border: none; border-radius: 8px; }
+.btn-primary:hover { opacity: 0.85; }
+
+.mes-bloco { margin-bottom: 2rem; }
+.mes-header { display: flex; align-items: center; gap: 12px; margin-bottom: 0.75rem; cursor: pointer; user-select: none; padding: 4px 0; }
+.mes-titulo { font-size: 15px; font-weight: 500; color: #1a1a18; }
+.mes-badges { display: flex; gap: 6px; flex-wrap: wrap; }
+.pill { font-size: 11px; font-weight: 500; padding: 3px 9px; border-radius: 20px; }
+.pill-p { background:#FAEEDA; color:#854F0B; }
+.pill-a { background:#E6F1FB; color:#185FA5; }
+.pill-c { background:#EAF3DE; color:#3B6D11; }
+.pill-s { background:#f1efea; color:#6b6b68; border:0.5px solid #d3d1c7; }
+.chevron { font-size:14px; color:#aaa; transition:transform 0.2s; margin-left:auto; }
+.chevron.open { transform:rotate(180deg); }
+
+.table-wrap { border:0.5px solid #e0deda; border-radius:12px; overflow:hidden; background:#fff; }
+table { width:100%; border-collapse:collapse; table-layout:fixed; }
+thead tr { background:#f8f8f6; }
+th { font-size:11px; font-weight:500; color:#6b6b68; padding:9px 12px; text-align:left; border-bottom:0.5px solid #e0deda; text-transform:uppercase; letter-spacing:0.04em; }
+td { font-size:13px; color:#1a1a18; padding:0; border-bottom:0.5px solid #e0deda; vertical-align:top; }
+tr.tarefa-row:last-of-type > td { border-bottom:none; }
+tr.tarefa-row:hover > td { background:#fafaf8; }
+
+th:nth-child(1),td:nth-child(1){width:3%}
+th:nth-child(2),td:nth-child(2){width:13%}
+th:nth-child(3),td:nth-child(3){width:24%}
+th:nth-child(4),td:nth-child(4){width:11%}
+th:nth-child(5),td:nth-child(5){width:20%}
+th:nth-child(6),td:nth-child(6){width:18%}
+th:nth-child(7),td:nth-child(7){width:11%}
+
+.td-inner { padding:10px 12px; }
+
+.badge { display:inline-block; font-size:11px; font-weight:500; padding:3px 9px; border-radius:20px; }
+.b-p{background:#FAEEDA;color:#854F0B;}
+.b-a{background:#E6F1FB;color:#185FA5;}
+.b-c{background:#EAF3DE;color:#3B6D11;}
+.b-s{background:#f1efea;color:#6b6b68;border:0.5px solid #d3d1c7;}
+.tag { display:inline-block; font-size:11px; padding:2px 8px; border-radius:20px; font-weight:500; background:#f1efea; color:#6b6b68; border:0.5px solid #d3d1c7; }
+.obs { font-size:12px; color:#6b6b68; }
+
+.btn-icon { background:none; border:none; cursor:pointer; color:#aaa; font-size:15px; padding:3px 5px; border-radius:4px; line-height:1; }
+.btn-icon:hover { color:#c0392b; background:#fdf0f0; }
+.btn-expand { background:none; border:none; cursor:pointer; color:#aaa; font-size:13px; padding:3px 5px; border-radius:4px; line-height:1; transition:transform 0.18s; }
+.btn-expand.open { transform:rotate(90deg); }
+.btn-add-micro { background:none; border:0.5px dashed #c8c8c4; border-radius:8px; color:#6b6b68; font-size:12px; cursor:pointer; padding:4px 12px; display:inline-flex; align-items:center; gap:4px; font-family:inherit; }
+.btn-add-micro:hover { background:#f1efea; color:#1a1a18; }
+
+.micro-row td { background:#fafaf8 !important; border-bottom:0.5px solid #e0deda; }
+.micro-actions-row td { background:#fafaf8 !important; border-bottom:0.5px solid #e0deda; padding:6px 10px 10px 46px; }
+.micro-content { padding:0 0 0 36px; }
+.micro-table { width:100%; border-collapse:collapse; }
+.micro-table td { font-size:12px; padding:7px 10px; border:none; background:transparent !important; color:#1a1a18; }
+.micro-table td:nth-child(1){width:32%}
+.micro-table td:nth-child(2){width:18%}
+.micro-table td:nth-child(3){width:15%}
+.micro-table td:nth-child(4){width:18%}
+.micro-table td:nth-child(5){width:17%}
+.micro-table thead td { font-size:10px; font-weight:500; color:#aaa; text-transform:uppercase; letter-spacing:0.05em; padding-bottom:4px; border-bottom:0.5px solid #e0deda !important; }
+.micro-badge { font-size:10px; font-weight:500; padding:2px 7px; border-radius:20px; }
+.mb-p{background:#FAEEDA;color:#854F0B;}
+.mb-a{background:#E6F1FB;color:#185FA5;}
+.mb-c{background:#EAF3DE;color:#3B6D11;}
+.mb-s{background:#f1efea;color:#6b6b68;border:0.5px solid #d3d1c7;}
+.prazo-venc { color:#854F0B; font-weight:500; }
+
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.35); z-index:100; align-items:center; justify-content:center; }
+.modal-overlay.open { display:flex; }
+.modal { background:#fff; border-radius:12px; border:0.5px solid #e0deda; padding:1.5rem; width:500px; max-width:95vw; }
+.modal h2 { font-size:16px; font-weight:500; margin-bottom:1.25rem; color:#1a1a18; }
+.mgrid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.full { grid-column:1/-1; }
+.field label { font-size:12px; color:#6b6b68; margin-bottom:5px; display:block; }
+.field input,.field select { width:100%; font-size:13px; height:36px; padding:0 10px; border:0.5px solid #c8c8c4; border-radius:8px; background:#fff; color:#1a1a18; font-family:inherit; outline:none; }
+.field input:focus,.field select:focus { border-color:#888; box-shadow:0 0 0 3px rgba(0,0,0,0.06); }
+.field textarea { width:100%; font-size:13px; height:56px; resize:vertical; padding:8px 10px; border:0.5px solid #c8c8c4; border-radius:8px; font-family:inherit; background:#fff; color:#1a1a18; outline:none; }
+.field textarea:focus { border-color:#888; box-shadow:0 0 0 3px rgba(0,0,0,0.06); }
+.mactions { display:flex; gap:10px; justify-content:flex-end; margin-top:1.25rem; }
+.btn-cancel { background:none; border:0.5px solid #c8c8c4; border-radius:8px; padding:7px 16px; font-size:13px; cursor:pointer; color:#1a1a18; font-family:inherit; }
+.btn-cancel:hover { background:#f1efea; }
+.btn-save { background:#1a1a18; color:#fff; border:none; border-radius:8px; padding:7px 16px; font-size:13px; font-weight:500; cursor:pointer; font-family:inherit; }
+.btn-save:hover { opacity:0.85; }
+.err { font-size:12px; color:#c0392b; margin-top:4px; display:none; }
+.empty-state { text-align:center; padding:3rem 1rem; color:#aaa; font-size:14px; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <h1>Controle de tarefas</h1>
+    <p>Acompanhamento mensal · expanda cada ação para ver e adicionar micro ações</p>
+  </div>
+  <div class="toolbar">
+    <input type="text" id="busca" placeholder="Buscar por atividade ou responsável…" oninput="render()">
+    <button class="btn-primary" onclick="abrirModalTarefa()"><i class="ti ti-plus"></i> Nova tarefa</button>
+  </div>
+  <div id="conteudo"></div>
 </div>
+
+<!-- modal tarefa -->
+<div class="modal-overlay" id="ovTarefa">
+  <div class="modal">
+    <h2>Nova tarefa</h2>
+    <div class="mgrid">
+      <div class="field"><label>Mês de referência</label><input type="month" id="fMes"></div>
+      <div class="field"><label>Assunto</label><input type="text" id="fAssunto" placeholder="Ex: Documento"></div>
+      <div class="field full"><label>Atividade <span style="color:#c0392b">*</span></label><input type="text" id="fAtividade" placeholder="Descreva a atividade"><div class="err" id="errAt">Informe a atividade</div></div>
+      <div class="field"><label>Responsável</label><input type="text" id="fResp" placeholder="Nome"></div>
+      <div class="field"><label>Status</label>
+        <select id="fStatus"><option value="">—</option><option value="Pendente">Pendente</option><option value="Aguardando">Aguardando</option><option value="Concluído">Concluído</option></select>
+      </div>
+      <div class="field full"><label>Onde parou / Observações</label><textarea id="fOnde" placeholder="Ponto de parada ou observações"></textarea></div>
+    </div>
+    <div class="mactions">
+      <button class="btn-cancel" onclick="fecharModalTarefa()">Cancelar</button>
+      <button class="btn-save" onclick="salvarTarefa()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- modal micro ação -->
+<div class="modal-overlay" id="ovMicro">
+  <div class="modal">
+    <h2 id="microTitulo">Nova micro ação</h2>
+    <div class="mgrid">
+      <div class="field full"><label>Descrição <span style="color:#c0392b">*</span></label><input type="text" id="mDesc" placeholder="Descreva a micro ação"><div class="err" id="errMicro">Informe a descrição</div></div>
+      <div class="field"><label>Responsável</label><input type="text" id="mResp" placeholder="Nome"></div>
+      <div class="field"><label>Prazo</label><input type="date" id="mPrazo"></div>
+      <div class="field"><label>Status</label>
+        <select id="mStatus"><option value="">—</option><option value="Pendente">Pendente</option><option value="Aguardando">Aguardando</option><option value="Concluído">Concluído</option></select>
+      </div>
+      <div class="field"><label>Prioridade</label>
+        <select id="mPrio"><option value="">—</option><option value="Alta">Alta</option><option value="Média">Média</option><option value="Baixa">Baixa</option></select>
+      </div>
+    </div>
+    <div class="mactions">
+      <button class="btn-cancel" onclick="fecharModalMicro()">Cancelar</button>
+      <button class="btn-save" onclick="salvarMicro()">Salvar</button>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const URL='https://fcvemrvdivwcpwybcjvv.supabase.co', KEY='sb_publishable_ZzUOm6wCN1sr34E24Y_g9g_VTRhU1jJ', db=supabase.createClient(URL,KEY);
-let tarefas=[];
-function bc(s){return s==='Pendente'?'b-p':s==='Aguardando'?'b-a':s==='Concluído'?'b-c':''}
-async function carregar(){const {data,error}=await db.from('tarefas').select('*').order('id');if(error){document.getElementById('lista').innerHTML='<tr><td colspan="5">Erro ao conectar ao banco.</td></tr>';return}tarefas=data||[];render()}
-function render(){const q=document.getElementById('busca').value.toLowerCase();const l=tarefas.filter(t=>(t.atividade||'').toLowerCase().includes(q)||(t.responsavel||'').toLowerCase().includes(q));document.getElementById('lista').innerHTML=l.length?l.map(t=>'<tr><td>'+ (t.assunto||'—')+'</td><td>'+t.atividade+'</td><td>'+ (t.responsavel||'—')+'</td><td>'+ (t.onde||'—')+'</td><td><span class="badge '+bc(t.status)+'">'+(t.status||'—')+'</span></td></tr>').join(''):'<tr><td colspan="5">Nenhuma tarefa encontrada.</td></tr>'}
-document.getElementById('busca').oninput=render;
-db.channel('tarefas-sync').on('postgres_changes',{event:'*',schema:'public',table:'tarefas'},carregar).subscribe();
-carregar();
-</script></body></html>
+/* ================================================================
+   SINCRONIZAÇÃO / BANCO DE DADOS
+   Configure SUPABASE_URL e SUPABASE_ANON_KEY para ativar a nuvem.
+   O visual da aplicação não depende desta camada.
+   ================================================================ */
+const SUPABASE_URL = 'https://fcvemrvdivwcpwybcjvv.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_ZzUOm6wCN1sr34E24Y_g9g_VTRhU1jJ';
+const SYNC_ENABLED = SUPABASE_URL.startsWith('https://') && !SUPABASE_URL.includes('COLE_AQUI') && !SUPABASE_ANON_KEY.includes('COLE_AQUI');
+const DEVICE_ID = localStorage.getItem('ct_device_id') || (() => { const id = crypto.randomUUID(); localStorage.setItem('ct_device_id', id); return id; })();
+let sb = null, syncChannel = null, syncBusy = false;
+
+if (SYNC_ENABLED && window.supabase) {
+  sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    auth: { persistSession: false, autoRefreshToken: false }
+  });
+}
+
+const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+function mesLabel(ym) {
+  if (!ym) return 'Sem mês definido';
+  const [y,m] = ym.split('-');
+  return MESES[parseInt(m)-1] + ' ' + y;
+}
+const hoje = new Date();
+const mesAtual = `${hoje.getFullYear()}-${String(hoje.getMonth()+1).padStart(2,'0')}`;
+
+let tarefas = [
+  { id:1, mes:mesAtual, assunto:'NC', atividade:'Procedimento de Montagem e Desmontagem de Andaime Priner', responsavel:'', onde:'', status:'Pendente', micros:[] },
+  { id:2, mes:mesAtual, assunto:'Documento', atividade:'Checklist Guincho Hidráulico', responsavel:'Flavio', onde:'Aguardando retorno engenharia', status:'Pendente', micros:[
+    { id:21, desc:'Contato com a engenharia', responsavel:'Flavio', prazo:'', status:'Aguardando', prio:'Alta' }
+  ]},
+  { id:3, mes:mesAtual, assunto:'Documento', atividade:'Checklist Veracel', responsavel:'Flavio', onde:'Aguardando retorno engenharia', status:'Pendente', micros:[] },
+  { id:4, mes:mesAtual, assunto:'Documento', atividade:'Incluir códigos novos no procedimento de informação documentada', responsavel:'', onde:'', status:'', micros:[] },
+  { id:5, mes:mesAtual, assunto:'Lançamento de Despesa', atividade:'Lançar NF BVQI', responsavel:'', onde:'Aguardando retorno Alan (rhodia)', status:'', micros:[] },
+  { id:6, mes:mesAtual, assunto:'GM', atividade:'GM Mudança do sistema Pipedrive para CPP', responsavel:'Andressa', onde:'Aguardando reunião com Andressa para verificar próximos passos', status:'Aguardando', micros:[
+    { id:61, desc:'Reunião de alinhamento Pipedrive', responsavel:'Andressa', prazo:'', status:'Aguardando', prio:'Média' },
+    { id:62, desc:'Mapear campos CPP', responsavel:'', prazo:'', status:'Pendente', prio:'' }
+  ]},
+];
+let nextId = 100, nextMicroId = 200;
+let collapsedMes = {}, expandedTarefa = {}, microAlvo = null;
+
+function bc(s){ return s==='Pendente'?'b-p':s==='Aguardando'?'b-a':s==='Concluído'?'b-c':'b-s'; }
+function mbc(s){ return s==='Pendente'?'mb-p':s==='Aguardando'?'mb-a':s==='Concluído'?'mb-c':'mb-s'; }
+
+function prazoLabel(p) {
+  if (!p) return '—';
+  const d = new Date(p+'T00:00:00');
+  const diff = Math.ceil((d - new Date(hoje.toDateString())) / 86400000);
+  const label = d.toLocaleDateString('pt-BR');
+  return diff < 0 ? `<span class="prazo-venc" title="Vencido">${label} ⚠</span>` : label;
+}
+
+function prioLabel(p) {
+  if (!p) return '—';
+  const c = p==='Alta'?'color:#854F0B':p==='Média'?'color:#185FA5':'color:#6b6b68';
+  return `<span style="font-size:11px;font-weight:500;${c}">${p}</span>`;
+}
+
+async function salvarDados() {
+  try {
+    localStorage.setItem('tarefas', JSON.stringify(tarefas));
+    localStorage.setItem('ct_nextId', nextId);
+    localStorage.setItem('ct_nextMicroId', nextMicroId);
+  } catch(e) {}
+  if (SYNC_ENABLED) await sincronizarTudo();
+}
+
+async function sincronizarTudo() {
+  if (!sb || syncBusy) return;
+  syncBusy = true;
+  try {
+    const rows = tarefas.map(t => ({
+      id: String(t.id), mes:t.mes||null, assunto:t.assunto||'', atividade:t.atividade,
+      responsavel:t.responsavel||'', onde:t.onde||'', status:t.status||'',
+      updated_at:new Date().toISOString()
+    }));
+    const { error: taskErr } = await sb.from('tarefas').upsert(rows, { onConflict:'id' });
+    if (taskErr) throw taskErr;
+
+    const micros = [];
+    tarefas.forEach(t => (t.micros||[]).forEach(m => micros.push({
+      id:String(m.id), tarefa_id:String(t.id), descricao:m.desc, responsavel:m.responsavel||'',
+      prazo:m.prazo||null, status:m.status||'', prio:m.prio||'',
+      updated_at:new Date().toISOString()
+    })));
+    if (micros.length) {
+      const { error: microErr } = await sb.from('micro_acoes').upsert(micros, { onConflict:'id' });
+      if (microErr) throw microErr;
+    }
+  } catch(e) {
+    console.warn('Sincronização pendente:', e.message || e);
+  } finally { syncBusy = false; }
+}
+
+async function carregarDados() {
+  try {
+    const t = localStorage.getItem('tarefas');
+    if (t) { tarefas = JSON.parse(t); nextId = parseInt(localStorage.getItem('ct_nextId')||100); nextMicroId = parseInt(localStorage.getItem('ct_nextMicroId')||200); }
+  } catch(e) {}
+
+  if (!SYNC_ENABLED || !sb) return;
+  try {
+    const { data: cloudTasks, error: taskErr } = await sb.from('tarefas').select('*').order('id');
+    if (taskErr) throw taskErr;
+    const { data: cloudMicros, error: microErr } = await sb.from('micro_acoes').select('*').order('id');
+    if (microErr) throw microErr;
+
+    if (cloudTasks && cloudTasks.length) {
+      tarefas = cloudTasks.map(t => ({ id:Number(t.id), mes:t.mes||'', assunto:t.assunto||'', atividade:t.atividade||'', responsavel:t.responsavel||'', onde:t.onde||'', status:t.status||'', micros:[] }));
+      (cloudMicros||[]).forEach(m => { const t=tarefas.find(x=>String(x.id)===String(m.tarefa_id)); if(t) t.micros.push({ id:Number(m.id), desc:m.descricao||'', responsavel:m.responsavel||'', prazo:m.prazo||'', status:m.status||'', prio:m.prio||'' }); });
+      nextId = Math.max(100, ...tarefas.map(t=>Number(t.id)||0)+1);
+      nextMicroId = Math.max(200, ...tarefas.flatMap(t=>t.micros).map(m=>Number(m.id)||0), 199)+1;
+      localStorage.setItem('tarefas', JSON.stringify(tarefas));
+      localStorage.setItem('ct_nextId', nextId); localStorage.setItem('ct_nextMicroId', nextMicroId);
+    } else if (tarefas.length) {
+      await sincronizarTudo();
+    }
+  } catch(e) { console.warn('Banco indisponível; usando cópia local:', e.message || e); }
+}
+
+function iniciarSincronizacaoTempoReal() {
+  if (!SYNC_ENABLED || !sb) return;
+  syncChannel = sb.channel('ct-sync')
+    .on('postgres_changes', { event:'*', schema:'public', table:'tarefas' }, () => receberNuvem())
+    .on('postgres_changes', { event:'*', schema:'public', table:'micro_acoes' }, () => receberNuvem())
+    .subscribe();
+}
+
+let recebendoNuvem = false;
+async function receberNuvem() {
+  if (recebendoNuvem || syncBusy) return;
+  recebendoNuvem = true;
+  try {
+    const { data: cloudTasks } = await sb.from('tarefas').select('*').order('id');
+    const { data: cloudMicros } = await sb.from('micro_acoes').select('*').order('id');
+    if (!cloudTasks) return;
+    tarefas = cloudTasks.map(t => ({ id:Number(t.id), mes:t.mes||'', assunto:t.assunto||'', atividade:t.atividade||'', responsavel:t.responsavel||'', onde:t.onde||'', status:t.status||'', micros:[] }));
+    (cloudMicros||[]).forEach(m => { const t=tarefas.find(x=>String(x.id)===String(m.tarefa_id)); if(t) t.micros.push({id:Number(m.id),desc:m.descricao||'',responsavel:m.responsavel||'',prazo:m.prazo||'',status:m.status||'',prio:m.prio||''}); });
+    localStorage.setItem('tarefas', JSON.stringify(tarefas));
+    render();
+  } finally { recebendoNuvem=false; }
+}
+
+function render() {
+  const busca = document.getElementById('busca').value.toLowerCase();
+  let lista = tarefas;
+  if (busca) lista = lista.filter(t => t.atividade.toLowerCase().includes(busca) || t.responsavel.toLowerCase().includes(busca) || t.micros.some(m => m.desc.toLowerCase().includes(busca) || m.responsavel.toLowerCase().includes(busca)));
+
+  const grupos = {};
+  lista.forEach(t => { const k=t.mes||'__sem__'; if(!grupos[k]) grupos[k]=[]; grupos[k].push(t); });
+  const keys = Object.keys(grupos).sort((a,b) => a==='__sem__'?1:b==='__sem__'?-1:b.localeCompare(a));
+
+  const div = document.getElementById('conteudo');
+  if (!keys.length) { div.innerHTML='<div class="empty-state">Nenhuma tarefa encontrada.</div>'; return; }
+
+  div.innerHTML = keys.map(k => {
+    const itens = grupos[k];
+    const label = k==='__sem__'?'Sem mês definido':mesLabel(k);
+    const isOpen = collapsedMes[k] !== true;
+    const cnt = {Pendente:0,Aguardando:0,'Concluído':0,'':0};
+    itens.forEach(t => { cnt[t.status]=(cnt[t.status]||0)+1; });
+    const pills = [
+      cnt['Pendente']?`<span class="pill pill-p">${cnt['Pendente']} pendente${cnt['Pendente']>1?'s':''}</span>`:'',
+      cnt['Aguardando']?`<span class="pill pill-a">${cnt['Aguardando']} aguardando</span>`:'',
+      cnt['Concluído']?`<span class="pill pill-c">${cnt['Concluído']} concluída${cnt['Concluído']>1?'s':''}</span>`:'',
+      cnt['']?`<span class="pill pill-s">${cnt['']} sem status</span>`:'',
+    ].filter(Boolean).join('');
+
+    const rows = itens.map(t => {
+      const exp = expandedTarefa[t.id]===true;
+      const mc = t.micros.length;
+      const tarefaRow = `<tr class="tarefa-row" data-id="${t.id}">
+        <td><div class="td-inner"><button class="btn-expand ${exp?'open':''}" onclick="toggleTarefa(${t.id})" aria-label="Expandir micro ações"><i class="ti ti-chevron-right"></i></button></div></td>
+        <td><div class="td-inner"><span class="tag">${t.assunto||'—'}</span></div></td>
+        <td><div class="td-inner">${t.atividade}${mc?` <span style="font-size:11px;color:#aaa;margin-left:4px">(${mc} micro${mc>1?'ações':'ação'})</span>`:''}</div></td>
+        <td><div class="td-inner">${t.responsavel||'—'}</div></td>
+        <td><div class="td-inner obs">${t.onde||'—'}</div></td>
+        <td><div class="td-inner"><span class="badge ${bc(t.status)}">${t.status||'—'}</span></div></td>
+        <td><div class="td-inner" style="display:flex;gap:4px;align-items:center">
+          <button class="btn-icon" onclick="abrirModalMicro(${t.id})" title="Adicionar micro ação"><i class="ti ti-list-details"></i></button>
+          <button class="btn-icon" onclick="excluirTarefa(${t.id})" title="Excluir tarefa"><i class="ti ti-trash"></i></button>
+        </div></td>
+      </tr>`;
+
+      if (!exp) return tarefaRow;
+
+      const microRows = t.micros.length ? t.micros.map(m=>`<tr>
+        <td>${m.desc}</td>
+        <td>${m.responsavel||'—'}</td>
+        <td>${prazoLabel(m.prazo)}</td>
+        <td><span class="micro-badge ${mbc(m.status)}">${m.status||'—'}</span></td>
+        <td style="display:flex;align-items:center;justify-content:space-between">${prioLabel(m.prio)}<button class="btn-icon" style="font-size:13px" onclick="excluirMicro(${t.id},${m.id})" title="Excluir micro ação"><i class="ti ti-x"></i></button></td>
+      </tr>`).join('') : '<tr><td colspan="5" style="color:#aaa;font-style:italic">Nenhuma micro ação ainda</td></tr>';
+
+      const microBlock = `<tr class="micro-row"><td colspan="7"><div class="micro-content">
+        <table class="micro-table"><thead><tr>
+          <td>Micro ação</td><td>Responsável</td><td>Prazo</td><td>Status</td><td>Prioridade</td>
+        </tr></thead><tbody>${microRows}</tbody></table>
+      </div></td></tr>
+      <tr class="micro-actions-row"><td colspan="7">
+        <button class="btn-add-micro" onclick="abrirModalMicro(${t.id})"><i class="ti ti-plus" style="font-size:12px"></i> Adicionar micro ação</button>
+      </td></tr>`;
+
+      return tarefaRow + microBlock;
+    }).join('');
+
+    return `<div class="mes-bloco">
+      <div class="mes-header" onclick="toggleMes('${k}')">
+        <span class="mes-titulo">${label}</span>
+        <div class="mes-badges">${pills}</div>
+        <i class="ti ti-chevron-down chevron ${isOpen?'open':''}"></i>
+      </div>
+      ${isOpen?`<div class="table-wrap"><table>
+        <thead><tr>
+          <th></th><th>Assunto</th><th>Atividade</th><th>Responsável</th><th>Onde parou</th><th>Status</th><th>Ações</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table></div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function toggleMes(k){ collapsedMes[k]=collapsedMes[k]!==true; render(); }
+function toggleTarefa(id){ expandedTarefa[id]=expandedTarefa[id]!==true; render(); }
+async function excluirTarefa(id){ if(!confirm('Excluir esta tarefa e suas micro ações?')) return; tarefas=tarefas.filter(t=>t.id!==id); salvarDados(); if(sb){ await sb.from('micro_acoes').delete().eq('tarefa_id',String(id)); await sb.from('tarefas').delete().eq('id',String(id)); } render(); }
+async function excluirMicro(tid,mid){ const t=tarefas.find(t=>t.id===tid); if(t){ t.micros=t.micros.filter(m=>m.id!==mid); salvarDados(); if(sb) await sb.from('micro_acoes').delete().eq('id',String(mid)); render(); } }
+
+function abrirModalTarefa(){ document.getElementById('fMes').value=mesAtual; document.getElementById('ovTarefa').classList.add('open'); }
+function fecharModalTarefa(){ document.getElementById('ovTarefa').classList.remove('open'); ['fAssunto','fAtividade','fResp','fOnde'].forEach(id=>document.getElementById(id).value=''); document.getElementById('fStatus').value=''; document.getElementById('errAt').style.display='none'; }
+function salvarTarefa(){
+  const at=document.getElementById('fAtividade').value.trim();
+  if(!at){document.getElementById('errAt').style.display='block';document.getElementById('fAtividade').focus();return;}
+  document.getElementById('errAt').style.display='none';
+  tarefas.push({id:nextId++,mes:document.getElementById('fMes').value||mesAtual,assunto:document.getElementById('fAssunto').value.trim(),atividade:at,responsavel:document.getElementById('fResp').value.trim(),onde:document.getElementById('fOnde').value.trim(),status:document.getElementById('fStatus').value,micros:[]});
+  salvarDados(); fecharModalTarefa(); render();
+}
+
+function abrirModalMicro(tid){ microAlvo=tid; const t=tarefas.find(t=>t.id===tid); document.getElementById('microTitulo').textContent='Nova micro ação — '+(t?t.atividade.substring(0,45)+(t.atividade.length>45?'…':''):''); document.getElementById('ovMicro').classList.add('open'); expandedTarefa[tid]=true; }
+function fecharModalMicro(){ document.getElementById('ovMicro').classList.remove('open'); ['mDesc','mResp','mPrazo'].forEach(id=>document.getElementById(id).value=''); document.getElementById('mStatus').value=''; document.getElementById('mPrio').value=''; document.getElementById('errMicro').style.display='none'; microAlvo=null; }
+function salvarMicro(){
+  const desc=document.getElementById('mDesc').value.trim();
+  if(!desc){document.getElementById('errMicro').style.display='block';document.getElementById('mDesc').focus();return;}
+  document.getElementById('errMicro').style.display='none';
+  const t=tarefas.find(t=>t.id===microAlvo);
+  if(t){ t.micros.push({id:nextMicroId++,desc,responsavel:document.getElementById('mResp').value.trim(),prazo:document.getElementById('mPrazo').value,status:document.getElementById('mStatus').value,prio:document.getElementById('mPrio').value}); }
+  salvarDados(); fecharModalMicro(); render();
+}
+
+document.getElementById('ovTarefa').addEventListener('click',e=>{if(e.target===e.currentTarget)fecharModalTarefa();});
+document.getElementById('ovMicro').addEventListener('click',e=>{if(e.target===e.currentTarget)fecharModalMicro();});
+
+carregarDados().then(() => { render(); iniciarSincronizacaoTempoReal(); });
+</script>
+</body>
+</html>

@@ -432,23 +432,25 @@ async function excluirMicro(tid,mid){ const t=tarefas.find(t=>t.id===tid); if(t)
 
 function abrirModalTarefa(){ document.getElementById('fMes').value=mesAtual; document.getElementById('ovTarefa').classList.add('open'); }
 function fecharModalTarefa(){ document.getElementById('ovTarefa').classList.remove('open'); ['fAssunto','fAtividade','fSolicitante','fResp','fOnde'].forEach(id=>document.getElementById(id).value=''); document.getElementById('fStatus').value=''; document.getElementById('fPrio').value=''; document.getElementById('errAt').style.display='none'; }
-function salvarTarefa(){
+async function salvarTarefa(){
   const at=document.getElementById('fAtividade').value.trim();
   if(!at){document.getElementById('errAt').style.display='block';document.getElementById('fAtividade').focus();return;}
   document.getElementById('errAt').style.display='none';
   tarefas.push({id:nextId++,mes:document.getElementById('fMes').value||mesAtual,assunto:document.getElementById('fAssunto').value.trim(),atividade:at,solicitante:document.getElementById('fSolicitante').value.trim(),responsavel:document.getElementById('fResp').value.trim(),onde:document.getElementById('fOnde').value.trim(),prioridade:document.getElementById('fPrio').value,status:document.getElementById('fStatus').value,micros:[]});
-  salvarDados(); fecharModalTarefa(); render();
+  try { await salvarDados(); } catch(e) { alert('Não foi possível salvar a nova tarefa no banco. Verifique sua conexão e tente novamente.'); console.error(e); return; }
+  fecharModalTarefa(); render();
 }
 
 function abrirModalMicro(tid){ microAlvo=tid; const t=tarefas.find(t=>t.id===tid); document.getElementById('microTitulo').textContent='Nova micro ação — '+(t?t.atividade.substring(0,45)+(t.atividade.length>45?'…':''):''); document.getElementById('ovMicro').classList.add('open'); expandedTarefa[tid]=true; }
 function fecharModalMicro(){ document.getElementById('ovMicro').classList.remove('open'); ['mDesc','mResp','mPrazo'].forEach(id=>document.getElementById(id).value=''); document.getElementById('mStatus').value=''; document.getElementById('mPrio').value=''; document.getElementById('errMicro').style.display='none'; microAlvo=null; }
-function salvarMicro(){
+async function salvarMicro(){
   const desc=document.getElementById('mDesc').value.trim();
   if(!desc){document.getElementById('errMicro').style.display='block';document.getElementById('mDesc').focus();return;}
   document.getElementById('errMicro').style.display='none';
   const t=tarefas.find(t=>t.id===microAlvo);
   if(t){ t.micros.push({id:nextMicroId++,desc,responsavel:document.getElementById('mResp').value.trim(),prazo:document.getElementById('mPrazo').value,status:document.getElementById('mStatus').value,prio:document.getElementById('mPrio').value}); }
-  salvarDados(); fecharModalMicro(); render();
+  try { await salvarDados(); } catch(e) { alert('Não foi possível salvar a micro ação no banco. Verifique sua conexão e tente novamente.'); console.error(e); return; }
+  fecharModalMicro(); render();
 }
 
 document.getElementById('ovTarefa').addEventListener('click',e=>{if(e.target===e.currentTarget)fecharModalTarefa();});

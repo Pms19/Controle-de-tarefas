@@ -42,10 +42,10 @@ tr.tarefa-row:hover > td { background:#fafaf8; }
 th:nth-child(1),td:nth-child(1){width:3%}
 th:nth-child(2),td:nth-child(2){width:13%}
 th:nth-child(3),td:nth-child(3){width:24%}
-th:nth-child(4),td:nth-child(4){width:11%}
-th:nth-child(5),td:nth-child(5){width:20%}
+th:nth-child(4),td:nth-child(4){width:12%}
+th:nth-child(5),td:nth-child(5){width:12%}
 th:nth-child(6),td:nth-child(6){width:18%}
-th:nth-child(7),td:nth-child(7){width:11%}
+th:nth-child(7),td:nth-child(7){width:12%}
 
 .td-inner { padding:10px 12px; }
 
@@ -154,6 +154,7 @@ th:nth-child(7),td:nth-child(7){width:11%}
       <div class="field"><label>Mês de referência</label><input type="month" id="fMes"></div>
       <div class="field"><label>Assunto</label><input type="text" id="fAssunto" placeholder="Ex: Documento"></div>
       <div class="field full"><label>Atividade <span style="color:#c0392b">*</span></label><input type="text" id="fAtividade" placeholder="Descreva a atividade"><div class="err" id="errAt">Informe a atividade</div></div>
+      <div class="field"><label>Solicitante</label><input type="text" id="fSolicitante" placeholder="Quem solicitou a demanda"></div>
       <div class="field"><label>Responsável</label><input type="text" id="fResp" placeholder="Nome"></div>
       <div class="field"><label>Status</label>
         <select id="fStatus"><option value="">—</option><option value="Pendente">Pendente</option><option value="Aguardando">Aguardando</option><option value="Concluído">Concluído</option></select>
@@ -218,14 +219,14 @@ const hoje = new Date();
 const mesAtual = `${hoje.getFullYear()}-${String(hoje.getMonth()+1).padStart(2,'0')}`;
 
 let tarefas = [
-  { id:1, mes:mesAtual, assunto:'NC', atividade:'Procedimento de Montagem e Desmontagem de Andaime Priner', responsavel:'', onde:'', status:'Pendente', micros:[] },
-  { id:2, mes:mesAtual, assunto:'Documento', atividade:'Checklist Guincho Hidráulico', responsavel:'Flavio', onde:'Aguardando retorno engenharia', status:'Pendente', micros:[
+  { id:1, mes:mesAtual, assunto:'NC', atividade:'Procedimento de Montagem e Desmontagem de Andaime Priner', solicitante:'', responsavel:'', onde:'', status:'Pendente', micros:[] },
+  { id:2, mes:mesAtual, assunto:'Documento', atividade:'Checklist Guincho Hidráulico', solicitante:'', responsavel:'Flavio', onde:'Aguardando retorno engenharia', status:'Pendente', micros:[
     { id:21, desc:'Contato com a engenharia', responsavel:'Flavio', prazo:'', status:'Aguardando', prio:'Alta' }
   ]},
-  { id:3, mes:mesAtual, assunto:'Documento', atividade:'Checklist Veracel', responsavel:'Flavio', onde:'Aguardando retorno engenharia', status:'Pendente', micros:[] },
-  { id:4, mes:mesAtual, assunto:'Documento', atividade:'Incluir códigos novos no procedimento de informação documentada', responsavel:'', onde:'', status:'', micros:[] },
-  { id:5, mes:mesAtual, assunto:'Lançamento de Despesa', atividade:'Lançar NF BVQI', responsavel:'', onde:'Aguardando retorno Alan (rhodia)', status:'', micros:[] },
-  { id:6, mes:mesAtual, assunto:'GM', atividade:'GM Mudança do sistema Pipedrive para CPP', responsavel:'Andressa', onde:'Aguardando reunião com Andressa para verificar próximos passos', status:'Aguardando', micros:[
+  { id:3, mes:mesAtual, assunto:'Documento', atividade:'Checklist Veracel', solicitante:'', responsavel:'Flavio', onde:'Aguardando retorno engenharia', status:'Pendente', micros:[] },
+  { id:4, mes:mesAtual, assunto:'Documento', atividade:'Incluir códigos novos no procedimento de informação documentada', solicitante:'', responsavel:'', onde:'', status:'', micros:[] },
+  { id:5, mes:mesAtual, assunto:'Lançamento de Despesa', atividade:'Lançar NF BVQI', solicitante:'', responsavel:'', onde:'Aguardando retorno Alan (rhodia)', status:'', micros:[] },
+  { id:6, mes:mesAtual, assunto:'GM', atividade:'GM Mudança do sistema Pipedrive para CPP', solicitante:'', responsavel:'Andressa', onde:'Aguardando reunião com Andressa para verificar próximos passos', status:'Aguardando', micros:[
     { id:61, desc:'Reunião de alinhamento Pipedrive', responsavel:'Andressa', prazo:'', status:'Aguardando', prio:'Média' },
     { id:62, desc:'Mapear campos CPP', responsavel:'', prazo:'', status:'Pendente', prio:'' }
   ]},
@@ -265,7 +266,7 @@ async function sincronizarTudo() {
   try {
     const rows = tarefas.map(t => ({
       id: String(t.id), mes:t.mes||null, assunto:t.assunto||'', atividade:t.atividade,
-      responsavel:t.responsavel||'', onde:t.onde||'', status:t.status||'',
+      solicitante:t.solicitante||'', responsavel:t.responsavel||'', onde:t.onde||'', status:t.status||'',
       updated_at:new Date().toISOString()
     }));
     const { error: taskErr } = await sb.from('tarefas').upsert(rows, { onConflict:'id' });
@@ -300,7 +301,7 @@ async function carregarDados() {
     if (microErr) throw microErr;
 
     if (cloudTasks && cloudTasks.length) {
-      tarefas = cloudTasks.map(t => ({ id:Number(t.id), mes:t.mes||'', assunto:t.assunto||'', atividade:t.atividade||'', responsavel:t.responsavel||'', onde:t.onde||'', status:t.status||'', micros:[] }));
+      tarefas = cloudTasks.map(t => ({ id:Number(t.id), mes:t.mes||'', assunto:t.assunto||'', atividade:t.atividade||'', solicitante:t.solicitante||'', responsavel:t.responsavel||'', onde:t.onde||'', status:t.status||'', micros:[] }));
       (cloudMicros||[]).forEach(m => { const t=tarefas.find(x=>String(x.id)===String(m.tarefa_id)); if(t) t.micros.push({ id:Number(m.id), desc:m.descricao||'', responsavel:m.responsavel||'', prazo:m.prazo||'', status:m.status||'', prio:m.prio||'' }); });
       nextId = Math.max(100, ...tarefas.map(t=>Number(t.id)||0)+1);
       nextMicroId = Math.max(200, ...tarefas.flatMap(t=>t.micros).map(m=>Number(m.id)||0), 199)+1;
@@ -328,7 +329,7 @@ async function receberNuvem() {
     const { data: cloudTasks } = await sb.from('tarefas').select('*').order('id');
     const { data: cloudMicros } = await sb.from('micro_acoes').select('*').order('id');
     if (!cloudTasks) return;
-    tarefas = cloudTasks.map(t => ({ id:Number(t.id), mes:t.mes||'', assunto:t.assunto||'', atividade:t.atividade||'', responsavel:t.responsavel||'', onde:t.onde||'', status:t.status||'', micros:[] }));
+    tarefas = cloudTasks.map(t => ({ id:Number(t.id), mes:t.mes||'', assunto:t.assunto||'', atividade:t.atividade||'', solicitante:t.solicitante||'', responsavel:t.responsavel||'', onde:t.onde||'', status:t.status||'', micros:[] }));
     (cloudMicros||[]).forEach(m => { const t=tarefas.find(x=>String(x.id)===String(m.tarefa_id)); if(t) t.micros.push({id:Number(m.id),desc:m.descricao||'',responsavel:m.responsavel||'',prazo:m.prazo||'',status:m.status||'',prio:m.prio||''}); });
     localStorage.setItem('tarefas', JSON.stringify(tarefas));
     render();
@@ -338,7 +339,7 @@ async function receberNuvem() {
 function render() {
   const busca = document.getElementById('busca').value.toLowerCase();
   let lista = tarefas;
-  if (busca) lista = lista.filter(t => t.atividade.toLowerCase().includes(busca) || t.responsavel.toLowerCase().includes(busca) || t.micros.some(m => m.desc.toLowerCase().includes(busca) || m.responsavel.toLowerCase().includes(busca)));
+  if (busca) lista = lista.filter(t => t.atividade.toLowerCase().includes(busca) || t.solicitante.toLowerCase().includes(busca) || t.responsavel.toLowerCase().includes(busca) || t.micros.some(m => m.desc.toLowerCase().includes(busca) || m.responsavel.toLowerCase().includes(busca)));
 
   const grupos = {};
   lista.forEach(t => { const k=t.mes||'__sem__'; if(!grupos[k]) grupos[k]=[]; grupos[k].push(t); });
@@ -367,6 +368,7 @@ function render() {
         <td><div class="td-inner"><button class="btn-expand ${exp?'open':''}" onclick="toggleTarefa(${t.id})" aria-label="Expandir micro ações"><i class="ti ti-chevron-right"></i></button></div></td>
         <td><div class="td-inner"><span class="tag">${t.assunto||'—'}</span></div></td>
         <td><div class="td-inner">${t.atividade}${mc?` <span style="font-size:11px;color:#aaa;margin-left:4px">(${mc} micro${mc>1?'ações':'ação'})</span>`:''}</div></td>
+        <td><div class="td-inner">${t.solicitante||'—'}</div></td>
         <td><div class="td-inner">${t.responsavel||'—'}</div></td>
         <td><div class="td-inner obs">${t.onde||'—'}</div></td>
         <td><div class="td-inner"><span class="badge ${bc(t.status)}">${t.status||'—'}</span></div></td>
@@ -387,12 +389,12 @@ function render() {
         <td style="display:flex;align-items:center;justify-content:space-between">${prioLabel(m.prio)}<button class="btn-icon" style="font-size:13px" onclick="excluirMicro(${t.id},${m.id})" title="Excluir micro ação"><i class="ti ti-x"></i></button></td>
       </tr>`).join('') : '<tr><td colspan="5" style="color:#aaa;font-style:italic">Nenhuma micro ação ainda</td></tr>';
 
-      const microBlock = `<tr class="micro-row"><td colspan="7"><div class="micro-content">
+      const microBlock = `<tr class="micro-row"><td colspan="8"><div class="micro-content">
         <table class="micro-table"><thead><tr>
           <td>Micro ação</td><td>Responsável</td><td>Prazo</td><td>Status</td><td>Prioridade</td>
         </tr></thead><tbody>${microRows}</tbody></table>
       </div></td></tr>
-      <tr class="micro-actions-row"><td colspan="7">
+      <tr class="micro-actions-row"><td colspan="8">
         <button class="btn-add-micro" onclick="abrirModalMicro(${t.id})"><i class="ti ti-plus" style="font-size:12px"></i> Adicionar micro ação</button>
       </td></tr>`;
 
@@ -407,7 +409,7 @@ function render() {
       </div>
       ${isOpen?`<div class="table-wrap"><table>
         <thead><tr>
-          <th></th><th>Assunto</th><th>Atividade</th><th>Responsável</th><th>Onde parou</th><th>Status</th><th>Ações</th>
+          <th></th><th>Assunto</th><th>Atividade</th><th>Solicitante</th><th>Responsável</th><th>Onde parou</th><th>Status</th><th>Ações</th>
         </tr></thead>
         <tbody>${rows}</tbody>
       </table></div>`:''}
@@ -421,12 +423,12 @@ async function excluirTarefa(id){ if(!confirm('Excluir esta tarefa e suas micro 
 async function excluirMicro(tid,mid){ const t=tarefas.find(t=>t.id===tid); if(t){ t.micros=t.micros.filter(m=>m.id!==mid); salvarDados(); if(sb) await sb.from('micro_acoes').delete().eq('id',String(mid)); render(); } }
 
 function abrirModalTarefa(){ document.getElementById('fMes').value=mesAtual; document.getElementById('ovTarefa').classList.add('open'); }
-function fecharModalTarefa(){ document.getElementById('ovTarefa').classList.remove('open'); ['fAssunto','fAtividade','fResp','fOnde'].forEach(id=>document.getElementById(id).value=''); document.getElementById('fStatus').value=''; document.getElementById('errAt').style.display='none'; }
+function fecharModalTarefa(){ document.getElementById('ovTarefa').classList.remove('open'); ['fAssunto','fAtividade','fSolicitante','fResp','fOnde'].forEach(id=>document.getElementById(id).value=''); document.getElementById('fStatus').value=''; document.getElementById('errAt').style.display='none'; }
 function salvarTarefa(){
   const at=document.getElementById('fAtividade').value.trim();
   if(!at){document.getElementById('errAt').style.display='block';document.getElementById('fAtividade').focus();return;}
   document.getElementById('errAt').style.display='none';
-  tarefas.push({id:nextId++,mes:document.getElementById('fMes').value||mesAtual,assunto:document.getElementById('fAssunto').value.trim(),atividade:at,responsavel:document.getElementById('fResp').value.trim(),onde:document.getElementById('fOnde').value.trim(),status:document.getElementById('fStatus').value,micros:[]});
+  tarefas.push({id:nextId++,mes:document.getElementById('fMes').value||mesAtual,assunto:document.getElementById('fAssunto').value.trim(),atividade:at,solicitante:document.getElementById('fSolicitante').value.trim(),responsavel:document.getElementById('fResp').value.trim(),onde:document.getElementById('fOnde').value.trim(),status:document.getElementById('fStatus').value,micros:[]});
   salvarDados(); fecharModalTarefa(); render();
 }
 
@@ -456,6 +458,7 @@ function abrirModalEditarTarefa(id) {
   document.getElementById('fMes').value = t.mes || '';
   document.getElementById('fAssunto').value = t.assunto || '';
   document.getElementById('fAtividade').value = t.atividade || '';
+  document.getElementById('fSolicitante').value = t.solicitante || '';
   document.getElementById('fResp').value = t.responsavel || '';
   document.getElementById('fStatus').value = t.status || '';
   document.getElementById('fOnde').value = t.onde || '';
@@ -478,6 +481,7 @@ salvarTarefa = async function() {
     t.mes = document.getElementById('fMes').value;
     t.assunto = document.getElementById('fAssunto').value.trim();
     t.atividade = atividade;
+    t.solicitante = document.getElementById('fSolicitante').value.trim();
     t.responsavel = document.getElementById('fResp').value.trim();
     t.status = document.getElementById('fStatus').value;
     t.onde = document.getElementById('fOnde').value.trim();

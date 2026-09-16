@@ -436,8 +436,40 @@ async function salvarTarefa(){
   const at=document.getElementById('fAtividade').value.trim();
   if(!at){document.getElementById('errAt').style.display='block';document.getElementById('fAtividade').focus();return;}
   document.getElementById('errAt').style.display='none';
-  tarefas.push({id:nextId++,mes:document.getElementById('fMes').value||mesAtual,assunto:document.getElementById('fAssunto').value.trim(),atividade:at,solicitante:document.getElementById('fSolicitante').value.trim(),responsavel:document.getElementById('fResp').value.trim(),onde:document.getElementById('fOnde').value.trim(),prioridade:document.getElementById('fPrio').value,status:document.getElementById('fStatus').value,micros:[]});
-  try { await salvarDados(); } catch(e) { alert('Não foi possível salvar a nova tarefa no banco. Verifique sua conexão e tente novamente.'); console.error(e); return; }
+
+  const tarefa = {
+    mes:document.getElementById('fMes').value||mesAtual,
+    assunto:document.getElementById('fAssunto').value.trim(),
+    atividade:at,
+    solicitante:document.getElementById('fSolicitante').value.trim(),
+    responsavel:document.getElementById('fResp').value.trim(),
+    onde:document.getElementById('fOnde').value.trim(),
+    prioridade:document.getElementById('fPrio').value,
+    status:document.getElementById('fStatus').value
+  };
+
+  if (sb) {
+    try {
+      const { data, error } = await sb.from('tarefas').insert([tarefa]).select().single();
+      if (error) throw error;
+      tarefa.id = Number(data.id);
+      tarefa.micros = [];
+      tarefas.push(tarefa);
+      nextId = Math.max(nextId, tarefa.id + 1);
+      localStorage.setItem('tarefas', JSON.stringify(tarefas));
+      localStorage.setItem('ct_nextId', nextId);
+    } catch(e) {
+      console.error('Erro ao inserir nova tarefa:', e);
+      alert('Não foi possível salvar a nova tarefa no banco.\n\nErro: ' + (e.message || 'erro desconhecido'));
+      return;
+    }
+  } else {
+    tarefa.id = nextId++;
+    tarefa.micros = [];
+    tarefas.push(tarefa);
+    await salvarDados();
+  }
+
   fecharModalTarefa(); render();
 }
 

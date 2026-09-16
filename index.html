@@ -154,6 +154,14 @@ th:nth-child(9),td:nth-child(9){width:14%}
     <h2>Nova tarefa</h2>
     <div class="mgrid">
       <div class="field"><label>Mês de referência</label><input type="month" id="fMes"></div>
+      <div class="field"><label>Periodicidade</label>
+        <select id="fPeriodicidade">
+          <option value="Pontual">Pontual</option>
+          <option value="Mensal">Mensal</option>
+          <option value="Semanal">Semanal</option>
+          <option value="Diária">Diária</option>
+        </select>
+      </div>
       <div class="field"><label>Assunto</label><input type="text" id="fAssunto" placeholder="Ex: Documento"></div>
       <div class="field full"><label>Atividade <span style="color:#c0392b">*</span></label><input type="text" id="fAtividade" placeholder="Descreva a atividade"><div class="err" id="errAt">Informe a atividade</div></div>
       <div class="field"><label>Solicitante</label><input type="text" id="fSolicitante" placeholder="Quem solicitou a demanda"></div>
@@ -270,7 +278,7 @@ async function sincronizarTudo() {
   try {
     const rows = tarefas.map(t => ({
       id: String(t.id), mes:t.mes||null, assunto:t.assunto||'', atividade:t.atividade,
-      solicitante:t.solicitante||'', onde:t.onde||'', responsavel:t.responsavel||'', prioridade:t.prioridade||'', status:t.status||'',
+      solicitante:t.solicitante||'', onde:t.onde||'', responsavel:t.responsavel||'', prioridade:t.prioridade||'', status:t.status||'', periodicidade:t.periodicidade||'Pontual', recorrencia_grupo:t.recorrencia_grupo||null, data_ocorrencia:t.data_ocorrencia||null,
       updated_at:new Date().toISOString()
     }));
     const { error: taskErr } = await sb.from('tarefas').upsert(rows, { onConflict:'id' });
@@ -309,7 +317,7 @@ async function carregarDados() {
     if (microErr) throw microErr;
 
     if (cloudTasks && cloudTasks.length) {
-      tarefas = cloudTasks.map(t => ({ id:Number(t.id), mes:t.mes||'', assunto:t.assunto||'', atividade:t.atividade||'', solicitante:t.solicitante||'', responsavel:t.responsavel||'', onde:t.onde||'', prioridade:t.prioridade||'', status:t.status||'', micros:[] }));
+      tarefas = cloudTasks.map(t => ({ id:Number(t.id), mes:t.mes||'', assunto:t.assunto||'', atividade:t.atividade||'', solicitante:t.solicitante||'', responsavel:t.responsavel||'', onde:t.onde||'', prioridade:t.prioridade||'', status:t.status||'', periodicidade:t.periodicidade||'Pontual', recorrencia_grupo:t.recorrencia_grupo||null, data_ocorrencia:t.data_ocorrencia||null, micros:[] }));
       (cloudMicros||[]).forEach(m => { const t=tarefas.find(x=>String(x.id)===String(m.tarefa_id)); if(t) t.micros.push({ id:Number(m.id), desc:m.descricao||'', responsavel:m.responsavel||'', prazo:m.prazo||'', status:m.status||'', prio:m.prio||'' }); });
       nextId = Math.max(100, ...tarefas.map(t=>Number(t.id)||0)+1);
       nextMicroId = Math.max(200, ...tarefas.flatMap(t=>t.micros).map(m=>Number(m.id)||0), 199)+1;
@@ -432,42 +440,74 @@ async function excluirTarefa(id){ if(!confirm('Excluir esta tarefa e suas micro 
 async function excluirMicro(tid,mid){ const t=tarefas.find(t=>t.id===tid); if(t){ t.micros=t.micros.filter(m=>m.id!==mid); salvarDados(); if(sb) await sb.from('micro_acoes').delete().eq('id',String(mid)); render(); } }
 
 function abrirModalTarefa(){ document.getElementById('fMes').value=mesAtual; document.getElementById('ovTarefa').classList.add('open'); }
-function fecharModalTarefa(){ document.getElementById('ovTarefa').classList.remove('open'); ['fAssunto','fAtividade','fSolicitante','fResp','fOnde'].forEach(id=>document.getElementById(id).value=''); document.getElementById('fStatus').value=''; document.getElementById('fPrio').value=''; document.getElementById('errAt').style.display='none'; }
+function fecharModalTarefa(){ document.getElementById('ovTarefa').classList.remove('open'); ['fAssunto','fAtividade','fSolicitante','fResp','fOnde'].forEach(id=>document.getElementById(id).value=''); document.getElementById('fStatus').value=''; document.getElementById('fPrio').value=''; document.getElementById('fPeriodicidade').value='Pontual'; document.getElementById('errAt').style.display='none'; }
+function gerarOcorrencias(periodicidade, mesInicial) {
+  const out = [];
+  const base = new Date();
+  const grupo = 'rec-' + Date.now() + '-' + Math.random().toString(36).slice(2,8);
+  if (periodicidade === 'Pontual') return [{ grupo:null, data:null, mes:mesInicial, grupoRef:null }];
+
+  if (periodicidade === 'Mensal') {
+    const [ano, mes] = (mesInicial || mesAtual).split('-').map(Number);
+    for (let i=0;i<12;i++) {
+      const d = new Date(ano, (mes-1)+i, 1);
+      out.push({grupo, data:d.toISOString().slice(0,10), mes:d.toISOString().slice(0,7), grupoRef:grupo});
+    }
+  } else if (periodicidade === 'Semanal') {
+    for (let i=0;i<52;i++) {
+      const d = new Date(base); d.setDate(d.getDate()+i*7);
+      out.push({grupo, data:d.toISOString().slice(0,10), mes:d.toISOString().slice(0,7), grupoRef:grupo});
+    }
+  } else if (periodicidade === 'Diária') {
+    for (let i=0;i<30;i++) {
+      const d = new Date(base); d.setDate(d.getDate()+i);
+      out.push({grupo, data:d.toISOString().slice(0,10), mes:d.toISOString().slice(0,7), grupoRef:grupo});
+    }
+  }
+  return out;
+}
+
 async function salvarTarefa(){
   const at=document.getElementById('fAtividade').value.trim();
   if(!at){document.getElementById('errAt').style.display='block';document.getElementById('fAtividade').focus();return;}
   document.getElementById('errAt').style.display='none';
 
-  const tarefa = {
-    mes:document.getElementById('fMes').value||mesAtual,
+  const periodicidade = document.getElementById('fPeriodicidade').value || 'Pontual';
+  const mesInicial = document.getElementById('fMes').value || mesAtual;
+  const ocorrencias = gerarOcorrencias(periodicidade, mesInicial);
+  const base = {
     assunto:document.getElementById('fAssunto').value.trim(),
     atividade:at,
     solicitante:document.getElementById('fSolicitante').value.trim(),
     responsavel:document.getElementById('fResp').value.trim(),
     onde:document.getElementById('fOnde').value.trim(),
     prioridade:document.getElementById('fPrio').value,
-    status:document.getElementById('fStatus').value
+    status:document.getElementById('fStatus').value,
+    periodicidade
   };
 
   if (sb) {
     try {
-      const { data, error } = await sb.from('tarefas').insert([tarefa]).select().single();
+      const rows = ocorrencias.map(o => ({...base, mes:o.mes, recorrencia_grupo:o.grupoRef, data_ocorrencia:o.data}));
+      const { data, error } = await sb.from('tarefas').insert(rows).select();
       if (error) throw error;
-      tarefa.id = Number(data.id);
-      tarefa.micros = [];
-      tarefas.push(tarefa);
-      nextId = Math.max(nextId, tarefa.id + 1);
+      (data||[]).forEach(d => tarefas.push({
+        id:Number(d.id), mes:d.mes||'', assunto:d.assunto||'', atividade:d.atividade||'', solicitante:d.solicitante||'',
+        responsavel:d.responsavel||'', onde:d.onde||'', prioridade:d.prioridade||'', status:d.status||'',
+        periodicidade:d.periodicidade||'Pontual', recorrencia_grupo:d.recorrencia_grupo||null, data_ocorrencia:d.data_ocorrencia||null, micros:[]
+      }));
+      nextId = Math.max(nextId, ...tarefas.map(t=>Number(t.id)||0)+1);
       localStorage.setItem('tarefas', JSON.stringify(tarefas));
       localStorage.setItem('ct_nextId', nextId);
     } catch(e) {
-      console.error('Erro ao inserir nova tarefa:', e);
-      alert('Não foi possível salvar a nova tarefa no banco.\n\nErro: ' + (e.message || 'erro desconhecido'));
+      console.error('Erro ao inserir novas ocorrências:', e);
+      alert('Não foi possível salvar a demanda recorrente no banco.\n\nErro: ' + (e.message || 'erro desconhecido'));
       return;
     }
   } else {
-    tarefa.id = nextId++;
-    tarefa.micros = [];
-    tarefas.push(tarefa);
+    ocorrencias.forEach(o => {
+      tarefas.push({...base, id:nextId++, mes:o.mes, recorrencia_grupo:o.grupoRef, data_ocorrencia:o.data, micros:[]});
+    });
     await salvarDados();
   }
 
@@ -499,6 +539,7 @@ function abrirModalEditarTarefa(id) {
   tarefaEditando = Number(id);
   document.querySelector('#ovTarefa h2').textContent = 'Editar tarefa';
   document.getElementById('fMes').value = t.mes || '';
+  document.getElementById('fPeriodicidade').value = t.periodicidade || 'Pontual';
   document.getElementById('fAssunto').value = t.assunto || '';
   document.getElementById('fAtividade').value = t.atividade || '';
   document.getElementById('fSolicitante').value = t.solicitante || '';
@@ -530,6 +571,7 @@ salvarTarefa = async function() {
     t.responsavel = document.getElementById('fResp').value.trim();
     t.status = document.getElementById('fStatus').value;
     t.onde = document.getElementById('fOnde').value.trim();
+    t.periodicidade = document.getElementById('fPeriodicidade').value || 'Pontual';
     try {
       await salvarDados();
     } catch(e) {

@@ -156,11 +156,12 @@ th:nth-child(8),td:nth-child(8){width:9%}
       <div class="field"><label>Assunto</label><input type="text" id="fAssunto" placeholder="Ex: Documento"></div>
       <div class="field full"><label>Atividade <span style="color:#c0392b">*</span></label><input type="text" id="fAtividade" placeholder="Descreva a atividade"><div class="err" id="errAt">Informe a atividade</div></div>
       <div class="field"><label>Solicitante</label><input type="text" id="fSolicitante" placeholder="Quem solicitou a demanda"></div>
+      <div class="field"><label>Onde parou / Observações</label><textarea id="fOnde" placeholder="Ponto de parada ou observações"></textarea></div>
       <div class="field"><label>Responsável</label><input type="text" id="fResp" placeholder="Nome"></div>
+      <div class="field"><label>Prioridade</label><select id="fPrio"><option value="">—</option><option value="Alta">Alta</option><option value="Média">Média</option><option value="Baixa">Baixa</option></select></div>
       <div class="field"><label>Status</label>
         <select id="fStatus"><option value="">—</option><option value="Pendente">Pendente</option><option value="Aguardando">Aguardando</option><option value="Concluído">Concluído</option></select>
       </div>
-      <div class="field full"><label>Onde parou / Observações</label><textarea id="fOnde" placeholder="Ponto de parada ou observações"></textarea></div>
     </div>
     <div class="mactions">
       <button class="btn-cancel" onclick="fecharModalTarefa()">Cancelar</button>
@@ -267,7 +268,7 @@ async function sincronizarTudo() {
   try {
     const rows = tarefas.map(t => ({
       id: String(t.id), mes:t.mes||null, assunto:t.assunto||'', atividade:t.atividade,
-      solicitante:t.solicitante||'', responsavel:t.responsavel||'', onde:t.onde||'', status:t.status||'',
+      solicitante:t.solicitante||'', onde:t.onde||'', responsavel:t.responsavel||'', prioridade:t.prioridade||'', status:t.status||'',
       updated_at:new Date().toISOString()
     }));
     const { error: taskErr } = await sb.from('tarefas').upsert(rows, { onConflict:'id' });
@@ -370,8 +371,9 @@ function render() {
         <td><div class="td-inner"><span class="tag">${t.assunto||'—'}</span></div></td>
         <td><div class="td-inner">${t.atividade}${mc?` <span style="font-size:11px;color:#aaa;margin-left:4px">(${mc} micro${mc>1?'ações':'ação'})</span>`:''}</div></td>
         <td><div class="td-inner">${t.solicitante||'—'}</div></td>
-        <td><div class="td-inner">${t.responsavel||'—'}</div></td>
         <td><div class="td-inner obs">${t.onde||'—'}</div></td>
+        <td><div class="td-inner">${t.responsavel||'—'}</div></td>
+        <td><div class="td-inner">${prioLabel(t.prioridade)}</div></td>
         <td><div class="td-inner"><span class="badge ${bc(t.status)}">${t.status||'—'}</span></div></td>
         <td><div class="td-inner" style="display:flex;gap:4px;align-items:center">
           <button class="btn-icon" onclick="abrirModalEditarTarefa(${t.id})" title="Editar tarefa"><i class="ti ti-pencil"></i></button>
@@ -424,12 +426,12 @@ async function excluirTarefa(id){ if(!confirm('Excluir esta tarefa e suas micro 
 async function excluirMicro(tid,mid){ const t=tarefas.find(t=>t.id===tid); if(t){ t.micros=t.micros.filter(m=>m.id!==mid); salvarDados(); if(sb) await sb.from('micro_acoes').delete().eq('id',String(mid)); render(); } }
 
 function abrirModalTarefa(){ document.getElementById('fMes').value=mesAtual; document.getElementById('ovTarefa').classList.add('open'); }
-function fecharModalTarefa(){ document.getElementById('ovTarefa').classList.remove('open'); ['fAssunto','fAtividade','fSolicitante','fResp','fOnde'].forEach(id=>document.getElementById(id).value=''); document.getElementById('fStatus').value=''; document.getElementById('errAt').style.display='none'; }
+function fecharModalTarefa(){ document.getElementById('ovTarefa').classList.remove('open'); ['fAssunto','fAtividade','fSolicitante','fResp','fOnde'].forEach(id=>document.getElementById(id).value=''); document.getElementById('fStatus').value=''; document.getElementById('fPrio').value=''; document.getElementById('errAt').style.display='none'; }
 function salvarTarefa(){
   const at=document.getElementById('fAtividade').value.trim();
   if(!at){document.getElementById('errAt').style.display='block';document.getElementById('fAtividade').focus();return;}
   document.getElementById('errAt').style.display='none';
-  tarefas.push({id:nextId++,mes:document.getElementById('fMes').value||mesAtual,assunto:document.getElementById('fAssunto').value.trim(),atividade:at,solicitante:document.getElementById('fSolicitante').value.trim(),responsavel:document.getElementById('fResp').value.trim(),onde:document.getElementById('fOnde').value.trim(),status:document.getElementById('fStatus').value,micros:[]});
+  tarefas.push({id:nextId++,mes:document.getElementById('fMes').value||mesAtual,assunto:document.getElementById('fAssunto').value.trim(),atividade:at,solicitante:document.getElementById('fSolicitante').value.trim(),responsavel:document.getElementById('fResp').value.trim(),onde:document.getElementById('fOnde').value.trim(),prioridade:document.getElementById('fPrio').value,status:document.getElementById('fStatus').value,micros:[]});
   salvarDados(); fecharModalTarefa(); render();
 }
 
@@ -460,6 +462,7 @@ function abrirModalEditarTarefa(id) {
   document.getElementById('fAssunto').value = t.assunto || '';
   document.getElementById('fAtividade').value = t.atividade || '';
   document.getElementById('fSolicitante').value = t.solicitante || '';
+  document.getElementById('fPrio').value = t.prioridade || '';
   document.getElementById('fResp').value = t.responsavel || '';
   document.getElementById('fStatus').value = t.status || '';
   document.getElementById('fOnde').value = t.onde || '';
@@ -483,6 +486,7 @@ salvarTarefa = async function() {
     t.assunto = document.getElementById('fAssunto').value.trim();
     t.atividade = atividade;
     t.solicitante = document.getElementById('fSolicitante').value.trim();
+    t.prioridade = document.getElementById('fPrio').value;
     t.responsavel = document.getElementById('fResp').value.trim();
     t.status = document.getElementById('fStatus').value;
     t.onde = document.getElementById('fOnde').value.trim();

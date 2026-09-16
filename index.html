@@ -340,6 +340,7 @@ function render() {
         <td><div class="td-inner obs">${t.onde||'—'}</div></td>
         <td><div class="td-inner"><span class="badge ${bc(t.status)}">${t.status||'—'}</span></div></td>
         <td><div class="td-inner" style="display:flex;gap:4px;align-items:center">
+          <button class="btn-icon" onclick="abrirModalEditarTarefa(${t.id})" title="Editar tarefa"><i class="ti ti-pencil"></i></button>
           <button class="btn-icon" onclick="abrirModalMicro(${t.id})" title="Adicionar micro ação"><i class="ti ti-list-details"></i></button>
           <button class="btn-icon" onclick="excluirTarefa(${t.id})" title="Excluir tarefa"><i class="ti ti-trash"></i></button>
         </div></td>

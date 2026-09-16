@@ -42,11 +42,11 @@ tr.tarefa-row:hover > td { background:#fafaf8; }
 th:nth-child(1),td:nth-child(1){width:3%}
 th:nth-child(2),td:nth-child(2){width:12%}
 th:nth-child(3),td:nth-child(3){width:22%}
-th:nth-child(4),td:nth-child(4){width:12%}
-th:nth-child(5),td:nth-child(5){width:12%}
-th:nth-child(6),td:nth-child(6){width:17%}
-th:nth-child(7),td:nth-child(7){width:11%}
-th:nth-child(8),td:nth-child(8){width:11%}
+th:nth-child(4),td:nth-child(4){width:11%}
+th:nth-child(5),td:nth-child(5){width:17%}
+th:nth-child(6),td:nth-child(6){width:12%}
+th:nth-child(7),td:nth-child(7){width:9%}
+th:nth-child(8),td:nth-child(8){width:9%}
 
 .td-inner { padding:10px 12px; }
 
@@ -390,7 +390,7 @@ function render() {
         <td style="display:flex;align-items:center;justify-content:space-between">${prioLabel(m.prio)}<button class="btn-icon" style="font-size:13px" onclick="excluirMicro(${t.id},${m.id})" title="Excluir micro ação"><i class="ti ti-x"></i></button></td>
       </tr>`).join('') : '<tr><td colspan="5" style="color:#aaa;font-style:italic">Nenhuma micro ação ainda</td></tr>';
 
-      const microBlock = `<tr class="micro-row"><td colspan="8"><div class="micro-content">
+      const microBlock = `<tr class="micro-row"><td colspan="9"><div class="micro-content">
         <table class="micro-table"><thead><tr>
           <td>Micro ação</td><td>Responsável</td><td>Prazo</td><td>Status</td><td>Prioridade</td>
         </tr></thead><tbody>${microRows}</tbody></table>
@@ -410,7 +410,7 @@ function render() {
       </div>
       ${isOpen?`<div class="table-wrap"><table>
         <thead><tr>
-          <th></th><th>Assunto</th><th>Atividade</th><th>Solicitante</th><th>Responsável</th><th>Onde parou</th><th>Status</th><th>Ações</th>
+          <th></th><th>Assunto</th><th>Atividade</th><th>Solicitante</th><th>Onde parou</th><th>Responsável</th><th>Prioridade</th><th>Status</th><th>Ações</th>
         </tr></thead>
         <tbody>${rows}</tbody>
       </table></div>`:''}

@@ -303,7 +303,7 @@ async function carregarDados() {
     if (microErr) throw microErr;
 
     if (cloudTasks && cloudTasks.length) {
-      tarefas = cloudTasks.map(t => ({ id:Number(t.id), mes:t.mes||'', assunto:t.assunto||'', atividade:t.atividade||'', solicitante:t.solicitante||'', responsavel:t.responsavel||'', onde:t.onde||'', status:t.status||'', micros:[] }));
+      tarefas = cloudTasks.map(t => ({ id:Number(t.id), mes:t.mes||'', assunto:t.assunto||'', atividade:t.atividade||'', solicitante:t.solicitante||'', responsavel:t.responsavel||'', onde:t.onde||'', prioridade:t.prioridade||'', status:t.status||'', micros:[] }));
       (cloudMicros||[]).forEach(m => { const t=tarefas.find(x=>String(x.id)===String(m.tarefa_id)); if(t) t.micros.push({ id:Number(m.id), desc:m.descricao||'', responsavel:m.responsavel||'', prazo:m.prazo||'', status:m.status||'', prio:m.prio||'' }); });
       nextId = Math.max(100, ...tarefas.map(t=>Number(t.id)||0)+1);
       nextMicroId = Math.max(200, ...tarefas.flatMap(t=>t.micros).map(m=>Number(m.id)||0), 199)+1;
@@ -331,7 +331,7 @@ async function receberNuvem() {
     const { data: cloudTasks } = await sb.from('tarefas').select('*').order('id');
     const { data: cloudMicros } = await sb.from('micro_acoes').select('*').order('id');
     if (!cloudTasks) return;
-    tarefas = cloudTasks.map(t => ({ id:Number(t.id), mes:t.mes||'', assunto:t.assunto||'', atividade:t.atividade||'', solicitante:t.solicitante||'', responsavel:t.responsavel||'', onde:t.onde||'', status:t.status||'', micros:[] }));
+    tarefas = cloudTasks.map(t => ({ id:Number(t.id), mes:t.mes||'', assunto:t.assunto||'', atividade:t.atividade||'', solicitante:t.solicitante||'', responsavel:t.responsavel||'', onde:t.onde||'', prioridade:t.prioridade||'', status:t.status||'', micros:[] }));
     (cloudMicros||[]).forEach(m => { const t=tarefas.find(x=>String(x.id)===String(m.tarefa_id)); if(t) t.micros.push({id:Number(m.id),desc:m.descricao||'',responsavel:m.responsavel||'',prazo:m.prazo||'',status:m.status||'',prio:m.prio||''}); });
     localStorage.setItem('tarefas', JSON.stringify(tarefas));
     render();

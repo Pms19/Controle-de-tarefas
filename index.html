@@ -413,6 +413,49 @@ document.getElementById('ovTarefa').addEventListener('click',e=>{if(e.target===e
 document.getElementById('ovMicro').addEventListener('click',e=>{if(e.target===e.currentTarget)fecharModalMicro();});
 
 carregarDados().then(() => { render(); iniciarSincronizacaoTempoReal(); });
+
+/* ===== EDIÇÃO DE TAREFAS ===== */
+let tarefaEditando = null;
+function abrirModalEditarTarefa(id) {
+  const t = tarefas.find(x => Number(x.id) === Number(id));
+  if (!t) return;
+  tarefaEditando = Number(id);
+  document.querySelector('#ovTarefa h2').textContent = 'Editar tarefa';
+  document.getElementById('fMes').value = t.mes || '';
+  document.getElementById('fAssunto').value = t.assunto || '';
+  document.getElementById('fAtividade').value = t.atividade || '';
+  document.getElementById('fResp').value = t.responsavel || '';
+  document.getElementById('fStatus').value = t.status || '';
+  document.getElementById('fOnde').value = t.onde || '';
+  document.getElementById('errAt').style.display = 'none';
+  document.getElementById('ovTarefa').classList.add('open');
+}
+const _fecharModalTarefaOriginal = fecharModalTarefa;
+fecharModalTarefa = function() {
+  tarefaEditando = null;
+  document.querySelector('#ovTarefa h2').textContent = 'Nova tarefa';
+  _fecharModalTarefaOriginal();
+};
+const _salvarTarefaOriginal = salvarTarefa;
+salvarTarefa = async function() {
+  if (tarefaEditando !== null) {
+    const atividade = document.getElementById('fAtividade').value.trim();
+    if (!atividade) { document.getElementById('errAt').style.display = 'block'; return; }
+    const t = tarefas.find(x => Number(x.id) === Number(tarefaEditando));
+    if (!t) return;
+    t.mes = document.getElementById('fMes').value;
+    t.assunto = document.getElementById('fAssunto').value.trim();
+    t.atividade = atividade;
+    t.responsavel = document.getElementById('fResp').value.trim();
+    t.status = document.getElementById('fStatus').value;
+    t.onde = document.getElementById('fOnde').value.trim();
+    fecharModalTarefa();
+    render();
+    await salvarDados();
+    return;
+  }
+  await _salvarTarefaOriginal();
+};
 </script>
 </body>
 </html>

@@ -203,7 +203,7 @@ const SUPABASE_URL = 'https://fcvemrvdivwcpwybcjvv.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_ZzUOm6wCN1sr34E24Y_g9g_VTRhU1jJ';
 const SYNC_ENABLED = SUPABASE_URL.startsWith('https://') && !SUPABASE_URL.includes('COLE_AQUI') && !SUPABASE_ANON_KEY.includes('COLE_AQUI');
 const DEVICE_ID = localStorage.getItem('ct_device_id') || (() => { const id = crypto.randomUUID(); localStorage.setItem('ct_device_id', id); return id; })();
-let sb = null, syncChannel = null, syncBusy = false;
+let sb = null, syncChannel = null, syncBusy = false, syncPending = false;
 
 if (SYNC_ENABLED && window.supabase) {
   sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
@@ -263,7 +263,8 @@ async function salvarDados() {
 }
 
 async function sincronizarTudo() {
-  if (!sb || syncBusy) return;
+  if (!sb) return;
+  if (syncBusy) { syncPending = true; return; }
   syncBusy = true;
   try {
     const rows = tarefas.map(t => ({
@@ -285,8 +286,12 @@ async function sincronizarTudo() {
       if (microErr) throw microErr;
     }
   } catch(e) {
-    console.warn('Sincronização pendente:', e.message || e);
-  } finally { syncBusy = false; }
+    console.error('Falha ao salvar no Supabase:', e);
+    throw e;
+  } finally {
+    syncBusy = false;
+    if (syncPending) { syncPending = false; setTimeout(() => sincronizarTudo(), 0); }
+  }
 }
 
 async function carregarDados() {
@@ -490,9 +495,14 @@ salvarTarefa = async function() {
     t.responsavel = document.getElementById('fResp').value.trim();
     t.status = document.getElementById('fStatus').value;
     t.onde = document.getElementById('fOnde').value.trim();
+    try {
+      await salvarDados();
+    } catch(e) {
+      alert('Não foi possível salvar a alteração no banco. A cópia local foi mantida. Tente novamente.');
+      return;
+    }
     fecharModalTarefa();
     render();
-    await salvarDados();
     return;
   }
   await _salvarTarefaOriginal();

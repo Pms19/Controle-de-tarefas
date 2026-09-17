@@ -403,7 +403,7 @@ function render() {
         <td>${m.responsavel||'—'}</td>
         <td>${prazoLabel(m.prazo)}</td>
         <td><span class="micro-badge ${mbc(m.status)}">${m.status||'—'}</span></td>
-        <td style="display:flex;align-items:center;justify-content:space-between">${prioLabel(m.prio)}<button class="btn-icon" style="font-size:13px" onclick="excluirMicro(${t.id},${m.id})" title="Excluir micro ação"><i class="ti ti-x"></i></button></td>
+        <td style="display:flex;align-items:center;justify-content:space-between">${prioLabel(m.prio)}<span style="display:inline-flex;gap:2px"><button class="btn-icon" style="font-size:13px" onclick="abrirModalMicro(${t.id},${m.id})" title="Editar micro ação"><i class="ti ti-pencil"></i></button><button class="btn-icon" style="font-size:13px" onclick="excluirMicro(${t.id},${m.id})" title="Excluir micro ação"><i class="ti ti-trash"></i></button></span></td>
       </tr>`).join('') : '<tr><td colspan="5" style="color:#aaa;font-style:italic">Nenhuma micro ação ainda</td></tr>';
 
       const microBlock = `<tr class="micro-row"><td colspan="9"><div class="micro-content">
@@ -437,7 +437,16 @@ function render() {
 function toggleMes(k){ collapsedMes[k]=collapsedMes[k]!==true; render(); }
 function toggleTarefa(id){ expandedTarefa[id]=expandedTarefa[id]!==true; render(); }
 async function excluirTarefa(id){ if(!confirm('Excluir esta tarefa e suas micro ações?')) return; tarefas=tarefas.filter(t=>t.id!==id); salvarDados(); if(sb){ await sb.from('micro_acoes').delete().eq('tarefa_id',String(id)); await sb.from('tarefas').delete().eq('id',String(id)); } render(); }
-async function excluirMicro(tid,mid){ const t=tarefas.find(t=>t.id===tid); if(t){ t.micros=t.micros.filter(m=>m.id!==mid); salvarDados(); if(sb) await sb.from('micro_acoes').delete().eq('id',String(mid)); render(); } }
+async function excluirMicro(tid,mid){
+  const t=tarefas.find(t=>t.id===tid); if(!t) return;
+  if(!confirm('Excluir esta micro ação?')) return;
+  const antiga=t.micros.slice();
+  try {
+    if(sb){ const {error}=await sb.from('micro_acoes').delete().eq('id',String(mid)); if(error) throw error; }
+    t.micros=t.micros.filter(m=>Number(m.id)!==Number(mid));
+    localStorage.setItem('tarefas',JSON.stringify(tarefas)); render();
+  } catch(e) { t.micros=antiga; alert('Não foi possível excluir a micro ação do banco.\n\nErro: '+(e.message||'erro desconhecido')); }
+}
 
 function abrirModalTarefa(){ document.getElementById('fMes').value=mesAtual; document.getElementById('ovTarefa').classList.add('open'); }
 function fecharModalTarefa(){ document.getElementById('ovTarefa').classList.remove('open'); ['fAssunto','fAtividade','fSolicitante','fResp','fOnde'].forEach(id=>document.getElementById(id).value=''); document.getElementById('fStatus').value=''; document.getElementById('fPrio').value=''; document.getElementById('fPeriodicidade').value='Pontual'; document.getElementById('errAt').style.display='none'; }
@@ -514,14 +523,29 @@ async function salvarTarefa(){
   fecharModalTarefa(); render();
 }
 
-function abrirModalMicro(tid){ microAlvo=tid; const t=tarefas.find(t=>t.id===tid); document.getElementById('microTitulo').textContent='Nova micro ação — '+(t?t.atividade.substring(0,45)+(t.atividade.length>45?'…':''):''); document.getElementById('ovMicro').classList.add('open'); expandedTarefa[tid]=true; }
-function fecharModalMicro(){ document.getElementById('ovMicro').classList.remove('open'); ['mDesc','mResp','mPrazo'].forEach(id=>document.getElementById(id).value=''); document.getElementById('mStatus').value=''; document.getElementById('mPrio').value=''; document.getElementById('errMicro').style.display='none'; microAlvo=null; }
+let microEditando = null;
+function abrirModalMicro(tid, mid=null){
+  microAlvo=tid; microEditando=mid!==null ? Number(mid) : null;
+  const t=tarefas.find(t=>t.id===tid);
+  const m=microEditando!==null && t ? t.micros.find(x=>Number(x.id)===microEditando) : null;
+  document.getElementById('microTitulo').textContent=(m?'Editar micro ação':'Nova micro ação')+' — '+(t?t.atividade.substring(0,45)+(t.atividade.length>45?'…':''):'');
+  document.getElementById('mDesc').value=m?.desc||'';
+  document.getElementById('mResp').value=m?.responsavel||'';
+  document.getElementById('mPrazo').value=m?.prazo||'';
+  document.getElementById('mStatus').value=m?.status||'';
+  document.getElementById('mPrio').value=m?.prio||'';
+  document.getElementById('errMicro').style.display='none';
+  document.getElementById('ovMicro').classList.add('open'); expandedTarefa[tid]=true;
+}
+function fecharModalMicro(){ document.getElementById('ovMicro').classList.remove('open'); ['mDesc','mResp','mPrazo'].forEach(id=>document.getElementById(id).value=''); document.getElementById('mStatus').value=''; document.getElementById('mPrio').value=''; document.getElementById('errMicro').style.display='none'; microAlvo=null; microEditando=null; }
 async function salvarMicro(){
   const desc=document.getElementById('mDesc').value.trim();
   if(!desc){document.getElementById('errMicro').style.display='block';document.getElementById('mDesc').focus();return;}
   document.getElementById('errMicro').style.display='none';
-  const t=tarefas.find(t=>t.id===microAlvo);
-  if(t){ t.micros.push({id:nextMicroId++,desc,responsavel:document.getElementById('mResp').value.trim(),prazo:document.getElementById('mPrazo').value,status:document.getElementById('mStatus').value,prio:document.getElementById('mPrio').value}); }
+  const t=tarefas.find(t=>t.id===microAlvo); if(!t) return;
+  const dados={desc,responsavel:document.getElementById('mResp').value.trim(),prazo:document.getElementById('mPrazo').value,status:document.getElementById('mStatus').value,prio:document.getElementById('mPrio').value};
+  if(microEditando!==null){ const m=t.micros.find(x=>Number(x.id)===microEditando); if(m) Object.assign(m,dados); }
+  else t.micros.push({id:nextMicroId++,...dados});
   try { await salvarDados(); } catch(e) { alert('Não foi possível salvar a micro ação no banco. Verifique sua conexão e tente novamente.'); console.error(e); return; }
   fecharModalMicro(); render();
 }

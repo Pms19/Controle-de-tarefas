@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   patch:
-    if: !startsWith(github.event.head_commit.message, 'Automated micro actions patch')
+    if: "!startsWith(github.event.head_commit.message, 'Automated micro actions patch')"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -20,7 +20,6 @@ jobs:
           from pathlib import Path
           p = Path('index.html')
           s = p.read_text(encoding='utf-8')
-
           old = """function abrirModalMicro(tid){ microAlvo=tid; const t=tarefas.find(t=>t.id===tid); document.getElementById('microTitulo').textContent='Nova micro ação — '+(t?t.atividade.substring(0,45)+(t.atividade.length>45?'…':''):''); document.getElementById('ovMicro').classList.add('open'); expandedTarefa[tid]=true; }
           function fecharModalMicro(){ document.getElementById('ovMicro').classList.remove('open'); ['mDesc','mResp','mPrazo'].forEach(id=>document.getElementById(id).value=''); document.getElementById('mStatus').value=''; document.getElementById('mPrio').value=''; document.getElementById('errMicro').style.display='none'; microAlvo=null; }
           async function salvarMicro(){
@@ -65,16 +64,12 @@ jobs:
             fecharModalMicro(); render();
           }
 """
-          if old not in s:
-              raise SystemExit('Bloco de micro ações não encontrado')
+          if old not in s: raise SystemExit('Bloco de micro ações não encontrado')
           s = s.replace(old, new, 1)
-
           old_row = """<td style=\"display:flex;align-items:center;justify-content:space-between\">${prioLabel(m.prio)}<button class=\"btn-icon\" style=\"font-size:13px\" onclick=\"excluirMicro(${t.id},${m.id})\" title=\"Excluir micro ação\"><i class=\"ti ti-x\"></i></button></td>"""
           new_row = """<td style=\"display:flex;align-items:center;justify-content:space-between\">${prioLabel(m.prio)}<span style=\"display:inline-flex;gap:2px\"><button class=\"btn-icon\" style=\"font-size:13px\" onclick=\"abrirModalMicro(${t.id},${m.id})\" title=\"Editar micro ação\"><i class=\"ti ti-pencil\"></i></button><button class=\"btn-icon\" style=\"font-size:13px\" onclick=\"excluirMicro(${t.id},${m.id})\" title=\"Excluir micro ação\"><i class=\"ti ti-trash\"></i></button></span></td>"""
-          if old_row not in s:
-              raise SystemExit('Linha de ações da micro ação não encontrada')
+          if old_row not in s: raise SystemExit('Linha de ações da micro ação não encontrada')
           s = s.replace(old_row, new_row, 1)
-
           old_del = """async function excluirMicro(tid,mid){ const t=tarefas.find(t=>t.id===tid); if(t){ t.micros=t.micros.filter(m=>m.id!==mid); salvarDados(); if(sb) await sb.from('micro_acoes').delete().eq('id',String(mid)); render(); } }"""
           new_del = """async function excluirMicro(tid,mid){
             const t=tarefas.find(t=>t.id===tid); if(!t) return;
@@ -90,10 +85,8 @@ jobs:
               alert('Não foi possível excluir a micro ação do banco.\\n\\nErro: '+(e.message||'erro desconhecido'));
             }
           }"""
-          if old_del not in s:
-              raise SystemExit('Função de exclusão não encontrada')
+          if old_del not in s: raise SystemExit('Função de exclusão não encontrada')
           s = s.replace(old_del, new_del, 1)
-
           p.write_text(s, encoding='utf-8')
           PY
       - name: Commit patch

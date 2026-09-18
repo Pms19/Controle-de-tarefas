@@ -427,7 +427,13 @@ function render() {
   if (!keys.length) { div.innerHTML='<div class="empty-state">Nenhuma tarefa encontrada.</div>'; return; }
 
   div.innerHTML = keys.map(k => {
-    const itens = grupos[k];
+    const itens = grupos[k].slice().sort((a,b) => {
+      const ordemStatus = {'Pendente':1,'Aguardando':2,'Concluído':3,'':4};
+      const ordemPrio = {'Alta':1,'Média':2,'Baixa':3,'':4};
+      const s = (ordemStatus[a.status]||4) - (ordemStatus[b.status]||4);
+      if (s !== 0) return s;
+      return (ordemPrio[a.prioridade]||4) - (ordemPrio[b.prioridade]||4);
+    });
     const label = k==='__sem__'?'Sem mês definido':mesLabel(k);
     const isOpen = collapsedMes[k] !== true;
     const cnt = {Pendente:0,Aguardando:0,'Concluído':0,'':0};

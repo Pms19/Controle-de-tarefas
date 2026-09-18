@@ -143,6 +143,13 @@ th:nth-child(9),td:nth-child(9){width:14%}
   </div>
   <div class="toolbar">
     <input type="text" id="busca" placeholder="Buscar por atividade ou responsável…" oninput="render()">
+    <select id="filtroStatus" onchange="render()" title="Filtrar por status" style="height:36px;padding:0 10px;border:0.5px solid #c8c8c4;border-radius:8px;background:#fff;color:#1a1a18;font-size:14px;font-family:inherit;outline:none;min-width:170px;cursor:pointer">
+      <option value="">Todos os status</option>
+      <option value="Pendente">Pendente</option>
+      <option value="Aguardando">Aguardando</option>
+      <option value="Concluído">Concluído</option>
+      <option value="__sem_status__">Sem status</option>
+    </select>
     <button class="btn-primary" onclick="abrirModalTarefa()"><i class="ti ti-plus"></i> Nova tarefa</button>
   </div>
   <div id="conteudo"></div>
@@ -354,8 +361,10 @@ async function receberNuvem() {
 
 function render() {
   const busca = document.getElementById('busca').value.toLowerCase();
+  const filtroStatus = document.getElementById('filtroStatus')?.value || '';
   let lista = tarefas;
   if (busca) lista = lista.filter(t => t.atividade.toLowerCase().includes(busca) || t.solicitante.toLowerCase().includes(busca) || t.responsavel.toLowerCase().includes(busca) || t.micros.some(m => m.desc.toLowerCase().includes(busca) || m.responsavel.toLowerCase().includes(busca)));
+  if (filtroStatus) lista = lista.filter(t => filtroStatus === '__sem_status__' ? !t.status : t.status === filtroStatus);
 
   const grupos = {};
   lista.forEach(t => { const k=t.mes||'__sem__'; if(!grupos[k]) grupos[k]=[]; grupos[k].push(t); });

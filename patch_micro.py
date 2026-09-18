@@ -60,35 +60,5 @@ new_del="""async function excluirMicro(tid,mid){
 if old_del not in s: raise SystemExit('delete function not found')
 s=s.replace(old_del,new_del,1)
 
-old_toolbar="""  <div class="toolbar">
-    <input type="text" id="busca" placeholder="Buscar por atividade ou responsável…" oninput="render()">
-    <button class="btn-primary" onclick="abrirModalTarefa()"><i class="ti ti-plus"></i> Nova tarefa</button>
-  </div>"""
-new_toolbar="""  <div class="toolbar">
-    <input type="text" id="busca" placeholder="Buscar por atividade ou responsável…" oninput="render()">
-    <select id="filtroStatus" onchange="render()" title="Filtrar por status" style="height:36px;padding:0 10px;border:0.5px solid #c8c8c4;border-radius:8px;background:#fff;color:#1a1a18;font-size:14px;font-family:inherit;outline:none;min-width:170px;cursor:pointer">
-      <option value="">Todos os status</option>
-      <option value="Pendente">Pendente</option>
-      <option value="Aguardando">Aguardando</option>
-      <option value="Concluído">Concluído</option>
-      <option value="__sem_status__">Sem status</option>
-    </select>
-    <button class="btn-primary" onclick="abrirModalTarefa()"><i class="ti ti-plus"></i> Nova tarefa</button>
-  </div>"""
-if old_toolbar not in s: raise SystemExit('toolbar patch source not found')
-s=s.replace(old_toolbar,new_toolbar,1)
-
-old_render="""function render() {
-  const busca = document.getElementById('busca').value.toLowerCase();
-  let lista = tarefas;
-  if (busca) lista = lista.filter(t => t.atividade.toLowerCase().includes(busca) || t.solicitante.toLowerCase().includes(busca) || t.responsavel.toLowerCase().includes(busca) || t.micros.some(m => m.desc.toLowerCase().includes(busca) || m.responsavel.toLowerCase().includes(busca)));"""
-new_render="""function render() {
-  const busca = document.getElementById('busca').value.toLowerCase();
-  const filtroStatus = document.getElementById('filtroStatus')?.value || '';
-  let lista = tarefas;
-  if (busca) lista = lista.filter(t => t.atividade.toLowerCase().includes(busca) || t.solicitante.toLowerCase().includes(busca) || t.responsavel.toLowerCase().includes(busca) || t.micros.some(m => m.desc.toLowerCase().includes(busca) || m.responsavel.toLowerCase().includes(busca)));
-  if (filtroStatus) lista = lista.filter(t => filtroStatus === '__sem_status__' ? !t.status : t.status === filtroStatus);"""
-if old_render not in s: raise SystemExit('render patch source not found')
-s=s.replace(old_render,new_render,1)
 
 p.write_text(s,encoding='utf-8')

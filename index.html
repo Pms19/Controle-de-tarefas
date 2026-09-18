@@ -19,10 +19,12 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .btn-primary { display: flex; align-items: center; gap: 6px; padding: 0 14px; height: 36px; font-size: 14px; font-weight: 500; white-space: nowrap; cursor: pointer; background: #1a1a18; color: #fff; border: none; border-radius: 8px; }
 .btn-primary:hover { opacity: 0.85; }
 
-.mes-tabs { display:flex; gap:6px; overflow-x:auto; margin-bottom:1.25rem; padding-bottom:3px; -webkit-overflow-scrolling:touch; }
-.mes-tab { flex:0 0 auto; height:34px; padding:0 13px; border:0.5px solid #d3d1c7; border-radius:8px; background:#fff; color:#6b6b68; font-size:13px; font-family:inherit; cursor:pointer; white-space:nowrap; }
+.mes-filtro { display:flex; align-items:center; gap:8px; margin-bottom:1.25rem; padding:10px 12px; border:0.5px solid #e0deda; border-radius:10px; background:#fff; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+.mes-filtro-label { font-size:12px; font-weight:500; color:#6b6b68; white-space:nowrap; margin-right:2px; }
+.mes-tab { flex:0 0 auto; height:32px; padding:0 11px; border:0.5px solid #d3d1c7; border-radius:8px; background:#f8f8f6; color:#6b6b68; font-size:12px; font-family:inherit; cursor:pointer; white-space:nowrap; }
 .mes-tab:hover { background:#f1efea; color:#1a1a18; }
 .mes-tab.active { background:#1a1a18; color:#fff; border-color:#1a1a18; }
+.mes-selecionados { font-size:11px; color:#aaa; white-space:nowrap; margin-left:auto; }
 
 .mes-bloco { margin-bottom: 2rem; }
 .mes-header { display: flex; align-items: center; gap: 12px; margin-bottom: 0.75rem; cursor: pointer; user-select: none; padding: 4px 0; }
@@ -115,6 +117,9 @@ th:nth-child(9),td:nth-child(9){width:14%}
   .header { margin-bottom:1rem; }
   .header h1 { font-size:20px; }
   .header p { font-size:13px; line-height:1.4; }
+  .mes-filtro { width:100%; margin-bottom:1rem; border-radius:8px; padding:8px; }
+  .mes-filtro-label { font-size:11px; }
+  .mes-selecionados { margin-left:4px; }
   .toolbar { width:100%; gap:8px; margin-bottom:1rem; }
   .toolbar input[type="text"] { width:100%; min-width:0; flex:1 1 100%; height:40px; }
   .btn-primary { width:100%; height:40px; justify-content:center; }
@@ -256,7 +261,7 @@ let tarefas = [
   ]},
 ];
 let nextId = 100, nextMicroId = 200;
-let collapsedMes = {}, expandedTarefa = {}, microAlvo = null, abaMesSelecionada = 'todos';
+let collapsedMes = {}, expandedTarefa = {}, microAlvo = null, mesesSelecionados = new Set();
 
 function bc(s){ return s==='Pendente'?'b-p':s==='Aguardando'?'b-a':s==='Concluído'?'b-c':'b-s'; }
 function mbc(s){ return s==='Pendente'?'mb-p':s==='Aguardando'?'mb-a':s==='Concluído'?'mb-c':'mb-s'; }
@@ -366,27 +371,38 @@ async function receberNuvem() {
 }
 
 function renderAbasMes(lista) {
-  const mensais = lista.filter(t => t.periodicidade === 'Mensal' && t.mes);
-  const meses = [...new Set(mensais.map(t => t.mes))].sort((a,b) => a.localeCompare(b));
+  const meses = [...new Set(lista.map(t => t.mes).filter(Boolean))].sort((a,b) => a.localeCompare(b));
   const div = document.getElementById('abasMes');
   if (!div) return;
 
+  mesesSelecionados = new Set([...mesesSelecionados].filter(m => meses.includes(m)));
+
   if (!meses.length) {
-    abaMesSelecionada = 'todos';
+    mesesSelecionados.clear();
     div.innerHTML = '';
     return;
   }
 
-  if (abaMesSelecionada !== 'todos' && !meses.includes(abaMesSelecionada)) {
-    abaMesSelecionada = 'todos';
-  }
+  const todosAtivo = mesesSelecionados.size === 0;
+  const botoes = meses.map(m =>
+    '<button class="mes-tab '+(mesesSelecionados.has(m)?'active':'')+'" onclick="alternarMes(\''+m+'\')">'+mesLabel(m)+'</button>'
+  ).join('');
 
-  div.innerHTML = '<button class="mes-tab '+(abaMesSelecionada==='todos'?'active':'')+'" onclick="selecionarAbaMes(\'todos\')">Todas</button>' +
-    meses.map(m => '<button class="mes-tab '+(abaMesSelecionada===m?'active':'')+'" onclick="selecionarAbaMes(\''+m+'\')">'+mesLabel(m)+'</button>').join('');
+  div.innerHTML =
+    '<span class="mes-filtro-label">Visualizar meses:</span>' +
+    '<button class="mes-tab '+(todosAtivo?'active':'')+'" onclick="limparFiltroMes()">Todos</button>' +
+    botoes +
+    '<span class="mes-selecionados">'+(todosAtivo?'Todos os meses':mesesSelecionados.size+' mês(es) selecionado(s)')+'</span>';
 }
 
-function selecionarAbaMes(mes) {
-  abaMesSelecionada = mes;
+function alternarMes(mes) {
+  if (mesesSelecionados.has(mes)) mesesSelecionados.delete(mes);
+  else mesesSelecionados.add(mes);
+  render();
+}
+
+function limparFiltroMes() {
+  mesesSelecionados.clear();
   render();
 }
 
@@ -399,8 +415,8 @@ function render() {
 
   renderAbasMes(lista);
 
-  if (abaMesSelecionada !== 'todos') {
-    lista = lista.filter(t => t.mes === abaMesSelecionada);
+  if (mesesSelecionados.size > 0) {
+    lista = lista.filter(t => mesesSelecionados.has(t.mes));
   }
 
   const grupos = {};

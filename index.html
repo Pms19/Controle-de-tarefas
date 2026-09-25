@@ -97,6 +97,8 @@ th:nth-child(9),td:nth-child(9){width:14%}
 .b-s{background:#f1efea;color:#6b6b68;border:0.5px solid #d3d1c7;}
 .tag { display:inline-block; font-size:11px; padding:2px 8px; border-radius:20px; font-weight:500; background:#f1efea; color:#6b6b68; border:0.5px solid #d3d1c7; }
 .obs { font-size:12px; color:#6b6b68; }
+.demanda-desc { margin-top:5px; font-size:11px; line-height:1.4; color:#77756f; white-space:pre-line; }
+.demanda-desc::before { content:'Descrição: '; font-weight:600; color:#9a9892; }
 
 .btn-icon { background:none; border:none; cursor:pointer; color:#aaa; font-size:15px; padding:3px 5px; border-radius:4px; line-height:1; }
 .btn-icon:hover { color:#c0392b; background:#fdf0f0; }
@@ -309,7 +311,8 @@ th:nth-child(9),td:nth-child(9){width:14%}
   <option value="Questionários">Questionários</option>
   <option value="Mapeamento de processos">Mapeamento de processos</option>
 </select></div>
-      <div class="field full"><label>Atividade <span style="color:#c0392b">*</span></label><input type="text" id="fAtividade" placeholder="Descreva a atividade"><div class="err" id="errAt">Informe a atividade</div></div>
+      <div class="field full"><label>Atividade <span style="color:#c0392b">*</span></label><input type="text" id="fAtividade" placeholder="Título/resumo da atividade"><div class="err" id="errAt">Informe a atividade</div></div>
+      <div class="field full"><label>Descrição da demanda</label><textarea id="fDescricao" placeholder="Descreva o contexto, objetivo, solicitação ou detalhes necessários para executar a atividade."></textarea></div>
       <div class="field"><label>Solicitante</label><input type="text" id="fSolicitante" placeholder="Quem solicitou a demanda"></div>
       <div class="field"><label>Onde parou / Observações</label><textarea id="fOnde" placeholder="Ponto de parada ou observações"></textarea></div>
       <div class="field"><label>Responsável</label><input type="text" id="fResp" placeholder="Nome"></div>
@@ -424,7 +427,7 @@ async function sincronizarTudo() {
   syncBusy = true;
   try {
     const rows = tarefas.map(t => ({
-      id: String(t.id), mes:t.mes||null, assunto:t.assunto||'', atividade:t.atividade,
+      id: String(t.id), mes:t.mes||null, assunto:t.assunto||'', atividade:t.atividade, descricao:t.descricao||'',
       solicitante:t.solicitante||'', onde:t.onde||'', responsavel:t.responsavel||'', prioridade:t.prioridade||'', status:t.status||'', periodicidade:t.periodicidade||'Pontual', recorrencia_grupo:t.recorrencia_grupo||null, data_ocorrencia:t.data_ocorrencia||null,
       updated_at:new Date().toISOString()
     }));
@@ -464,7 +467,7 @@ async function carregarDados() {
     if (microErr) throw microErr;
 
     if (cloudTasks && cloudTasks.length) {
-      tarefas = cloudTasks.map(t => ({ id:Number(t.id), mes:t.mes||'', assunto:t.assunto||'', atividade:t.atividade||'', solicitante:t.solicitante||'', responsavel:t.responsavel||'', onde:t.onde||'', prioridade:t.prioridade||'', status:t.status||'', periodicidade:t.periodicidade||'Pontual', recorrencia_grupo:t.recorrencia_grupo||null, data_ocorrencia:t.data_ocorrencia||null, micros:[] }));
+      tarefas = cloudTasks.map(t => ({ id:Number(t.id), mes:t.mes||'', assunto:t.assunto||'', atividade:t.atividade||'', descricao:t.descricao||'', solicitante:t.solicitante||'', responsavel:t.responsavel||'', onde:t.onde||'', prioridade:t.prioridade||'', status:t.status||'', periodicidade:t.periodicidade||'Pontual', recorrencia_grupo:t.recorrencia_grupo||null, data_ocorrencia:t.data_ocorrencia||null, micros:[] }));
       (cloudMicros||[]).forEach(m => { const t=tarefas.find(x=>String(x.id)===String(m.tarefa_id)); if(t) t.micros.push({ id:Number(m.id), desc:m.descricao||'', responsavel:m.responsavel||'', prazo:m.prazo||'', status:m.status||'', prio:m.prio||'' }); });
       nextId = Math.max(100, ...tarefas.map(t=>Number(t.id)||0)+1);
       nextMicroId = Math.max(200, ...tarefas.flatMap(t=>t.micros).map(m=>Number(m.id)||0), 199)+1;
@@ -492,7 +495,7 @@ async function receberNuvem() {
     const { data: cloudTasks } = await sb.from('tarefas').select('*').order('id');
     const { data: cloudMicros } = await sb.from('micro_acoes').select('*').order('id');
     if (!cloudTasks) return;
-    tarefas = cloudTasks.map(t => ({ id:Number(t.id), mes:t.mes||'', assunto:t.assunto||'', atividade:t.atividade||'', solicitante:t.solicitante||'', responsavel:t.responsavel||'', onde:t.onde||'', prioridade:t.prioridade||'', status:t.status||'', micros:[] }));
+    tarefas = cloudTasks.map(t => ({ id:Number(t.id), mes:t.mes||'', assunto:t.assunto||'', atividade:t.atividade||'', descricao:t.descricao||'', solicitante:t.solicitante||'', responsavel:t.responsavel||'', onde:t.onde||'', prioridade:t.prioridade||'', status:t.status||'', micros:[] }));
     (cloudMicros||[]).forEach(m => { const t=tarefas.find(x=>String(x.id)===String(m.tarefa_id)); if(t) t.micros.push({id:Number(m.id),desc:m.descricao||'',responsavel:m.responsavel||'',prazo:m.prazo||'',status:m.status||'',prio:m.prio||''}); });
     localStorage.setItem('tarefas', JSON.stringify(tarefas));
     render();
@@ -627,7 +630,7 @@ function render() {
   atualizarDashboard();
   atualizarContadoresPainel();
   if (painelSelecionado !== 'todos') lista = lista.filter(t => (t.assunto||'') === painelSelecionado);
-  if (busca) lista = lista.filter(t => t.atividade.toLowerCase().includes(busca) || t.solicitante.toLowerCase().includes(busca) || t.responsavel.toLowerCase().includes(busca) || t.micros.some(m => m.desc.toLowerCase().includes(busca) || m.responsavel.toLowerCase().includes(busca)));
+  if (busca) lista = lista.filter(t => t.atividade.toLowerCase().includes(busca) || (t.descricao||'').toLowerCase().includes(busca) || t.solicitante.toLowerCase().includes(busca) || t.responsavel.toLowerCase().includes(busca) || t.micros.some(m => m.desc.toLowerCase().includes(busca) || m.responsavel.toLowerCase().includes(busca)));
   if (filtroStatus) lista = lista.filter(t => filtroStatus === '__sem_status__' ? !t.status : t.status === filtroStatus);
 
   if (window.filtroSomenteAtrasadas) {
@@ -672,7 +675,7 @@ function render() {
       const tarefaRow = `<tr class="tarefa-row" data-id="${t.id}">
         <td><div class="td-inner"><button class="btn-expand ${exp?'open':''}" onclick="toggleTarefa(${t.id})" aria-label="Expandir micro ações"><i class="ti ti-chevron-right"></i></button></div></td>
         <td><div class="td-inner"><span class="tag">${t.assunto||'—'}</span></div></td>
-        <td><div class="td-inner">${t.atividade}${mc?` <span style="font-size:11px;color:#aaa;margin-left:4px">(${mc} micro${mc>1?'ações':'ação'})</span>`:''}</div></td>
+        <td><div class="td-inner"><div>${t.atividade}${mc?` <span style="font-size:11px;color:#aaa;margin-left:4px">(${mc} micro${mc>1?'ações':'ação'})</span>`:''}</div>${t.descricao?`<div class="demanda-desc">${t.descricao}</div>`:''}</div></td>
         <td><div class="td-inner">${t.solicitante||'—'}</div></td>
         <td><div class="td-inner obs">${t.onde||'—'}</div></td>
         <td><div class="td-inner">${t.responsavel||'—'}</div></td>
@@ -738,7 +741,7 @@ async function excluirMicro(tid,mid){
 }
 
 function abrirModalTarefa(){ document.getElementById('fMes').value=mesAtual; document.getElementById('ovTarefa').classList.add('open'); }
-function fecharModalTarefa(){ document.getElementById('ovTarefa').classList.remove('open'); ['fAssunto','fAtividade','fSolicitante','fResp','fOnde'].forEach(id=>document.getElementById(id).value=''); document.getElementById('fStatus').value=''; document.getElementById('fPrio').value=''; document.getElementById('fPeriodicidade').value='Pontual'; document.getElementById('errAt').style.display='none'; }
+function fecharModalTarefa(){ document.getElementById('ovTarefa').classList.remove('open'); ['fAssunto','fAtividade','fDescricao','fSolicitante','fResp','fOnde'].forEach(id=>document.getElementById(id).value=''); document.getElementById('fStatus').value=''; document.getElementById('fPrio').value=''; document.getElementById('fPeriodicidade').value='Pontual'; document.getElementById('errAt').style.display='none'; }
 function gerarOcorrencias(periodicidade, mesInicial) {
   const out = [];
   const base = new Date();
@@ -776,6 +779,7 @@ async function salvarTarefa(){
   const base = {
     assunto:document.getElementById('fAssunto').value.trim(),
     atividade:at,
+    descricao:document.getElementById('fDescricao').value.trim(),
     solicitante:document.getElementById('fSolicitante').value.trim(),
     responsavel:document.getElementById('fResp').value.trim(),
     onde:document.getElementById('fOnde').value.trim(),
@@ -855,6 +859,7 @@ function abrirModalEditarTarefa(id) {
   document.getElementById('fPeriodicidade').value = t.periodicidade || 'Pontual';
   document.getElementById('fAssunto').value = t.assunto || '';
   document.getElementById('fAtividade').value = t.atividade || '';
+  document.getElementById('fDescricao').value = t.descricao || '';
   document.getElementById('fSolicitante').value = t.solicitante || '';
   document.getElementById('fPrio').value = t.prioridade || '';
   document.getElementById('fResp').value = t.responsavel || '';
@@ -879,6 +884,7 @@ salvarTarefa = async function() {
     t.mes = document.getElementById('fMes').value;
     t.assunto = document.getElementById('fAssunto').value.trim();
     t.atividade = atividade;
+    t.descricao = document.getElementById('fDescricao').value.trim();
     t.solicitante = document.getElementById('fSolicitante').value.trim();
     t.prioridade = document.getElementById('fPrio').value;
     t.responsavel = document.getElementById('fResp').value.trim();

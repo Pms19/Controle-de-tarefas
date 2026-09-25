@@ -194,6 +194,73 @@ th:nth-child(9),td:nth-child(9){width:14%}
   .mactions { position:sticky; bottom:0; background:#fff; padding-top:10px; }
 }
 
+
+/* ===== IDENTIDADE VISUAL 2.0 ===== */
+:root{
+  --brand:#0F4C6E;--brand-dark:#0A3A55;--brand-soft:#EAF3F8;--brand-mid:#CFE5F1;
+  --bg:#F5F8FA;--surface:#FFFFFF;--line:#DCE5EA;--text:#17324A;--muted:#6D7F8D;
+  --blue:#2F80ED;--amber:#F59E0B;--red:#DC3D4B;--green:#22A06B;
+}
+body{background:var(--bg);color:var(--text);}
+.app{max-width:1520px;padding:1.5rem 1.75rem 2.5rem;}
+.header{margin-bottom:1.15rem;}
+.header-top{padding:4px 2px 0;}
+.header-kicker{color:var(--brand);font-weight:700;letter-spacing:.08em;}
+.header h1{font-size:30px;font-weight:700;letter-spacing:-.025em;color:var(--brand-dark);}
+.header p{color:var(--muted);}
+.header-date strong{color:var(--brand-dark);font-weight:700;}
+.header-date span{color:var(--muted);}
+.dashboard-summary{gap:12px;margin-top:17px;}
+.summary-card{min-height:82px;padding:13px 15px;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:0 2px 7px rgba(15,76,110,.035);position:relative;overflow:hidden;}
+.summary-card:after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;background:var(--brand-mid);}
+.summary-icon{width:40px;height:40px;flex-basis:40px;border-radius:11px;background:var(--brand-soft);color:var(--brand);font-size:18px;}
+.summary-label{color:var(--muted);font-weight:500;}
+.summary-info strong{font-size:23px;font-weight:700;color:var(--brand-dark);}
+.summary-overdue .summary-icon{background:#FDEBED;color:var(--red);}
+.summary-overdue .summary-info strong{color:var(--red);}
+.summary-overdue:after{background:#F7A8B0;}
+.summary-done .summary-icon{background:#E7F7EF;color:var(--green);}
+.summary-done .summary-info strong{color:var(--green);}
+.summary-done:after{background:#8DDEB8;}
+.header-context{border:1px solid var(--line);background:#F9FBFC;color:var(--muted);}
+.toolbar{margin-bottom:12px;}
+.toolbar input[type="text"]{height:42px;padding:0 14px;border:1px solid var(--line);border-radius:10px;color:var(--text);box-shadow:0 1px 3px rgba(15,76,110,.025);}
+.toolbar input[type="text"]:focus{border-color:#8EBBD0;box-shadow:0 0 0 3px rgba(47,128,237,.09);}
+.btn-primary{height:42px;padding:0 16px;background:var(--brand);border-radius:10px;font-weight:650;box-shadow:0 3px 8px rgba(15,76,110,.14);}
+.app-layout{gap:16px;}
+.sidebar{width:224px;flex-basis:224px;background:#fff;border:1px solid var(--line);border-radius:13px;padding:10px;box-shadow:0 3px 12px rgba(15,76,110,.035);}
+.sidebar-title{color:#8193A0;font-weight:700;letter-spacing:.08em;}
+.sidebar-btn{color:#38566C;border-radius:9px;transition:.16s ease;}
+.sidebar-btn:hover{background:#F0F6FA;color:var(--brand-dark);}
+.sidebar-btn.active{background:var(--brand);color:#fff;box-shadow:0 3px 8px rgba(15,76,110,.13);}
+.sidebar-count{min-width:24px;height:24px;margin-left:auto;display:inline-flex;align-items:center;justify-content:center;border-radius:12px;background:#EEF3F6;color:#5D7382;opacity:1;}
+.sidebar-btn.active .sidebar-count{background:rgba(255,255,255,.18);color:#fff;}
+.mes-filtro{border:1px solid var(--line);border-radius:10px;box-shadow:0 1px 4px rgba(15,76,110,.025);}
+.mes-tab{border:1px solid var(--line);background:#fff;color:#536B7A;border-radius:9px;}
+.mes-tab:hover{background:#F0F6FA;color:var(--brand-dark);}
+.mes-tab.active{background:var(--brand);border-color:var(--brand);color:#fff;}
+.mes-titulo{color:var(--brand-dark);font-weight:650;}
+.pill-p,.b-p,.mb-p{background:#FFF3D8;color:#A15C00;}
+.pill-a,.b-a,.mb-a{background:#E5F1FF;color:#1769AA;}
+.pill-c,.b-c,.mb-c{background:#E4F7ED;color:#16734D;}
+.pill-s,.b-s,.mb-s{background:#EEF1F3;color:#61717C;border-color:#D7E0E5;}
+.table-wrap{border:1px solid var(--line);border-radius:12px;box-shadow:0 2px 8px rgba(15,76,110,.025);}
+thead tr{background:#F2F6F8;}
+th{color:#5E7280;border-bottom:1px solid var(--line);}
+td{border-bottom:1px solid #E7EDF0;}
+tr.tarefa-row:hover>td{background:#F7FBFD;}
+.tag{background:#EDF4F8;color:var(--brand);border-color:#D7E7EF;border-radius:14px;}
+.demanda-desc{color:#6D7F8D;}
+.btn-icon{color:#80919D;}
+.btn-icon:hover{color:var(--brand);background:#EDF5F9;}
+.btn-add-micro:hover{background:#F0F6FA;color:var(--brand-dark);}
+.modal{border:1px solid var(--line);box-shadow:0 18px 50px rgba(15,76,110,.18);}
+.btn-save{background:var(--brand);border-radius:9px;}
+.btn-save:hover{background:var(--brand-dark);opacity:1;}
+.btn-cancel:hover{background:#F0F6FA;}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:#8EBBD0;box-shadow:0 0 0 3px rgba(47,128,237,.09);}
+
+.sidebar-group-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#8A9AA5;padding:12px 10px 5px;}
 </style>
 </head>
 <body>
@@ -201,13 +268,13 @@ th:nth-child(9),td:nth-child(9){width:14%}
   <div class="header">
     <div class="header-top">
       <div>
-        <div class="header-kicker"><i class="ti ti-layout-dashboard"></i> Gestão de atividades</div>
+        <div class="header-kicker"><i class="ti ti-settings"></i> Gestão da Qualidade • SGI</div>
         <h1>Central de Tarefas</h1>
-        <p>Organize, acompanhe e conclua suas atividades.</p>
+        <p>Gestão da Qualidade • SGI · Organize, acompanhe e conclua suas atividades.</p>
       </div>
       <div class="header-date">
         <strong id="dataHoje">—</strong>
-        <span id="diaHoje">—</span>
+        <span id="diaHoje">Sexta-feira</span>
       </div>
     </div>
 
@@ -258,19 +325,21 @@ th:nth-child(9),td:nth-child(9){width:14%}
   </div>
   <div class="app-layout">
     <aside class="sidebar">
-      <div class="sidebar-title">Painéis</div>
-      <button class="sidebar-btn active" data-painel="todos" onclick="selecionarPainel('todos')"><i class="ti ti-layout-dashboard"></i> Todas <span class="sidebar-count" id="count-todos">0</span></button>
+      <div class="sidebar-title">Gestão</div>
+      <button class="sidebar-btn active" data-painel="todos" onclick="selecionarPainel('todos')"><i class="ti ti-layout-dashboard"></i> Todas as atividades <span class="sidebar-count" id="count-todos">0</span></button>
+      <div class="sidebar-group-label">Qualidade</div>
       <button class="sidebar-btn" data-painel="Documentos" onclick="selecionarPainel('Documentos')"><i class="ti ti-file-text"></i> Documentos <span class="sidebar-count" id="count-Documentos">0</span></button>
       <button class="sidebar-btn" data-painel="Gerenciamento de Mudanças" onclick="selecionarPainel('Gerenciamento de Mudanças')"><i class="ti ti-arrows-exchange"></i> Gerenciamento de Mudanças <span class="sidebar-count" id="count-Gerenciamento-de-Mudanças">0</span></button>
       <button class="sidebar-btn" data-painel="Não conformidades" onclick="selecionarPainel('Não conformidades')"><i class="ti ti-alert-circle"></i> Não Conformidades <span class="sidebar-count" id="count-Não-conformidades">0</span></button>
       <button class="sidebar-btn" data-painel="Auditoria" onclick="selecionarPainel('Auditoria')"><i class="ti ti-clipboard-check"></i> Auditoria <span class="sidebar-count" id="count-Auditoria">0</span></button>
       <button class="sidebar-btn" data-painel="Questionários" onclick="selecionarPainel('Questionários')"><i class="ti ti-list-check"></i> Questionários <span class="sidebar-count" id="count-Questionários">0</span></button>
       <button class="sidebar-btn" data-painel="Mapeamento de processos" onclick="selecionarPainel('Mapeamento de processos')"><i class="ti ti-sitemap"></i> Mapeamento de processos <span class="sidebar-count" id="count-Mapeamento-de-processos">0</span></button>
+      <div class="sidebar-group-label">Outros</div>
       <button class="sidebar-btn" data-painel="Outras atividades" onclick="selecionarPainel('Outras atividades')"><i class="ti ti-dots"></i> Outras atividades <span class="sidebar-count" id="count-Outras-atividades">0</span></button>
     </aside>
     <main class="main-panel">
       <div class="toolbar">
-        <input type="text" id="busca" placeholder="Buscar por atividade ou responsável…" oninput="window.filtroSomenteAtrasadas=false; render()">
+        <input type="text" id="busca" placeholder="Buscar por atividade, descrição, responsável ou solicitante…" oninput="window.filtroSomenteAtrasadas=false; render()">
         <select id="filtroStatus" onchange="window.filtroSomenteAtrasadas=false; render()" title="Filtrar por status" style="height:36px;padding:0 10px;border:0.5px solid #c8c8c4;border-radius:8px;background:#fff;color:#1a1a18;font-size:14px;font-family:inherit;outline:none;min-width:170px;cursor:pointer">
           <option value="">Todos os status</option>
           <option value="Pendente">Pendente</option>

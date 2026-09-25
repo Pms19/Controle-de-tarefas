@@ -19,6 +19,14 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .btn-primary { display: flex; align-items: center; gap: 6px; padding: 0 14px; height: 36px; font-size: 14px; font-weight: 500; white-space: nowrap; cursor: pointer; background: #1a1a18; color: #fff; border: none; border-radius: 8px; }
 .btn-primary:hover { opacity: 0.85; }
 
+.app-layout { display:flex; gap:18px; align-items:flex-start; }
+.sidebar { width:210px; flex:0 0 210px; background:#fff; border:0.5px solid #e0deda; border-radius:12px; padding:10px; position:sticky; top:16px; }
+.sidebar-title { font-size:11px; font-weight:600; color:#aaa; text-transform:uppercase; letter-spacing:.05em; padding:8px 10px; }
+.sidebar-btn { width:100%; display:flex; align-items:center; gap:9px; border:0; background:transparent; color:#6b6b68; border-radius:8px; padding:9px 10px; font:inherit; font-size:13px; cursor:pointer; text-align:left; }
+.sidebar-btn:hover { background:#f1efea; color:#1a1a18; }
+.sidebar-btn.active { background:#1a1a18; color:#fff; }
+.sidebar-count { margin-left:auto; font-size:11px; opacity:.65; }
+.main-panel { min-width:0; flex:1; }
 .mes-filtro { display:flex; align-items:center; gap:8px; margin-bottom:1.25rem; padding:10px 12px; border:0.5px solid #e0deda; border-radius:10px; background:#fff; overflow-x:auto; -webkit-overflow-scrolling:touch; }
 .mes-filtro-label { font-size:12px; font-weight:500; color:#6b6b68; white-space:nowrap; margin-right:2px; }
 .mes-tab { flex:0 0 auto; height:32px; padding:0 11px; border:0.5px solid #d3d1c7; border-radius:8px; background:#f8f8f6; color:#6b6b68; font-size:12px; font-family:inherit; cursor:pointer; white-space:nowrap; }
@@ -113,6 +121,12 @@ th:nth-child(9),td:nth-child(9){width:14%}
 /* ===== AJUSTE RESPONSIVO PARA CELULAR ===== */
 @media (max-width: 700px) {
   html, body { width:100%; max-width:100%; overflow-x:hidden; }
+  .app-layout { flex-direction:column; gap:10px; }
+  .sidebar { width:100%; flex:0 0 auto; position:static; display:flex; overflow-x:auto; padding:6px; }
+  .sidebar-title { display:none; }
+  .sidebar-btn { width:auto; flex:0 0 auto; white-space:nowrap; }
+  .sidebar-count { display:none; }
+  .main-panel { width:100%; }
   .app { width:100%; max-width:100%; margin:0; padding:1rem 10px 1.5rem; }
   .header { margin-bottom:1rem; }
   .header h1 { font-size:20px; }
@@ -151,19 +165,34 @@ th:nth-child(9),td:nth-child(9){width:14%}
     <h1>Controle de tarefas</h1>
     <p>Acompanhamento mensal · expanda cada ação para ver e adicionar micro ações</p>
   </div>
-  <div class="toolbar">
-    <input type="text" id="busca" placeholder="Buscar por atividade ou responsável…" oninput="render()">
-    <select id="filtroStatus" onchange="render()" title="Filtrar por status" style="height:36px;padding:0 10px;border:0.5px solid #c8c8c4;border-radius:8px;background:#fff;color:#1a1a18;font-size:14px;font-family:inherit;outline:none;min-width:170px;cursor:pointer">
-      <option value="">Todos os status</option>
-      <option value="Pendente">Pendente</option>
-      <option value="Aguardando">Aguardando</option>
-      <option value="Concluído">Concluído</option>
-      <option value="__sem_status__">Sem status</option>
-    </select>
-    <button class="btn-primary" onclick="abrirModalTarefa()"><i class="ti ti-plus"></i> Nova tarefa</button>
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div class="sidebar-title">Painéis</div>
+      <button class="sidebar-btn active" data-painel="todos" onclick="selecionarPainel('todos')"><i class="ti ti-layout-dashboard"></i> Todas <span class="sidebar-count" id="count-todos">0</span></button>
+      <button class="sidebar-btn" data-painel="Documentos" onclick="selecionarPainel('Documentos')"><i class="ti ti-file-text"></i> Documentos <span class="sidebar-count" id="count-Documentos">0</span></button>
+      <button class="sidebar-btn" data-painel="Gerenciamento de Mudanças" onclick="selecionarPainel('Gerenciamento de Mudanças')"><i class="ti ti-arrows-exchange"></i> Gerenciamento de Mudanças <span class="sidebar-count" id="count-Gerenciamento-de-Mudanças">0</span></button>
+      <button class="sidebar-btn" data-painel="Não conformidades" onclick="selecionarPainel('Não conformidades')"><i class="ti ti-alert-circle"></i> Não Conformidades <span class="sidebar-count" id="count-Não-conformidades">0</span></button>
+      <button class="sidebar-btn" data-painel="Auditoria" onclick="selecionarPainel('Auditoria')"><i class="ti ti-clipboard-check"></i> Auditoria <span class="sidebar-count" id="count-Auditoria">0</span></button>
+      <button class="sidebar-btn" data-painel="Questionários" onclick="selecionarPainel('Questionários')"><i class="ti ti-list-check"></i> Questionários <span class="sidebar-count" id="count-Questionários">0</span></button>
+      <button class="sidebar-btn" data-painel="Mapeamento de processos" onclick="selecionarPainel('Mapeamento de processos')"><i class="ti ti-sitemap"></i> Mapeamento de processos <span class="sidebar-count" id="count-Mapeamento-de-processos">0</span></button>
+      <button class="sidebar-btn" data-painel="Outras atividades" onclick="selecionarPainel('Outras atividades')"><i class="ti ti-dots"></i> Outras atividades <span class="sidebar-count" id="count-Outras-atividades">0</span></button>
+    </aside>
+    <main class="main-panel">
+      <div class="toolbar">
+        <input type="text" id="busca" placeholder="Buscar por atividade ou responsável…" oninput="render()">
+        <select id="filtroStatus" onchange="render()" title="Filtrar por status" style="height:36px;padding:0 10px;border:0.5px solid #c8c8c4;border-radius:8px;background:#fff;color:#1a1a18;font-size:14px;font-family:inherit;outline:none;min-width:170px;cursor:pointer">
+          <option value="">Todos os status</option>
+          <option value="Pendente">Pendente</option>
+          <option value="Aguardando">Aguardando</option>
+          <option value="Concluído">Concluído</option>
+          <option value="__sem_status__">Sem status</option>
+        </select>
+        <button class="btn-primary" onclick="abrirModalTarefa()"><i class="ti ti-plus"></i> Nova tarefa</button>
+      </div>
+      <div id="abasMes" class="mes-tabs"></div>
+      <div id="conteudo"></div>
+    </main>
   </div>
-  <div id="abasMes" class="mes-tabs"></div>
-  <div id="conteudo"></div>
 </div>
 
 <!-- modal tarefa -->
@@ -180,7 +209,17 @@ th:nth-child(9),td:nth-child(9){width:14%}
           <option value="Diária">Diária</option>
         </select>
       </div>
-      <div class="field"><label>Assunto</label><input type="text" id="fAssunto" placeholder="Ex: Documento"></div>
+      <div class="field"><label>Assunto</label>
+<select id="fAssunto">
+  <option value="">Selecione</option>
+  <option value="Não conformidades">Não conformidades</option>
+  <option value="Gerenciamento de Mudanças">Gerenciamento de Mudanças</option>
+  <option value="Documentos">Documentos</option>
+  <option value="Auditoria">Auditoria</option>
+  <option value="Outras atividades">Outras atividades</option>
+  <option value="Questionários">Questionários</option>
+  <option value="Mapeamento de processos">Mapeamento de processos</option>
+</select></div>
       <div class="field full"><label>Atividade <span style="color:#c0392b">*</span></label><input type="text" id="fAtividade" placeholder="Descreva a atividade"><div class="err" id="errAt">Informe a atividade</div></div>
       <div class="field"><label>Solicitante</label><input type="text" id="fSolicitante" placeholder="Quem solicitou a demanda"></div>
       <div class="field"><label>Onde parou / Observações</label><textarea id="fOnde" placeholder="Ponto de parada ou observações"></textarea></div>
@@ -261,7 +300,7 @@ let tarefas = [
   ]},
 ];
 let nextId = 100, nextMicroId = 200;
-let collapsedMes = {}, expandedTarefa = {}, microAlvo = null, mesesSelecionados = new Set();
+let collapsedMes = {}, expandedTarefa = {}, microAlvo = null, mesesSelecionados = new Set(), painelSelecionado = 'todos';
 
 function bc(s){ return s==='Pendente'?'b-p':s==='Aguardando'?'b-a':s==='Concluído'?'b-c':'b-s'; }
 function mbc(s){ return s==='Pendente'?'mb-p':s==='Aguardando'?'mb-a':s==='Concluído'?'mb-c':'mb-s'; }
@@ -370,6 +409,20 @@ async function receberNuvem() {
   } finally { recebendoNuvem=false; }
 }
 
+function selecionarPainel(painel) {
+  painelSelecionado = painel;
+  document.querySelectorAll('.sidebar-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.painel === painel));
+  render();
+}
+
+function atualizarContadoresPainel() {
+  const categorias = ['Documentos','Gerenciamento de Mudanças','Não conformidades','Auditoria','Questionários','Mapeamento de processos','Outras atividades'];
+  const ids = {'Documentos':'count-Documentos','Gerenciamento de Mudanças':'count-Gerenciamento-de-Mudanças','Não conformidades':'count-Não-conformidades','Auditoria':'count-Auditoria','Questionários':'count-Questionários','Mapeamento de processos':'count-Mapeamento-de-processos','Outras atividades':'count-Outras-atividades'};
+  const elTodos=document.getElementById('count-todos');
+  if(elTodos) elTodos.textContent=tarefas.length;
+  categorias.forEach(a => { const el=document.getElementById(ids[a]); if(el) el.textContent=tarefas.filter(t => (t.assunto||'')===a).length; });
+}
+
 function renderAbasMes(lista) {
   const meses = [...new Set(lista.map(t => t.mes).filter(Boolean))].sort((a,b) => a.localeCompare(b));
   const div = document.getElementById('abasMes');
@@ -410,6 +463,8 @@ function render() {
   const busca = document.getElementById('busca').value.toLowerCase();
   const filtroStatus = document.getElementById('filtroStatus')?.value || '';
   let lista = tarefas;
+  atualizarContadoresPainel();
+  if (painelSelecionado !== 'todos') lista = lista.filter(t => (t.assunto||'') === painelSelecionado);
   if (busca) lista = lista.filter(t => t.atividade.toLowerCase().includes(busca) || t.solicitante.toLowerCase().includes(busca) || t.responsavel.toLowerCase().includes(busca) || t.micros.some(m => m.desc.toLowerCase().includes(busca) || m.responsavel.toLowerCase().includes(busca)));
   if (filtroStatus) lista = lista.filter(t => filtroStatus === '__sem_status__' ? !t.status : t.status === filtroStatus);
 

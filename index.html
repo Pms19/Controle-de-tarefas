@@ -905,11 +905,69 @@ async function salvarMicro(){
   if(!desc){document.getElementById('errMicro').style.display='block';document.getElementById('mDesc').focus();return;}
   document.getElementById('errMicro').style.display='none';
   const t=tarefas.find(t=>t.id===microAlvo); if(!t) return;
-  const dados={desc,responsavel:document.getElementById('mResp').value.trim(),prazo:document.getElementById('mPrazo').value,status:document.getElementById('mStatus').value,prio:document.getElementById('mPrio').value};
-  if(microEditando!==null){ const m=t.micros.find(x=>Number(x.id)===microEditando); if(m) Object.assign(m,dados); }
-  else t.micros.push({id:nextMicroId++,...dados});
-  try { await salvarDados(); } catch(e) { alert('Não foi possível salvar a micro ação no banco. Verifique sua conexão e tente novamente.'); console.error(e); return; }
-  fecharModalMicro(); render();
+
+  const dados={
+    desc,
+    responsavel:document.getElementById('mResp').value.trim(),
+    prazo:document.getElementById('mPrazo').value,
+    status:document.getElementById('mStatus').value,
+    prio:document.getElementById('mPrio').value
+  };
+  const editando = microEditando !== null;
+  const original = editando ? t.micros.find(x=>Number(x.id)===microEditando) : null;
+  const originalCopia = original ? {...original} : null;
+
+  try {
+    if (sb) {
+      if (editando) {
+        const { error } = await sb.from('micro_acoes')
+          .update({
+            descricao:dados.desc,
+            responsavel:dados.responsavel || '',
+            prazo:dados.prazo || null,
+            status:dados.status || '',
+            prio:dados.prio || '',
+            updated_at:new Date().toISOString()
+          })
+          .eq('id', Number(microEditando));
+        if (error) throw error;
+
+        if (original) Object.assign(original, dados);
+      } else {
+        const { data, error } = await sb.from('micro_acoes')
+          .insert({
+            tarefa_id:Number(t.id),
+            descricao:dados.desc,
+            responsavel:dados.responsavel || '',
+            prazo:dados.prazo || null,
+            status:dados.status || '',
+            prio:dados.prio || ''
+          })
+          .select('id')
+          .single();
+        if (error) throw error;
+
+        t.micros.push({id:Number(data.id),...dados});
+        nextMicroId=Math.max(nextMicroId,Number(data.id)+1);
+      }
+    } else {
+      if (editando) {
+        if (original) Object.assign(original,dados);
+      } else {
+        t.micros.push({id:nextMicroId++,...dados});
+      }
+    }
+
+    localStorage.setItem('tarefas',JSON.stringify(tarefas));
+    localStorage.setItem('ct_nextId',nextId);
+    localStorage.setItem('ct_nextMicroId',nextMicroId);
+    fecharModalMicro();
+    render();
+  } catch(e) {
+    if (editando && original && originalCopia) Object.assign(original,originalCopia);
+    console.error('Erro ao salvar micro ação:',e);
+    alert('A micro ação não foi salva no banco de dados.\n\nDetalhes: '+(e.message||'erro desconhecido'));
+  }
 }
 
 document.getElementById('ovTarefa').addEventListener('click',e=>{if(e.target===e.currentTarget)fecharModalTarefa();});

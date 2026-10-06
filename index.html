@@ -919,9 +919,31 @@ async function salvarMicro(){
 
   try {
     if (sb) {
+      // Garante que a tarefa pai exista no banco antes de salvar qualquer micro ação.
+      const tarefaPayload = {
+        id:Number(t.id),
+        mes:t.mes || null,
+        assunto:t.assunto || '',
+        atividade:t.atividade || '',
+        descricao:t.descricao || '',
+        solicitante:t.solicitante || '',
+        onde:t.onde || '',
+        responsavel:t.responsavel || '',
+        prioridade:t.prioridade || '',
+        status:t.status || '',
+        periodicidade:t.periodicidade || 'Pontual',
+        recorrencia_grupo:t.recorrencia_grupo || null,
+        data_ocorrencia:t.data_ocorrencia || null,
+        updated_at:new Date().toISOString()
+      };
+      const { error:tarefaErr } = await sb.from('tarefas')
+        .upsert(tarefaPayload, { onConflict:'id' });
+      if (tarefaErr) throw tarefaErr;
+
       if (editando) {
         const { error } = await sb.from('micro_acoes')
           .update({
+            tarefa_id:Number(t.id),
             descricao:dados.desc,
             responsavel:dados.responsavel || '',
             prazo:dados.prazo || null,
@@ -1040,7 +1062,10 @@ salvarTarefa = async function() {
           periodicidade: t.periodicidade || 'Pontual',
           updated_at: new Date().toISOString()
         };
-        const { error } = await sb.from('tarefas').update(payload).eq('id', Number(t.id));
+        const { error } = await sb.from('tarefas').upsert(
+          {...payload, id:Number(t.id)},
+          { onConflict:'id' }
+        );
         if (error) throw error;
       }
     } catch(e) {

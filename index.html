@@ -960,10 +960,35 @@ salvarTarefa = async function() {
     t.status = document.getElementById('fStatus').value;
     t.onde = document.getElementById('fOnde').value.trim();
     t.periodicidade = document.getElementById('fPeriodicidade').value || 'Pontual';
+    // Salva primeiro localmente para que a alteração nunca seja perdida.
     try {
-      await salvarDados();
+      localStorage.setItem('tarefas', JSON.stringify(tarefas));
+      localStorage.setItem('ct_nextId', nextId);
+      localStorage.setItem('ct_nextMicroId', nextMicroId);
+
+      // Na edição, atualiza somente o registro alterado. Isso evita que um
+      // problema em outro registro impeça a edição desta atividade.
+      if (sb) {
+        const payload = {
+          mes: t.mes || null,
+          assunto: t.assunto || '',
+          atividade: t.atividade || '',
+          descricao: t.descricao || '',
+          solicitante: t.solicitante || '',
+          responsavel: t.responsavel || '',
+          onde: t.onde || '',
+          prioridade: t.prioridade || '',
+          status: t.status || '',
+          periodicidade: t.periodicidade || 'Pontual',
+          updated_at: new Date().toISOString()
+        };
+        const { error } = await sb.from('tarefas').update(payload).eq('id', Number(t.id));
+        if (error) throw error;
+      }
     } catch(e) {
-      alert('Não foi possível salvar a alteração no banco. A cópia local foi mantida. Tente novamente.');
+      console.error('Erro ao atualizar tarefa:', e);
+      alert('A alteração foi mantida na cópia local, mas não foi possível atualizar o banco de dados.\n\nDetalhes: ' + (e.message || 'erro desconhecido'));
+      render();
       return;
     }
     fecharModalTarefa();

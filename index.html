@@ -1132,13 +1132,29 @@ async function salvarProjetoAcao(){
     if(projetoAcaoEditando!==null){
       const a=p.acoes.find(x=>Number(x.id)===Number(projetoAcaoEditando)); if(!a) return;
       if(sb){
-        const {error}=await sb.from('projeto_acoes').update({...dados,prazo:dados.prazo||null,updated_at:new Date().toISOString()}).eq('id',Number(a.id));
+        const {error}=await sb.from('projeto_acoes').update({
+          descricao:dados.descricao,
+          responsavel:dados.responsavel||'',
+          prazo:dados.prazo||null,
+          data_conclusao:dados.data_conclusao||null,
+          observacoes:dados.observacoes||'',
+          concluida:!!dados.concluida,
+          updated_at:new Date().toISOString()
+        }).eq('id',Number(a.id));
         if(error) throw error;
       }
       Object.assign(a,dados);
     }else{
       if(sb){
-        const {data,error}=await sb.from('projeto_acoes').insert({projeto_id:Number(p.id),...dados,prazo:dados.prazo||null}).select('id').single();
+        const {data,error}=await sb.from('projeto_acoes').insert({
+          projeto_id:Number(p.id),
+          descricao:dados.descricao,
+          responsavel:dados.responsavel||'',
+          prazo:dados.prazo||null,
+          data_conclusao:dados.data_conclusao||null,
+          observacoes:dados.observacoes||'',
+          concluida:!!dados.concluida
+        }).select('id').single();
         if(error) throw error;
         p.acoes.push({id:Number(data.id),...dados});
         nextProjetoAcaoId=Math.max(nextProjetoAcaoId,Number(data.id)+1);

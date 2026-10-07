@@ -445,6 +445,55 @@ tr.tarefa-row:hover>td{background:#F7FBFD;}
   .calendar-list-meta,.calendar-list-status{grid-column:2;}
 }
 
+
+.meetings-view{display:none;}
+.meeting-toolbar{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:16px;padding:4px 1px 0;}
+.meeting-page-title{font-size:22px;font-weight:700;color:var(--brand-dark);letter-spacing:-.02em;}
+.meeting-page-subtitle{margin-top:3px;font-size:13px;color:var(--muted);}
+.meeting-card{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 3px 12px rgba(15,76,110,.035);margin-bottom:14px;overflow:hidden;}
+.meeting-card-head{padding:14px 16px 12px;display:flex;align-items:flex-start;gap:14px;justify-content:space-between;border-bottom:1px solid #E7EDF0;}
+.meeting-main{min-width:0;flex:1;}
+.meeting-title-row{display:flex;align-items:center;gap:9px;flex-wrap:wrap;}
+.meeting-title{font-size:16px;font-weight:700;color:var(--brand-dark);}
+.meeting-badge{font-size:11px;font-weight:600;padding:4px 9px;border-radius:20px;background:var(--brand-soft);color:var(--brand);}
+.meeting-badge.done{background:#E4F7ED;color:#16734D;}
+.meeting-badge.cancelled{background:#FDEBED;color:#C13D49;}
+.meeting-meta{margin-top:7px;display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:#647784;}
+.meeting-meta span{display:inline-flex;align-items:center;gap:4px;}
+.meeting-summary{margin-top:9px;font-size:12px;line-height:1.5;color:#5E7280;white-space:pre-line;}
+.meeting-decisions{margin-top:7px;padding:8px 10px;border-left:3px solid #7B61A8;background:#F8F5FC;border-radius:6px;font-size:11px;line-height:1.45;color:#5C526B;white-space:pre-line;}
+.meeting-actions{display:flex;gap:3px;align-items:center;flex:0 0 auto;}
+.meeting-info-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:11px 16px;background:#F8FBFC;border-bottom:1px solid #EDF1F3;}
+.meeting-info-item{min-width:0;}
+.meeting-info-label{display:block;font-size:9px;font-weight:700;color:#8A9AA5;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;}
+.meeting-info-value{font-size:11px;color:#4F6878;line-height:1.35;word-break:break-word;}
+.meeting-checklist{padding:9px 16px 10px;}
+.meeting-checklist-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;font-size:11px;color:#7B8D99;text-transform:uppercase;letter-spacing:.05em;}
+.meeting-action-wrap{padding:2px 0;}
+.meeting-action-head{display:grid;grid-template-columns:auto minmax(180px,1.5fr) 140px 110px minmax(140px,1fr) auto;gap:10px;align-items:center;padding:0 8px 5px;color:#8193A0;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;}
+.meeting-action-row{display:grid;grid-template-columns:auto minmax(180px,1.5fr) 140px 110px minmax(140px,1fr) auto;gap:10px;align-items:center;padding:10px 8px;background:#fff;border:1px solid #EDF1F3;border-radius:8px;margin-bottom:6px;}
+.meeting-action-check{width:21px;height:21px;border-radius:6px;border:2px solid #B4C4CE;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;padding:0;}
+.meeting-action-check:hover{border-color:var(--brand);}
+.meeting-action-check.checked{background:var(--green);border-color:var(--green);}
+.meeting-action-check i{font-size:13px;}
+.meeting-action-desc{font-size:12px;color:var(--text);line-height:1.35;min-width:0;}
+.meeting-action-desc.done{text-decoration:line-through;color:#91A0A9;}
+.meeting-action-person,.meeting-action-date,.meeting-action-obs{font-size:11px;color:#647784;min-width:0;word-break:break-word;}
+.meeting-action-date.overdue{color:#C13D49;font-weight:700;}
+.meeting-action-tools{display:flex;justify-content:flex-end;gap:2px;}
+.meeting-progress{margin:5px 0 8px;padding:7px 8px;background:#F8FBFC;border:1px solid #EDF1F3;border-radius:8px;display:flex;align-items:center;justify-content:space-between;font-size:10px;color:#718591;}
+.meeting-progress-bar{height:5px;flex:1;margin-left:10px;background:#E4EBEF;border-radius:99px;overflow:hidden;}
+.meeting-progress-fill{height:100%;background:var(--green);border-radius:99px;transition:width .2s ease;}
+.meeting-add-action{padding:0 16px 14px;}
+.meeting-add-action button{width:100%;justify-content:center;background:#fff;border:1px dashed #BFD0DA;color:var(--brand);box-shadow:none;}
+.meeting-empty{background:#fff;border:1px dashed #C9D7DE;border-radius:14px;padding:42px 20px;text-align:center;color:#7B8D99;}
+.meeting-empty i{display:block;font-size:28px;margin-bottom:10px;color:#9AB0BC;}
+.meeting-empty strong{display:block;font-size:14px;color:var(--brand-dark);margin-bottom:5px;}
+.meeting-empty span{font-size:12px;}
+.meeting-filters{display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap;}
+.meeting-filters input,.meeting-filters select{height:36px;border:1px solid var(--line);border-radius:9px;background:#fff;padding:0 10px;font-size:12px;color:#4F6878;font-family:inherit;}
+@media(max-width:900px){.meeting-info-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.meeting-action-row,.meeting-action-head{grid-template-columns:auto minmax(160px,1.4fr) 120px 100px auto;}.meeting-action-obs{grid-column:2/-1;}}
+@media(max-width:700px){.meeting-toolbar{flex-direction:column;align-items:stretch;gap:10px;}.meeting-info-grid{grid-template-columns:1fr 1fr;padding-left:12px;padding-right:12px;}.meeting-card-head{padding:12px;}.meeting-checklist{padding-left:12px;padding-right:12px;overflow-x:auto;}.meeting-action-wrap{min-width:620px;}.meeting-add-action{padding-left:12px;padding-right:12px;}.meeting-filters{width:100%;}.meeting-filters>*{flex:1;min-width:0;}}
 .sidebar-group-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#8A9AA5;padding:12px 10px 5px;}
 </style>
 </head>
@@ -514,6 +563,7 @@ tr.tarefa-row:hover>td{background:#F7FBFD;}
       <button class="sidebar-btn active" data-painel="todos" onclick="selecionarPainel('todos')"><i class="ti ti-layout-dashboard"></i> Todas as atividades <span class="sidebar-count" id="count-todos">0</span></button>
       <button class="sidebar-btn" data-painel="__calendario__" onclick="selecionarPainel('__calendario__')"><i class="ti ti-calendar-event"></i> Calendário <span class="sidebar-count" id="count-calendario">0</span></button>
       <button class="sidebar-btn" data-painel="__projetos__" onclick="selecionarPainel('__projetos__')"><i class="ti ti-briefcase-2"></i> Projetos <span class="sidebar-count" id="count-projetos">0</span></button>
+      <button class="sidebar-btn" data-painel="__reunioes__" onclick="selecionarPainel('__reunioes__')"><i class="ti ti-users-group"></i> Reuniões <span class="sidebar-count" id="count-reunioes">0</span></button>
       <div class="sidebar-group-label">Qualidade</div>
       <button class="sidebar-btn" data-painel="Documentos" onclick="selecionarPainel('Documentos')"><i class="ti ti-file-text"></i> Documentos <span class="sidebar-count" id="count-Documentos">0</span></button>
       <button class="sidebar-btn" data-painel="Gerenciamento de Mudanças" onclick="selecionarPainel('Gerenciamento de Mudanças')"><i class="ti ti-arrows-exchange"></i> Gerenciamento de Mudanças <span class="sidebar-count" id="count-Gerenciamento-de-Mudanças">0</span></button>
@@ -567,6 +617,19 @@ tr.tarefa-row:hover>td{background:#F7FBFD;}
         <div id="calendarContent"></div>
       </div>
 
+      <div id="reunioesView" class="meetings-view">
+        <div class="meeting-toolbar">
+          <div><div class="meeting-page-title">Reuniões</div><div class="meeting-page-subtitle">Registre reuniões, decisões e transforme os encaminhamentos em ações acompanháveis.</div></div>
+          <button class="btn-primary" onclick="abrirModalReuniao()"><i class="ti ti-plus"></i> Nova reunião</button>
+        </div>
+        <div class="meeting-filters">
+          <input type="text" id="buscaReunioes" placeholder="Buscar por assunto, participante, resumo ou responsável..." oninput="renderReunioes()">
+          <select id="filtroStatusReuniao" onchange="renderReunioes()"><option value="">Todos os status</option><option>Agendada</option><option>Realizada</option><option>Cancelada</option></select>
+          <select id="filtroTipoReuniao" onchange="renderReunioes()"><option value="">Todos os tipos</option><option>Alinhamento</option><option>Acompanhamento</option><option>Auditoria</option><option>Gestão</option><option>Treinamento</option><option>Outro</option></select>
+        </div>
+        <div id="reunioesConteudo"></div>
+      </div>
+
       <div id="projetosView" style="display:none">
         <div class="project-toolbar">
           <div>
@@ -578,6 +641,45 @@ tr.tarefa-row:hover>td{background:#F7FBFD;}
         <div id="projetosConteudo"></div>
       </div>
     </main>
+  </div>
+</div>
+
+<!-- modal reunião -->
+<div class="modal-overlay" id="ovReuniao">
+  <div class="modal" style="width:720px">
+    <h2 id="reuniaoModalTitulo">Nova reunião</h2>
+    <div class="mgrid">
+      <div class="field"><label>Data <span style="color:#c0392b">*</span></label><input type="date" id="rData"></div>
+      <div class="field"><label>Horário</label><input type="time" id="rHora"></div>
+      <div class="field"><label>Duração (minutos)</label><input type="number" id="rDuracao" min="0" step="15" placeholder="Ex.: 60"></div>
+      <div class="field"><label>Tipo</label><select id="rTipo"><option>Alinhamento</option><option>Acompanhamento</option><option>Auditoria</option><option>Gestão</option><option>Treinamento</option><option>Outro</option></select></div>
+      <div class="field full"><label>Assunto <span style="color:#c0392b">*</span></label><input type="text" id="rAssunto" placeholder="Tema principal da reunião"><div class="err" id="errReuniao">Informe o assunto da reunião</div></div>
+      <div class="field"><label>Organizador</label><input type="text" id="rOrganizador" placeholder="Nome"></div>
+      <div class="field"><label>Módulo relacionado</label><select id="rModulo"><option value="">Geral</option><option>Documentos</option><option>Gerenciamento de Mudanças</option><option>Não conformidades</option><option>Auditoria</option><option>Questionários</option><option>Mapeamento de processos</option><option>Projetos</option><option>Outras atividades</option></select></div>
+      <div class="field full"><label>Participantes</label><input type="text" id="rParticipantes" placeholder="Ex.: Paloma, Sérgio, Mariana"></div>
+      <div class="field full"><label>Local / Link</label><input type="text" id="rLocal" placeholder="Sala, Teams, Meet ou outro local"></div>
+      <div class="field full"><label>Resumo</label><textarea id="rResumo" placeholder="Principais pontos discutidos, contexto e informações importantes."></textarea></div>
+      <div class="field full"><label>Decisões</label><textarea id="rDecisoes" placeholder="Decisões tomadas durante a reunião."></textarea></div>
+      <div class="field full"><label>Próximos passos</label><textarea id="rProximos" placeholder="Pendências gerais, próximos passos ou encaminhamentos."></textarea></div>
+      <div class="field"><label>Próxima reunião</label><input type="date" id="rProxima"></div>
+      <div class="field"><label>Status</label><select id="rStatus"><option>Agendada</option><option selected>Realizada</option><option>Cancelada</option></select></div>
+    </div>
+    <div class="mactions"><button class="btn-cancel" onclick="fecharModalReuniao()">Cancelar</button><button class="btn-save" onclick="salvarReuniao()">Salvar reunião</button></div>
+  </div>
+</div>
+
+<!-- modal ação de reunião -->
+<div class="modal-overlay" id="ovReuniaoAcao">
+  <div class="modal">
+    <h2 id="reuniaoAcaoModalTitulo">Nova ação</h2>
+    <div class="mgrid">
+      <div class="field full"><label>Ação <span style="color:#c0392b">*</span></label><input type="text" id="raDescricao" placeholder="Ex.: Enviar apresentação atualizada"><div class="err" id="errReuniaoAcao">Informe a ação</div></div>
+      <div class="field"><label>Responsável</label><input type="text" id="raResponsavel" placeholder="Nome"></div>
+      <div class="field"><label>Prazo</label><input type="date" id="raPrazo"></div>
+      <div class="field full"><label>Observações</label><textarea id="raObservacoes" placeholder="Detalhes, dependências ou observações."></textarea></div>
+      <div class="field full project-check-field"><label class="project-check-label"><input type="checkbox" id="raConcluida"> <span>Ação concluída</span></label></div>
+    </div>
+    <div class="mactions"><button class="btn-cancel" onclick="fecharModalReuniaoAcao()">Cancelar</button><button class="btn-save" onclick="salvarReuniaoAcao()">Salvar</button></div>
   </div>
 </div>
 
@@ -748,6 +850,7 @@ let tarefas = [
 let nextId = 100, nextMicroId = 200;
 let projetos = [], nextProjetoId = 1000, nextProjetoAcaoId = 2000, projetoEditando = null, projetoAcaoEditando = null, projetoAlvo = null;
 let calendarioView='month', calendarioData=new Date(), calendarioEventoAtual=null;
+let reunioes=[], nextReuniaoId=3000, nextReuniaoAcaoId=4000, reuniaoEditando=null, reuniaoAcaoEditando=null, reuniaoAlvo=null, reuniaoExpandida={};
 let collapsedMes = {}, expandedTarefa = {}, microAlvo = null, mesesSelecionados = new Set(), painelSelecionado = 'todos', projetoExpandido = {};
 
 function bc(s){ return s==='Pendente'?'b-p':s==='Aguardando'?'b-a':s==='Concluído'?'b-c':'b-s'; }
@@ -814,6 +917,8 @@ async function carregarDados() {
     if (t) { tarefas = JSON.parse(t); nextId = parseInt(localStorage.getItem('ct_nextId')||100); nextMicroId = parseInt(localStorage.getItem('ct_nextMicroId')||200); }
     const p = localStorage.getItem('projetos');
     if (p) { projetos = JSON.parse(p); nextProjetoId = parseInt(localStorage.getItem('ct_nextProjetoId')||1000); nextProjetoAcaoId = parseInt(localStorage.getItem('ct_nextProjetoAcaoId')||2000); }
+    const r = localStorage.getItem('reunioes');
+    if (r) { reunioes = JSON.parse(r); nextReuniaoId = parseInt(localStorage.getItem('ct_nextReuniaoId')||3000); nextReuniaoAcaoId = parseInt(localStorage.getItem('ct_nextReuniaoAcaoId')||4000); }
   } catch(e) {}
 
   if (!SYNC_ENABLED || !sb) return;
@@ -826,6 +931,10 @@ async function carregarDados() {
     if (projetoErr) throw projetoErr;
     const { data: cloudProjetoAcoes, error: projetoAcaoErr } = await sb.from('projeto_acoes').select('*').order('id');
     if (projetoAcaoErr) throw projetoAcaoErr;
+    const { data: cloudReunioes, error: reuniaoErr } = await sb.from('reunioes').select('*').order('data',{ascending:false}).order('id',{ascending:false});
+    if (reuniaoErr) throw reuniaoErr;
+    const { data: cloudReuniaoAcoes, error: reuniaoAcaoErr } = await sb.from('reuniao_acoes').select('*').order('id');
+    if (reuniaoAcaoErr) throw reuniaoAcaoErr;
 
     if (cloudProjetos && cloudProjetos.length) {
       projetos = cloudProjetos.map(p => ({
@@ -843,6 +952,16 @@ async function carregarDados() {
       localStorage.setItem('ct_nextProjetoAcaoId',nextProjetoAcaoId);
     } else if (projetos.length) {
       await sincronizarProjetos();
+    }
+
+    if (cloudReunioes && cloudReunioes.length) {
+      reunioes=cloudReunioes.map(r=>({id:Number(r.id),data:r.data||'',hora:r.hora||'',duracao_minutos:r.duracao_minutos||'',tipo:r.tipo||'Reunião',assunto:r.assunto||'',organizador:r.organizador||'',participantes:r.participantes||'',local_link:r.local_link||'',modulo:r.modulo||'',resumo:r.resumo||'',decisoes:r.decisoes||'',proximos_passos:r.proximos_passos||'',proxima_reuniao:r.proxima_reuniao||'',status:r.status||'Realizada',acoes:[]}));
+      (cloudReuniaoAcoes||[]).forEach(a=>{const r=reunioes.find(x=>Number(x.id)===Number(a.reuniao_id));if(r)r.acoes.push({id:Number(a.id),descricao:a.descricao||'',responsavel:a.responsavel||'',prazo:a.prazo||'',observacoes:a.observacoes||'',concluida:!!a.concluida,data_conclusao:a.data_conclusao||''});});
+      nextReuniaoId=Math.max(3000,...reunioes.map(r=>Number(r.id)||0)+1);
+      nextReuniaoAcaoId=Math.max(4000,...reunioes.flatMap(r=>r.acoes).map(a=>Number(a.id)||0)+1);
+      salvarReunioesLocal();
+    } else if (reunioes.length) {
+      await sincronizarReunioes();
     }
 
     if (cloudTasks && cloudTasks.length) {
@@ -944,6 +1063,71 @@ function renderProjetos(){
 function escHtml(v){
   return String(v??'').replace(/[&<>"']/g, s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
 }
+
+function salvarReunioesLocal(){
+  localStorage.setItem('reunioes',JSON.stringify(reunioes));
+  localStorage.setItem('ct_nextReuniaoId',nextReuniaoId);
+  localStorage.setItem('ct_nextReuniaoAcaoId',nextReuniaoAcaoId);
+}
+async function sincronizarReunioes(){
+  if(!sb)return;
+  const rows=reunioes.map(r=>({id:Number(r.id),data:r.data||null,hora:r.hora||null,duracao_minutos:r.duracao_minutos?Number(r.duracao_minutos):null,tipo:r.tipo||'Reunião',assunto:r.assunto||'',organizador:r.organizador||'',participantes:r.participantes||'',local_link:r.local_link||'',modulo:r.modulo||'',resumo:r.resumo||'',decisoes:r.decisoes||'',proximos_passos:r.proximos_passos||'',proxima_reuniao:r.proxima_reuniao||null,status:r.status||'Realizada',updated_at:new Date().toISOString()}));
+  if(rows.length){const {error}=await sb.from('reunioes').upsert(rows,{onConflict:'id'});if(error)throw error;}
+  const actions=[];reunioes.forEach(r=>(r.acoes||[]).forEach(a=>actions.push({id:Number(a.id),reuniao_id:Number(r.id),descricao:a.descricao,responsavel:a.responsavel||'',prazo:a.prazo||null,observacoes:a.observacoes||'',concluida:!!a.concluida,data_conclusao:a.data_conclusao||'',updated_at:new Date().toISOString()})));
+  if(actions.length){const {error}=await sb.from('reuniao_acoes').upsert(actions,{onConflict:'id'});if(error)throw error;}
+}
+function reuniaoProgresso(r){const a=r.acoes||[],total=a.length,done=a.filter(x=>x.concluida).length;return{total,done,percent:total?Math.round(done/total*100):0};}
+function reuniaoStatusClass(s){return s==='Realizada'?'done':s==='Cancelada'?'cancelled':'';}
+function formatarDataReuniao(v){return v?new Date(v+'T00:00:00').toLocaleDateString('pt-BR'):'—';}
+function formatarHorarioReuniao(r){return r.hora?(r.duracao_minutos?r.hora+' • '+r.duracao_minutos+' min':r.hora):'Horário não informado';}
+function renderReunioes(){
+  const area=document.getElementById('reunioesConteudo');if(!area)return;
+  const termo=(document.getElementById('buscaReunioes')?.value||'').trim().toLowerCase();
+  const fs=document.getElementById('filtroStatusReuniao')?.value||'',ft=document.getElementById('filtroTipoReuniao')?.value||'';
+  let lista=reunioes.filter(r=>(!fs||r.status===fs)&&(!ft||r.tipo===ft)&&(!termo||(r.assunto||'').toLowerCase().includes(termo)||(r.resumo||'').toLowerCase().includes(termo)||(r.participantes||'').toLowerCase().includes(termo)||(r.organizador||'').toLowerCase().includes(termo)||(r.acoes||[]).some(a=>(a.descricao||'').toLowerCase().includes(termo)||(a.responsavel||'').toLowerCase().includes(termo))));
+  lista.sort((a,b)=>(b.data||'').localeCompare(a.data||'')||(b.hora||'').localeCompare(a.hora||'')||(b.id-a.id));
+  const count=document.getElementById('count-reunioes');if(count)count.textContent=reunioes.length;
+  if(!lista.length){area.innerHTML='<div class="meeting-empty"><i class="ti ti-users-group"></i><strong>Nenhuma reunião cadastrada</strong><span>Registre as reuniões importantes, decisões e respectivos encaminhamentos.</span></div>';return;}
+  area.innerHTML=lista.map(r=>{
+    const prog=reuniaoProgresso(r),aberto=reuniaoExpandida[r.id]!==false,actions=r.acoes||[];
+    const rows=actions.length?actions.map(a=>{const hojeISO=new Date().toISOString().slice(0,10),atrasada=a.prazo&&a.prazo<hojeISO&&!a.concluida;return '<div class="meeting-action-row">'
+      +'<button type="button" class="meeting-action-check '+(a.concluida?'checked':'')+'" onclick="alternarReuniaoAcao('+r.id+','+a.id+')" title="'+(a.concluida?'Desmarcar como concluída':'Marcar como concluída')+'">'+(a.concluida?'<i class="ti ti-check"></i>':'')+'</button>'
+      +'<div class="meeting-action-desc '+(a.concluida?'done':'')+'">'+escHtml(a.descricao)+'</div>'
+      +'<div class="meeting-action-person">'+(a.responsavel?'<i class="ti ti-user"></i> '+escHtml(a.responsavel):'—')+'</div>'
+      +'<div class="'+(atrasada?'meeting-action-date overdue':'meeting-action-date')+'">'+(a.prazo?(new Date(a.prazo+'T00:00:00').toLocaleDateString('pt-BR')+(atrasada?' • atrasado':'')):'—')+'</div>'
+      +'<div class="meeting-action-obs">'+(a.observacoes?escHtml(a.observacoes):'—')+'</div>'
+      +'<div class="meeting-action-tools"><button class="btn-icon" onclick="abrirModalReuniaoAcao('+r.id+','+a.id+')" title="Editar ação"><i class="ti ti-pencil"></i></button><button class="btn-icon" onclick="excluirReuniaoAcao('+r.id+','+a.id+')" title="Excluir ação"><i class="ti ti-trash"></i></button></div></div>';}).join(''):'<div style="padding:12px 0;color:#91A0A9;font-size:12px;font-style:italic">Nenhuma ação cadastrada nesta reunião.</div>';
+    return '<section class="meeting-card" id="reuniao-card-'+r.id+'"><div class="meeting-card-head"><div class="meeting-main">'
+      +'<div class="meeting-title-row"><div class="meeting-title">'+escHtml(r.assunto)+'</div><span class="meeting-badge '+reuniaoStatusClass(r.status)+'">'+escHtml(r.status||'Realizada')+'</span></div>'
+      +'<div class="meeting-meta"><span><i class="ti ti-calendar"></i>'+formatarDataReuniao(r.data)+'</span><span><i class="ti ti-clock"></i>'+formatarHorarioReuniao(r)+'</span><span><i class="ti ti-tag"></i>'+escHtml(r.tipo||'Reunião')+'</span>'+(r.modulo?'<span><i class="ti ti-folders"></i>'+escHtml(r.modulo)+'</span>':'')+'</div>'
+      +(r.organizador||r.participantes?'<div class="meeting-meta">'+(r.organizador?'<span><i class="ti ti-user"></i>'+escHtml(r.organizador)+'</span>':'')+(r.participantes?'<span><i class="ti ti-users"></i>'+escHtml(r.participantes)+'</span>':'')+'</div>':'')
+      +(r.resumo?'<div class="meeting-summary">'+escHtml(r.resumo)+'</div>':'')
+      +(r.decisoes?'<div class="meeting-decisions"><strong>Decisões:</strong> '+escHtml(r.decisoes)+'</div>':'')
+      +'</div><div class="meeting-actions"><button class="btn-icon" onclick="toggleReuniao('+r.id+')" title="'+(aberto?'Recolher':'Expandir')+'"><i class="ti ti-chevron-'+(aberto?'up':'down')+'"></i></button><button class="btn-icon" onclick="abrirModalReuniao('+r.id+')" title="Editar reunião"><i class="ti ti-pencil"></i></button><button class="btn-icon" onclick="excluirReuniao('+r.id+')" title="Excluir reunião"><i class="ti ti-trash"></i></button></div></div>'
+      +(aberto?'<div class="meeting-info-grid"><div class="meeting-info-item"><span class="meeting-info-label">Local / Link</span><div class="meeting-info-value">'+escHtml(r.local_link||'—')+'</div></div><div class="meeting-info-item"><span class="meeting-info-label">Próxima reunião</span><div class="meeting-info-value">'+formatarDataReuniao(r.proxima_reuniao)+'</div></div><div class="meeting-info-item"><span class="meeting-info-label">Próximos passos</span><div class="meeting-info-value">'+escHtml(r.proximos_passos||'—')+'</div></div><div class="meeting-info-item"><span class="meeting-info-label">Ações</span><div class="meeting-info-value">'+prog.done+' de '+prog.total+' concluídas</div></div></div><div class="meeting-checklist"><div class="meeting-checklist-head"><span>Ações / Encaminhamentos</span><span>Responsável • Prazo • Observações</span></div><div class="meeting-progress"><span><strong>'+prog.done+'</strong> de '+prog.total+' ações concluídas</span><span>'+prog.percent+'%</span><div class="meeting-progress-bar"><div class="meeting-progress-fill" style="width:'+prog.percent+'%"></div></div></div><div class="meeting-action-wrap"><div class="meeting-action-head"><div></div><div>Ação</div><div>Responsável</div><div>Prazo</div><div>Observações</div><div>Ações</div></div>'+rows+'</div></div><div class="meeting-add-action"><button class="btn-primary" onclick="abrirModalReuniaoAcao('+r.id+')" style="height:38px"><i class="ti ti-plus"></i> Adicionar ação</button></div>':'')
+      +'</section>';
+  }).join('');
+}
+function abrirModalReuniao(id=null){
+  reuniaoEditando=id!==null?Number(id):null;const r=reuniaoEditando!==null?reunioes.find(x=>Number(x.id)===reuniaoEditando):null;
+  document.getElementById('reuniaoModalTitulo').textContent=r?'Editar reunião':'Nova reunião';
+  document.getElementById('rData').value=r?.data||new Date().toISOString().slice(0,10);document.getElementById('rHora').value=r?.hora||'';document.getElementById('rDuracao').value=r?.duracao_minutos||'';document.getElementById('rTipo').value=r?.tipo||'Alinhamento';document.getElementById('rAssunto').value=r?.assunto||'';document.getElementById('rOrganizador').value=r?.organizador||'';document.getElementById('rModulo').value=r?.modulo||'';document.getElementById('rParticipantes').value=r?.participantes||'';document.getElementById('rLocal').value=r?.local_link||'';document.getElementById('rResumo').value=r?.resumo||'';document.getElementById('rDecisoes').value=r?.decisoes||'';document.getElementById('rProximos').value=r?.proximos_passos||'';document.getElementById('rProxima').value=r?.proxima_reuniao||'';document.getElementById('rStatus').value=r?.status||'Realizada';document.getElementById('errReuniao').style.display='none';document.getElementById('ovReuniao').classList.add('open');
+}
+function fecharModalReuniao(){document.getElementById('ovReuniao').classList.remove('open');reuniaoEditando=null;}
+async function salvarReuniao(){
+  const data=document.getElementById('rData').value,assunto=document.getElementById('rAssunto').value.trim();if(!data||!assunto){document.getElementById('errReuniao').textContent=!data?'Informe a data da reunião':'Informe o assunto da reunião';document.getElementById('errReuniao').style.display='block';return;}
+  const dados={data,hora:document.getElementById('rHora').value,duracao_minutos:document.getElementById('rDuracao').value,tipo:document.getElementById('rTipo').value,assunto,organizador:document.getElementById('rOrganizador').value.trim(),modulo:document.getElementById('rModulo').value,participantes:document.getElementById('rParticipantes').value.trim(),local_link:document.getElementById('rLocal').value.trim(),resumo:document.getElementById('rResumo').value.trim(),decisoes:document.getElementById('rDecisoes').value.trim(),proximos_passos:document.getElementById('rProximos').value.trim(),proxima_reuniao:document.getElementById('rProxima').value,status:document.getElementById('rStatus').value};
+  try{if(reuniaoEditando!==null){const r=reunioes.find(x=>Number(x.id)===Number(reuniaoEditando));if(!r)return;if(sb){const {error}=await sb.from('reunioes').update({...dados,duracao_minutos:dados.duracao_minutos?Number(dados.duracao_minutos):null,hora:dados.hora||null,proxima_reuniao:dados.proxima_reuniao||null,updated_at:new Date().toISOString()}).eq('id',Number(r.id));if(error)throw error;}Object.assign(r,dados);
+  }else{if(sb){const {data:novo,error}=await sb.from('reunioes').insert({...dados,duracao_minutos:dados.duracao_minutos?Number(dados.duracao_minutos):null,hora:dados.hora||null,proxima_reuniao:dados.proxima_reuniao||null}).select('id').single();if(error)throw error;reunioes.push({id:Number(novo.id),...dados,acoes:[]});nextReuniaoId=Math.max(nextReuniaoId,Number(novo.id)+1);}else{reunioes.push({id:nextReuniaoId++,...dados,acoes:[]});}}
+  salvarReunioesLocal();fecharModalReuniao();render();
+  }catch(e){alert('Não foi possível salvar a reunião.\n\nDetalhes: '+(e.message||'erro desconhecido'));}}
+async function excluirReuniao(id){if(!confirm('Excluir esta reunião e todas as suas ações?'))return;try{if(sb){const {error}=await sb.from('reunioes').delete().eq('id',Number(id));if(error)throw error;}reunioes=reunioes.filter(r=>Number(r.id)!==Number(id));delete reuniaoExpandida[id];salvarReunioesLocal();render();}catch(e){alert('Não foi possível excluir a reunião.\n\nDetalhes: '+(e.message||'erro desconhecido'));}}
+function toggleReuniao(id){reuniaoExpandida[id]=reuniaoExpandida[id]===false;render();}
+function abrirModalReuniaoAcao(rid,aid=null){reuniaoAlvo=Number(rid);reuniaoAcaoEditando=aid!==null?Number(aid):null;const r=reunioes.find(x=>Number(x.id)===reuniaoAlvo);const a=reuniaoAcaoEditando!==null&&r?r.acoes.find(x=>Number(x.id)===reuniaoAcaoEditando):null;document.getElementById('reuniaoAcaoModalTitulo').textContent=a?'Editar ação':'Nova ação';document.getElementById('raDescricao').value=a?.descricao||'';document.getElementById('raResponsavel').value=a?.responsavel||'';document.getElementById('raPrazo').value=a?.prazo||'';document.getElementById('raObservacoes').value=a?.observacoes||'';document.getElementById('raConcluida').checked=!!a?.concluida;document.getElementById('errReuniaoAcao').style.display='none';document.getElementById('ovReuniaoAcao').classList.add('open');}
+function fecharModalReuniaoAcao(){document.getElementById('ovReuniaoAcao').classList.remove('open');reuniaoAlvo=null;reuniaoAcaoEditando=null;}
+async function salvarReuniaoAcao(){const descricao=document.getElementById('raDescricao').value.trim();if(!descricao){document.getElementById('errReuniaoAcao').style.display='block';document.getElementById('raDescricao').focus();return;}const r=reunioes.find(x=>Number(x.id)===Number(reuniaoAlvo));if(!r)return;const concluida=document.getElementById('raConcluida').checked;const dados={descricao,responsavel:document.getElementById('raResponsavel').value.trim(),prazo:document.getElementById('raPrazo').value,observacoes:document.getElementById('raObservacoes').value.trim(),concluida,data_conclusao:concluida?new Date().toISOString().slice(0,10):''};try{if(reuniaoAcaoEditando!==null){const a=r.acoes.find(x=>Number(x.id)===Number(reuniaoAcaoEditando));if(!a)return;if(sb){const {error}=await sb.from('reuniao_acoes').update({descricao:dados.descricao,responsavel:dados.responsavel||'',prazo:dados.prazo||null,observacoes:dados.observacoes||'',concluida:!!dados.concluida,data_conclusao:dados.data_conclusao||'',updated_at:new Date().toISOString()}).eq('id',Number(a.id));if(error)throw error;}Object.assign(a,dados);}else{if(sb){const {data:novo,error}=await sb.from('reuniao_acoes').insert({reuniao_id:Number(r.id),descricao:dados.descricao,responsavel:dados.responsavel||'',prazo:dados.prazo||null,observacoes:dados.observacoes||'',concluida:!!dados.concluida,data_conclusao:dados.data_conclusao||''}).select('id').single();if(error)throw error;r.acoes.push({id:Number(novo.id),...dados});nextReuniaoAcaoId=Math.max(nextReuniaoAcaoId,Number(novo.id)+1);}else{r.acoes.push({id:nextReuniaoAcaoId++,...dados});}}salvarReunioesLocal();fecharModalReuniaoAcao();reuniaoExpandida[r.id]=true;render();}catch(e){alert('Não foi possível salvar a ação da reunião.\n\nDetalhes: '+(e.message||'erro desconhecido'));}}
+async function alternarReuniaoAcao(rid,aid){const r=reunioes.find(x=>Number(x.id)===Number(rid));if(!r)return;const a=r.acoes.find(x=>Number(x.id)===Number(aid));if(!a)return;const novo=!a.concluida,data_conclusao=novo?new Date().toISOString().slice(0,10):'';try{if(sb){const {error}=await sb.from('reuniao_acoes').update({concluida:novo,data_conclusao:data_conclusao||'',updated_at:new Date().toISOString()}).eq('id',Number(a.id));if(error)throw error;}a.concluida=novo;a.data_conclusao=data_conclusao;salvarReunioesLocal();render();}catch(e){alert('Não foi possível atualizar a ação da reunião.\n\nDetalhes: '+(e.message||'erro desconhecido'));}}
+async function excluirReuniaoAcao(rid,aid){const r=reunioes.find(x=>Number(x.id)===Number(rid));if(!r)return;if(!confirm('Excluir esta ação da reunião?'))return;try{if(sb){const {error}=await sb.from('reuniao_acoes').delete().eq('id',Number(aid));if(error)throw error;}r.acoes=r.acoes.filter(a=>Number(a.id)!==Number(aid));salvarReunioesLocal();render();}catch(e){alert('Não foi possível excluir a ação da reunião.\n\nDetalhes: '+(e.message||'erro desconhecido'));}}
 function selecionarProjetosBusca(){
   const inp=document.getElementById('projetosBusca');
   if(!inp) return;
@@ -957,6 +1141,8 @@ function iniciarSincronizacaoTempoReal() {
     .on('postgres_changes', { event:'*', schema:'public', table:'micro_acoes' }, () => receberNuvem())
     .on('postgres_changes', { event:'*', schema:'public', table:'projetos' }, () => receberNuvem())
     .on('postgres_changes', { event:'*', schema:'public', table:'projeto_acoes' }, () => receberNuvem())
+    .on('postgres_changes', { event:'*', schema:'public', table:'reunioes' }, () => receberNuvem())
+    .on('postgres_changes', { event:'*', schema:'public', table:'reuniao_acoes' }, () => receberNuvem())
     .subscribe();
 }
 
@@ -969,6 +1155,8 @@ async function receberNuvem() {
     const { data: cloudMicros } = await sb.from('micro_acoes').select('*').order('id');
     const { data: cloudProjetos } = await sb.from('projetos').select('*').order('id');
     const { data: cloudProjetoAcoes } = await sb.from('projeto_acoes').select('*').order('id');
+    const { data: cloudReunioes } = await sb.from('reunioes').select('*').order('data',{ascending:false}).order('id',{ascending:false});
+    const { data: cloudReuniaoAcoes } = await sb.from('reuniao_acoes').select('*').order('id');
     if (!cloudTasks) return;
     tarefas = cloudTasks.map(t => ({ id:Number(t.id), mes:t.mes||'', assunto:t.assunto||'', atividade:t.atividade||'', descricao:t.descricao||'', solicitante:t.solicitante||'', responsavel:t.responsavel||'', onde:t.onde||'', prioridade:t.prioridade||'', status:t.status||'', micros:[] }));
     (cloudMicros||[]).forEach(m => { const t=tarefas.find(x=>String(x.id)===String(m.tarefa_id)); if(t) t.micros.push({id:Number(m.id),desc:m.descricao||'',responsavel:m.responsavel||'',prazo:m.prazo||'',status:m.status||'',prio:m.prio||''}); });
@@ -978,6 +1166,13 @@ async function receberNuvem() {
       nextProjetoId=Math.max(1000,...projetos.map(p=>Number(p.id)||0)+1);
       nextProjetoAcaoId=Math.max(2000,...projetos.flatMap(p=>p.acoes).map(a=>Number(a.id)||0)+1);
       salvarProjetosLocal();
+    }
+    if (cloudReunioes) {
+      reunioes=cloudReunioes.map(r=>({id:Number(r.id),data:r.data||'',hora:r.hora||'',duracao_minutos:r.duracao_minutos||'',tipo:r.tipo||'Reunião',assunto:r.assunto||'',organizador:r.organizador||'',participantes:r.participantes||'',local_link:r.local_link||'',modulo:r.modulo||'',resumo:r.resumo||'',decisoes:r.decisoes||'',proximos_passos:r.proximos_passos||'',proxima_reuniao:r.proxima_reuniao||'',status:r.status||'Realizada',acoes:[]}));
+      (cloudReuniaoAcoes||[]).forEach(a=>{const r=reunioes.find(x=>Number(x.id)===Number(a.reuniao_id));if(r)r.acoes.push({id:Number(a.id),descricao:a.descricao||'',responsavel:a.responsavel||'',prazo:a.prazo||'',observacoes:a.observacoes||'',concluida:!!a.concluida,data_conclusao:a.data_conclusao||''});});
+      nextReuniaoId=Math.max(3000,...reunioes.map(r=>Number(r.id)||0)+1);
+      nextReuniaoAcaoId=Math.max(4000,...reunioes.flatMap(r=>r.acoes).map(a=>Number(a.id)||0)+1);
+      salvarReunioesLocal();
     }
     localStorage.setItem('tarefas', JSON.stringify(tarefas));
     render();
@@ -1197,6 +1392,8 @@ function atualizarContadoresPainel() {
   if(elProjetos) elProjetos.textContent=projetos.length;
   const elCalendario=document.getElementById('count-calendario');
   if(elCalendario) elCalendario.textContent=obterEventosCalendario().length;
+  const elReunioes=document.getElementById('count-reunioes');
+  if(elReunioes) elReunioes.textContent=reunioes.length;
   categorias.forEach(a => { const el=document.getElementById(ids[a]); if(el) el.textContent=tarefas.filter(t => (t.assunto||'')===a).length; });
 }
 
@@ -1343,7 +1540,19 @@ function render() {
     if(projetosView) projetosView.style.display='block';
     const cv=document.getElementById('calendarioView');
     if(cv) cv.style.display='none';
+    const rv=document.getElementById('reunioesView');
+    if(rv) rv.style.display='none';
     renderProjetos();
+    return;
+  }
+  if (painelSelecionado === '__reunioes__') {
+    if(tarefasView) tarefasView.style.display='none';
+    if(projetosView) projetosView.style.display='none';
+    const cv=document.getElementById('calendarioView');
+    if(cv) cv.style.display='none';
+    const rv=document.getElementById('reunioesView');
+    if(rv) rv.style.display='block';
+    renderReunioes();
     return;
   }
   if (painelSelecionado === '__calendario__') {
@@ -1354,6 +1563,8 @@ function render() {
   }
   if(tarefasView) tarefasView.style.display='block';
   if(projetosView) projetosView.style.display='none';
+  const reunioesViewEl=document.getElementById('reunioesView');
+  if(reunioesViewEl) reunioesViewEl.style.display='none';
   const calendarioViewEl=document.getElementById('calendarioView');
   if(calendarioViewEl) calendarioViewEl.style.display='none';
   const busca = document.getElementById('busca').value.toLowerCase();
@@ -1822,6 +2033,8 @@ document.getElementById('ovMicro').addEventListener('click',e=>{if(e.target===e.
 document.getElementById('ovProjeto').addEventListener('click',e=>{if(e.target===e.currentTarget)fecharModalProjeto();});
 document.getElementById('ovProjetoAcao').addEventListener('click',e=>{if(e.target===e.currentTarget)fecharModalProjetoAcao();});
 document.getElementById('ovCalEvento').addEventListener('click',e=>{if(e.target===e.currentTarget)fecharDetalheCalendario();});
+document.getElementById('ovReuniao').addEventListener('click',e=>{if(e.target===e.currentTarget)fecharModalReuniao();});
+document.getElementById('ovReuniaoAcao').addEventListener('click',e=>{if(e.target===e.currentTarget)fecharModalReuniaoAcao();});
 
 carregarDados().then(() => { render(); iniciarSincronizacaoTempoReal(); });
 

@@ -335,6 +335,87 @@ tr.tarefa-row:hover>td{background:#F7FBFD;}
   .project-action-tools{grid-column:3;grid-row:1;}
 }
 
+
+.calendar-view{display:none;}
+.calendar-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;flex-wrap:wrap;}
+.calendar-toolbar-left,.calendar-toolbar-right{display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+.calendar-title{font-size:22px;font-weight:700;color:var(--brand-dark);min-width:215px;text-align:center;}
+.calendar-nav-btn{height:36px;min-width:36px;padding:0 10px;border:1px solid var(--line);background:#fff;color:#536B7A;border-radius:9px;cursor:pointer;font-size:13px;}
+.calendar-nav-btn:hover{background:#F0F6FA;color:var(--brand-dark);}
+.calendar-today{font-weight:650;}
+.calendar-view-btns{display:flex;background:#EEF3F6;border-radius:9px;padding:3px;gap:2px;}
+.calendar-view-btn{height:31px;padding:0 11px;border:0;background:transparent;color:#5D7382;border-radius:7px;font-size:12px;cursor:pointer;font-family:inherit;}
+.calendar-view-btn.active{background:#fff;color:var(--brand);font-weight:700;box-shadow:0 1px 4px rgba(15,76,110,.10);}
+.calendar-legend{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;padding:9px 11px;background:#fff;border:1px solid var(--line);border-radius:10px;font-size:11px;color:#5D7382;}
+.calendar-legend span{display:inline-flex;align-items:center;gap:5px;}
+.calendar-dot{width:9px;height:9px;border-radius:3px;background:var(--brand);}
+.calendar-dot.micro{background:#2F80ED;}
+.calendar-dot.project{background:#22A06B;}
+.calendar-dot.project-main{background:#7B61A8;}
+.calendar-undated{margin-left:auto;color:#8A9AA5;}
+.calendar-grid{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(15,76,110,.025);}
+.calendar-weekdays{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));background:#F2F6F8;border-bottom:1px solid var(--line);}
+.calendar-weekday{padding:9px 8px;text-align:center;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#647784;}
+.calendar-month-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));}
+.calendar-day{min-height:116px;border-right:1px solid #EDF1F3;border-bottom:1px solid #EDF1F3;padding:7px;background:#fff;overflow:hidden;}
+.calendar-day:nth-child(7n){border-right:none;}
+.calendar-day.muted{background:#FAFBFC;}
+.calendar-day.today{background:#F7FBFD;box-shadow:inset 0 3px 0 var(--brand);}
+.calendar-day-num{display:flex;align-items:center;justify-content:space-between;font-size:11px;font-weight:650;color:#637785;margin-bottom:5px;}
+.calendar-day.today .calendar-day-num{color:var(--brand-dark);}
+.calendar-event{display:flex;gap:5px;align-items:flex-start;margin-bottom:4px;padding:4px 6px;border-radius:6px;border-left:3px solid var(--brand);background:#F6FAFC;cursor:pointer;overflow:hidden;}
+.calendar-event:hover{background:#EAF3F8;}
+.calendar-event.micro{border-left-color:#2F80ED;background:#F5F9FE;}
+.calendar-event.project{border-left-color:#22A06B;background:#F2FBF6;}
+.calendar-event.project-main{border-left-color:#7B61A8;background:#F8F5FC;}
+.calendar-event.done{opacity:.62;}
+.calendar-event-title{font-size:10px;line-height:1.25;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;}
+.calendar-event-meta{font-size:9px;color:#78909D;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;}
+.calendar-more{font-size:9px;color:var(--brand);font-weight:700;padding:2px 4px;cursor:pointer;}
+.calendar-week-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));min-width:900px;}
+.calendar-week-scroll{overflow-x:auto;}
+.calendar-week-col{min-height:520px;border-right:1px solid #EDF1F3;background:#fff;padding:8px;}
+.calendar-week-col:last-child{border-right:none;}
+.calendar-week-head{padding-bottom:8px;border-bottom:1px solid #EDF1F3;margin-bottom:7px;}
+.calendar-week-head strong{display:block;font-size:12px;color:var(--brand-dark);}
+.calendar-week-head span{display:block;font-size:10px;color:#80919D;margin-top:2px;}
+.calendar-day.today .calendar-week-head strong{color:var(--brand);}
+.calendar-day-event{padding:7px 8px;border-radius:7px;margin-bottom:6px;border-left:3px solid var(--brand);background:#F6FAFC;cursor:pointer;}
+.calendar-day-event.micro{border-left-color:#2F80ED;background:#F5F9FE;}
+.calendar-day-event.project{border-left-color:#22A06B;background:#F2FBF6;}
+.calendar-day-event.project-main{border-left-color:#7B61A8;background:#F8F5FC;}
+.calendar-day-event-title{font-size:11px;font-weight:650;color:var(--text);line-height:1.3;}
+.calendar-day-event-meta{font-size:10px;color:#6D7F8D;margin-top:2px;line-height:1.3;}
+.calendar-empty{padding:45px 15px;text-align:center;color:#8A9AA5;font-size:12px;}
+.calendar-empty i{display:block;font-size:25px;margin-bottom:7px;color:#9CB0BC;}
+.calendar-list-day{padding:14px 16px;border-bottom:1px solid #EDF1F3;}
+.calendar-list-day:last-child{border-bottom:none;}
+.calendar-list-day-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;}
+.calendar-list-day-head strong{font-size:13px;color:var(--brand-dark);}
+.calendar-list-day-head span{font-size:10px;color:#8A9AA5;}
+.calendar-list-events{display:flex;flex-direction:column;gap:6px;}
+.calendar-list-event{display:grid;grid-template-columns:9px minmax(0,1fr) 160px 120px;gap:9px;align-items:center;padding:9px 10px;border:1px solid #EDF1F3;border-radius:8px;background:#fff;cursor:pointer;}
+.calendar-list-event:hover{background:#F7FBFD;}
+.calendar-list-dot{width:8px;height:8px;border-radius:3px;background:var(--brand);}
+.calendar-list-event.micro .calendar-list-dot{background:#2F80ED;}
+.calendar-list-event.project .calendar-list-dot{background:#22A06B;}
+.calendar-list-event.project-main .calendar-list-dot{background:#7B61A8;}
+.calendar-list-title{font-size:12px;font-weight:650;color:var(--text);}
+.calendar-list-sub{font-size:10px;color:#7C909D;margin-top:2px;}
+.calendar-list-meta{font-size:10px;color:#627986;}
+.calendar-list-status{font-size:10px;color:#627986;text-align:right;}
+.calendar-no-events{padding:45px 15px;text-align:center;color:#8A9AA5;font-size:12px;}
+.calendar-no-events i{font-size:24px;display:block;margin-bottom:7px;}
+@media (max-width:700px){
+  .calendar-title{order:3;width:100%;min-width:0;font-size:19px;}
+  .calendar-toolbar-left,.calendar-toolbar-right{width:100%;justify-content:center;}
+  .calendar-undated{width:100%;margin-left:0;}
+  .calendar-month-grid{min-width:840px;}
+  .calendar-grid{overflow:auto;}
+  .calendar-list-event{grid-template-columns:9px minmax(0,1fr);gap:7px;}
+  .calendar-list-meta,.calendar-list-status{grid-column:2;}
+}
+
 .sidebar-group-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#8A9AA5;padding:12px 10px 5px;}
 </style>
 </head>
@@ -402,6 +483,7 @@ tr.tarefa-row:hover>td{background:#F7FBFD;}
     <aside class="sidebar">
       <div class="sidebar-title">Gestão</div>
       <button class="sidebar-btn active" data-painel="todos" onclick="selecionarPainel('todos')"><i class="ti ti-layout-dashboard"></i> Todas as atividades <span class="sidebar-count" id="count-todos">0</span></button>
+      <button class="sidebar-btn" data-painel="__calendario__" onclick="selecionarPainel('__calendario__')"><i class="ti ti-calendar-event"></i> Calendário <span class="sidebar-count" id="count-calendario">0</span></button>
       <button class="sidebar-btn" data-painel="__projetos__" onclick="selecionarPainel('__projetos__')"><i class="ti ti-briefcase-2"></i> Projetos <span class="sidebar-count" id="count-projetos">0</span></button>
       <div class="sidebar-group-label">Qualidade</div>
       <button class="sidebar-btn" data-painel="Documentos" onclick="selecionarPainel('Documentos')"><i class="ti ti-file-text"></i> Documentos <span class="sidebar-count" id="count-Documentos">0</span></button>
@@ -428,6 +510,32 @@ tr.tarefa-row:hover>td{background:#F7FBFD;}
         </div>
         <div id="abasMes" class="mes-tabs"></div>
         <div id="conteudo"></div>
+      </div>
+
+      <div id="calendarioView" class="calendar-view">
+        <div class="calendar-toolbar">
+          <div class="calendar-toolbar-left">
+            <button type="button" class="calendar-nav-btn calendar-today" onclick="calHoje()">Hoje</button>
+            <button type="button" class="calendar-nav-btn" onclick="calNavegar(-1)" aria-label="Período anterior"><i class="ti ti-chevron-left"></i></button>
+            <button type="button" class="calendar-nav-btn" onclick="calNavegar(1)" aria-label="Próximo período"><i class="ti ti-chevron-right"></i></button>
+          </div>
+          <div class="calendar-title" id="calendarTitle">Calendário</div>
+          <div class="calendar-toolbar-right">
+            <div class="calendar-view-btns">
+              <button type="button" class="calendar-view-btn active" data-cal-view="month" onclick="mudarCalView('month')">Mês</button>
+              <button type="button" class="calendar-view-btn" data-cal-view="week" onclick="mudarCalView('week')">Semana</button>
+              <button type="button" class="calendar-view-btn" data-cal-view="day" onclick="mudarCalView('day')">Dia</button>
+            </div>
+          </div>
+        </div>
+        <div class="calendar-legend">
+          <span><i class="calendar-dot"></i> Tarefas</span>
+          <span><i class="calendar-dot micro"></i> Micro ações</span>
+          <span><i class="calendar-dot project"></i> Mini ações de projetos</span>
+          <span><i class="calendar-dot project-main"></i> Projetos</span>
+          <span class="calendar-undated" id="calendarUndated"></span>
+        </div>
+        <div id="calendarContent"></div>
       </div>
 
       <div id="projetosView" style="display:none">
@@ -598,6 +706,7 @@ let tarefas = [
 ];
 let nextId = 100, nextMicroId = 200;
 let projetos = [], nextProjetoId = 1000, nextProjetoAcaoId = 2000, projetoEditando = null, projetoAcaoEditando = null, projetoAlvo = null;
+let calendarioView='month', calendarioData=new Date();
 let collapsedMes = {}, expandedTarefa = {}, microAlvo = null, mesesSelecionados = new Set(), painelSelecionado = 'todos', projetoExpandido = {};
 
 function bc(s){ return s==='Pendente'?'b-p':s==='Aguardando'?'b-a':s==='Concluído'?'b-c':'b-s'; }
@@ -834,6 +943,153 @@ async function receberNuvem() {
   } finally { recebendoNuvem=false; }
 }
 
+
+function calISO(d){return d.toISOString().slice(0,10);}
+function calData(iso){return new Date(iso+'T00:00:00');}
+function calInicioSemana(d){const x=new Date(d);x.setHours(0,0,0,0);const day=x.getDay();const diff=day===0?-6:1-day;x.setDate(x.getDate()+diff);return x;}
+function calFimSemana(d){const x=calInicioSemana(d);x.setDate(x.getDate()+6);return x;}
+function calMesmoDia(a,b){return calISO(a)===calISO(b);}
+function calPrimeiroDiaMes(d){return new Date(d.getFullYear(),d.getMonth(),1);}
+function calUltimoDiaMes(d){return new Date(d.getFullYear(),d.getMonth()+1,0);}
+function calEventClass(tipo){return tipo==='micro'?'micro':tipo==='projeto'?'project':tipo==='projeto-main'?'project-main':'';}
+function calFonteLabel(tipo){return tipo==='micro'?'Micro ação':tipo==='projeto'?'Mini ação de projeto':tipo==='projeto-main'?'Projeto':'Tarefa';}
+
+function obterEventosCalendario(){
+  const eventos=[];
+  const add=(data,tipo,titulo,subtitulo,meta,ref,concluida)=>{if(!data)return;eventos.push({id:tipo+'-'+ref+'-'+data,data,tipo,titulo,subtitulo,meta,ref,concluida:!!concluida});};
+  tarefas.forEach(t=>{
+    // Ocorrências recorrentes entram pela data da ocorrência.
+    if(t.data_ocorrencia){
+      add(t.data_ocorrencia,'tarefa',t.atividade,t.assunto||'Tarefa',t.responsavel||'',t.id,t.status==='Concluído');
+    }
+    // Atividades antigas sem data de ocorrência usam o mês apenas como referência;
+    // sem um dia definido, elas não são posicionadas em uma célula do calendário.
+  });
+  tarefas.forEach(t=>(t.micros||[]).forEach(m=>{
+    add(m.prazo,'micro',m.desc,t.atividade,m.responsavel||'',t.id+'-'+m.id,m.status==='Concluído');
+  }));
+  projetos.forEach(p=>{
+    add(p.prazo,'projeto-main',p.nome,'Projeto',p.responsavel||'',p.id,p.status==='Concluído');
+    (p.acoes||[]).forEach(a=>{
+      add(a.prazo,'projeto',a.descricao,p.nome,a.responsavel||'',p.id+'-'+a.id,a.concluida);
+    });
+  });
+  return eventos.sort((a,b)=>a.data.localeCompare(b.data)||a.titulo.localeCompare(b.titulo,'pt-BR'));
+}
+
+function calEventosDoDia(data){const iso=calISO(data);return obterEventosCalendario().filter(e=>e.data===iso);}
+function calFormatarTitulo(){
+  const op={month:'long',year:'numeric'};
+  if(calendarioView==='day') return calendarioData.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
+  if(calendarioView==='week'){
+    const ini=calInicioSemana(calendarioData),fim=calFimSemana(calendarioData);
+    const mesma=ini.getMonth()===fim.getMonth()&&ini.getFullYear()===fim.getFullYear();
+    if(mesma)return ini.toLocaleDateString('pt-BR',{day:'2-digit'})+'–'+fim.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
+    return ini.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'})+'–'+fim.toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'});
+  }
+  return calendarioData.toLocaleDateString('pt-BR',op);
+}
+function calEsc(s){return escHtml(s);}
+function calEventoHtml(e,modo){
+  const cls=calEventClass(e.tipo);
+  const done=e.concluida?' done':'';
+  if(modo==='month') return '<div class="calendar-event '+cls+done+'" onclick="abrirEventoCalendario(\''+e.tipo+'\',\''+e.ref+'\')" title="'+calEsc(e.titulo)+'"><div style="min-width:0"><div class="calendar-event-title">'+calEsc(e.titulo)+'</div><div class="calendar-event-meta">'+calEsc(calFonteLabel(e.tipo)+(e.meta?' • '+e.meta:''))+'</div></div></div>';
+  return '<div class="calendar-day-event '+cls+done+'" onclick="abrirEventoCalendario(\''+e.tipo+'\',\''+e.ref+'\')" title="'+calEsc(e.titulo)+'"><div class="calendar-day-event-title">'+calEsc(e.titulo)+'</div><div class="calendar-day-event-meta">'+calEsc(calFonteLabel(e.tipo)+(e.meta?' • '+e.meta:''))+'</div></div>';
+}
+function renderCalendario(){
+  const view=document.getElementById('calendarioView');
+  if(!view)return;
+  view.style.display='block';
+  const title=document.getElementById('calendarTitle');
+  if(title) title.textContent=calFormatarTitulo();
+  document.querySelectorAll('[data-cal-view]').forEach(b=>b.classList.toggle('active',b.dataset.calView===calendarioView));
+  const eventos=obterEventosCalendario();
+  const comData={
+    total:eventos.length
+  };
+  const possiveisSemData=tarefas.filter(t=>!t.data_ocorrencia).length
+    +tarefas.reduce((n,t)=>n+(t.micros||[]).filter(m=>!m.prazo).length,0)
+    +projetos.filter(p=>!p.prazo).length
+    +projetos.reduce((n,p)=>n+(p.acoes||[]).filter(a=>!a.prazo).length,0);
+  const ud=document.getElementById('calendarUndated');
+  if(ud) ud.textContent=possiveisSemData?possiveisSemData+' item(ns) sem data/prazo':'Todos os itens possuem data/prazo';
+  const c=document.getElementById('calendarContent');
+  if(!c)return;
+  if(calendarioView==='month') c.innerHTML=renderCalendarioMes(eventos);
+  else if(calendarioView==='week') c.innerHTML=renderCalendarioSemana(eventos);
+  else c.innerHTML=renderCalendarioDia(eventos);
+}
+function renderCalendarioMes(eventos){
+  const ini=new Date(calendarioData.getFullYear(),calendarioData.getMonth(),1);
+  const start=calInicioSemana(ini);
+  const end=new Date(start);end.setDate(end.getDate()+41);
+  const days=[];
+  for(let i=0;i<42;i++){const d=new Date(start);d.setDate(start.getDate()+i);days.push(d);}
+  const monthsame=d=>d.getMonth()===calendarioData.getMonth();
+  let html='<div class="calendar-grid"><div class="calendar-weekdays">'+['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'].map(x=>'<div class="calendar-weekday">'+x+'</div>').join('')+'</div><div class="calendar-month-grid">';
+  days.forEach(d=>{
+    const ev=eventos.filter(e=>e.data===calISO(d));
+    html+='<div class="calendar-day '+(monthsSame(d)?'':'muted')+(calMesmoDia(d,new Date())?' today':'')+'">';
+    html+='<div class="calendar-day-num"><span>'+d.getDate()+'</span>'+(ev.length?'<span style="font-size:9px;color:#8A9AA5">'+ev.length+'</span>':'')+'</div>';
+    const max=4;
+    ev.slice(0,max).forEach(e=>html+=calEventoHtml(e,'month'));
+    if(ev.length>max)html+='<div class="calendar-more" title="'+(ev.length-max)+' eventos adicionais">'+(ev.length-max)+' mais…</div>';
+    html+='</div>';
+  });
+  html+='</div></div>';
+  return html;
+}
+function monthsSame(d){return d.getMonth()===calendarioData.getMonth();}
+function renderCalendarioSemana(eventos){
+  const ini=calInicioSemana(calendarioData);
+  let html='<div class="calendar-grid calendar-week-scroll"><div class="calendar-week-grid">';
+  for(let i=0;i<7;i++){
+    const d=new Date(ini);d.setDate(ini.getDate()+i);
+    const ev=eventos.filter(e=>e.data===calISO(d));
+    html+='<div class="calendar-week-col '+(calMesmoDia(d,new Date())?'today':'')+'"><div class="calendar-week-head"><strong>'+d.toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit'})+'</strong><span>'+d.toLocaleDateString('pt-BR',{month:'long',year:'numeric'})+'</span></div>';
+    if(ev.length) ev.forEach(e=>html+=calEventoHtml(e,'day'));
+    else html+='<div class="calendar-empty" style="padding:25px 6px">Sem ações</div>';
+    html+='</div>';
+  }
+  return html+'</div></div>';
+}
+function renderCalendarioDia(eventos){
+  const ev=eventos.filter(e=>e.data===calISO(calendarioData));
+  if(!ev.length)return '<div class="calendar-grid"><div class="calendar-no-events"><i class="ti ti-calendar-off"></i>Nenhuma ação com prazo/data para este dia.</div></div>';
+  let html='<div class="calendar-grid"><div class="calendar-list-events">';
+  ev.forEach(e=>{
+    const cls=calEventClass(e.tipo);
+    html+='<div class="calendar-list-event '+cls+(e.concluida?' done':'')+'" onclick="abrirEventoCalendario(\''+e.tipo+'\',\''+e.ref+'\')"><span class="calendar-list-dot"></span><div><div class="calendar-list-title">'+calEsc(e.titulo)+'</div><div class="calendar-list-sub">'+calEsc(e.subtitulo)+'</div></div><div class="calendar-list-meta">'+calEsc(calFonteLabel(e.tipo))+(e.meta?' • '+calEsc(e.meta):'')+'</div><div class="calendar-list-status">'+(e.concluida?'Concluído':'Em aberto')+'</div></div>';
+  });
+  return html+'</div></div>';
+}
+function mudarCalView(view){calendarioView=view;renderCalendario();}
+function calHoje(){calendarioData=new Date();renderCalendario();}
+function calNavegar(d){
+  if(calendarioView==='month')calendarioData=new Date(calendarioData.getFullYear(),calendarioData.getMonth()+d,1);
+  else if(calendarioView==='week'){const x=new Date(calendarioData);x.setDate(x.getDate()+d*7);calendarioData=x;}
+  else {const x=new Date(calendarioData);x.setDate(x.getDate()+d);calendarioData=x;}
+  renderCalendario();
+}
+function abrirEventoCalendario(tipo,ref){
+  if(tipo==='tarefa'){
+    const t=tarefas.find(x=>String(x.id)===String(ref)); if(t) abrirModalEditarTarefa(t.id);
+    return;
+  }
+  if(tipo==='micro'){
+    const parts=String(ref).split('-'); const tid=Number(parts[0]),mid=Number(parts[1]);
+    if(Number.isFinite(tid)&&Number.isFinite(mid)) abrirModalMicro(tid,mid);
+    return;
+  }
+  if(tipo==='projeto-main'){
+    abrirModalProjeto(Number(ref)); return;
+  }
+  if(tipo==='projeto'){
+    const parts=String(ref).split('-'); const pid=Number(parts[0]),aid=Number(parts[1]);
+    if(Number.isFinite(pid)&&Number.isFinite(aid)) abrirModalProjetoAcao(pid,aid);
+  }
+}
+
 function selecionarPainel(painel) {
   window.filtroSomenteAtrasadas = false;
   painelSelecionado = painel;
@@ -848,6 +1104,8 @@ function atualizarContadoresPainel() {
   if(elTodos) elTodos.textContent=tarefas.length;
   const elProjetos=document.getElementById('count-projetos');
   if(elProjetos) elProjetos.textContent=projetos.length;
+  const elCalendario=document.getElementById('count-calendario');
+  if(elCalendario) elCalendario.textContent=obterEventosCalendario().length;
   categorias.forEach(a => { const el=document.getElementById(ids[a]); if(el) el.textContent=tarefas.filter(t => (t.assunto||'')===a).length; });
 }
 
@@ -992,11 +1250,21 @@ function render() {
   if (painelSelecionado === '__projetos__') {
     if(tarefasView) tarefasView.style.display='none';
     if(projetosView) projetosView.style.display='block';
+    const cv=document.getElementById('calendarioView');
+    if(cv) cv.style.display='none';
     renderProjetos();
+    return;
+  }
+  if (painelSelecionado === '__calendario__') {
+    if(tarefasView) tarefasView.style.display='none';
+    if(projetosView) projetosView.style.display='none';
+    renderCalendario();
     return;
   }
   if(tarefasView) tarefasView.style.display='block';
   if(projetosView) projetosView.style.display='none';
+  const calendarioViewEl=document.getElementById('calendarioView');
+  if(calendarioViewEl) calendarioViewEl.style.display='none';
   const busca = document.getElementById('busca').value.toLowerCase();
   const filtroStatus = document.getElementById('filtroStatus')?.value || '';
   let lista = tarefas;

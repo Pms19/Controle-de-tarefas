@@ -405,6 +405,17 @@ tr.tarefa-row:hover>td{background:#F7FBFD;}
 .calendar-list-meta{font-size:10px;color:#627986;}
 .calendar-list-status{font-size:10px;color:#627986;text-align:right;}
 .calendar-no-events{padding:45px 15px;text-align:center;color:#8A9AA5;font-size:12px;}
+.calendar-detail{width:540px;max-width:95vw;}
+.calendar-detail-source{display:inline-flex;align-items:center;gap:6px;margin-bottom:9px;padding:4px 9px;border-radius:20px;background:var(--brand-soft);color:var(--brand);font-size:10px;font-weight:700;}
+.calendar-detail-title{font-size:18px;line-height:1.3;font-weight:700;color:var(--brand-dark);margin-bottom:12px;}
+.calendar-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.calendar-detail-item{padding:9px 10px;border:1px solid #EDF1F3;border-radius:8px;background:#F9FBFC;}
+.calendar-detail-label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#8A9AA5;margin-bottom:3px;}
+.calendar-detail-value{font-size:12px;color:var(--text);line-height:1.35;white-space:pre-line;}
+.calendar-detail-obs{margin-top:9px;}
+.calendar-detail-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px;}
+.calendar-detail-actions button{min-height:38px;padding:0 13px;}
+@media(max-width:700px){.calendar-detail-grid{grid-template-columns:1fr;}.calendar-detail-title{font-size:16px;}}
 .calendar-no-events i{font-size:24px;display:block;margin-bottom:7px;}
 @media (max-width:700px){
   .calendar-title{order:3;width:100%;min-width:0;font-size:19px;}
@@ -549,6 +560,18 @@ tr.tarefa-row:hover>td{background:#F7FBFD;}
         <div id="projetosConteudo"></div>
       </div>
     </main>
+  </div>
+</div>
+
+<!-- modal detalhe do calendário -->
+<div class="modal-overlay" id="ovCalEvento">
+  <div class="modal calendar-detail">
+    <div id="calEventoConteudo"></div>
+    <div class="calendar-detail-actions">
+      <button class="btn-cancel" onclick="fecharDetalheCalendario()">Fechar</button>
+      <button class="btn-cancel" id="calEditarBtn" onclick="editarEventoCalendario()"><i class="ti ti-pencil"></i> Editar</button>
+      <button class="btn-save" id="calModuloBtn" onclick="irParaModuloCalendario()"><i class="ti ti-external-link"></i> Ir para o módulo</button>
+    </div>
   </div>
 </div>
 
@@ -706,7 +729,7 @@ let tarefas = [
 ];
 let nextId = 100, nextMicroId = 200;
 let projetos = [], nextProjetoId = 1000, nextProjetoAcaoId = 2000, projetoEditando = null, projetoAcaoEditando = null, projetoAlvo = null;
-let calendarioView='month', calendarioData=new Date();
+let calendarioView='month', calendarioData=new Date(), calendarioEventoAtual=null;
 let collapsedMes = {}, expandedTarefa = {}, microAlvo = null, mesesSelecionados = new Set(), painelSelecionado = 'todos', projetoExpandido = {};
 
 function bc(s){ return s==='Pendente'?'b-p':s==='Aguardando'?'b-a':s==='Concluído'?'b-c':'b-s'; }
@@ -889,7 +912,7 @@ function renderProjetos(){
         +'<div class="project-action-tools"><button class="btn-icon" onclick="abrirModalProjetoAcao('+p.id+','+a.id+')" title="Editar mini ação"><i class="ti ti-pencil"></i></button><button class="btn-icon" onclick="excluirProjetoAcao('+p.id+','+a.id+')" title="Excluir mini ação"><i class="ti ti-trash"></i></button></div>'
         +'</div>';
     }).join(''):'<div style="padding:16px 0 8px;color:#91A0A9;font-size:12px">Nenhuma mini ação cadastrada ainda.</div>';
-    return '<section class="project-card">'
+    return '<section class="project-card" id="project-card-'+p.id+'">
       +'<div class="project-card-head"><div class="project-main">'
       +'<div class="project-title-row"><div class="project-title">'+escHtml(p.nome)+'</div><span class="project-status '+projetoStatusClass(p.status)+'">'+escHtml(p.status||'Em andamento')+'</span></div>'
       +(p.responsavel||p.prazo?'<div class="project-meta">'+(p.responsavel?'<span><i class="ti ti-user"></i>'+escHtml(p.responsavel)+'</span>':'')+(p.prazo?'<span><i class="ti ti-calendar"></i>'+new Date(p.prazo+'T00:00:00').toLocaleDateString('pt-BR')+'</span>':'')+'</div>':'')
@@ -993,8 +1016,8 @@ function calEsc(s){return escHtml(s);}
 function calEventoHtml(e,modo){
   const cls=calEventClass(e.tipo);
   const done=e.concluida?' done':'';
-  if(modo==='month') return '<div class="calendar-event '+cls+done+'" onclick="abrirEventoCalendario(\''+e.tipo+'\',\''+e.ref+'\')" title="'+calEsc(e.titulo)+'"><div style="min-width:0"><div class="calendar-event-title">'+calEsc(e.titulo)+'</div><div class="calendar-event-meta">'+calEsc(calFonteLabel(e.tipo)+(e.meta?' • '+e.meta:''))+'</div></div></div>';
-  return '<div class="calendar-day-event '+cls+done+'" onclick="abrirEventoCalendario(\''+e.tipo+'\',\''+e.ref+'\')" title="'+calEsc(e.titulo)+'"><div class="calendar-day-event-title">'+calEsc(e.titulo)+'</div><div class="calendar-day-event-meta">'+calEsc(calFonteLabel(e.tipo)+(e.meta?' • '+e.meta:''))+'</div></div>';
+  if(modo==='month') return '<div class="calendar-event '+cls+done+'" onclick="abrirDetalhesCalendario(\''+e.tipo+'\',\''+e.ref+'\')" title="'+calEsc(e.titulo)+'"><div style="min-width:0"><div class="calendar-event-title">'+calEsc(e.titulo)+'</div><div class="calendar-event-meta">'+calEsc(calFonteLabel(e.tipo)+(e.meta?' • '+e.meta:''))+'</div></div></div>';
+  return '<div class="calendar-day-event '+cls+done+'" onclick="abrirDetalhesCalendario(\''+e.tipo+'\',\''+e.ref+'\')" title="'+calEsc(e.titulo)+'"><div class="calendar-day-event-title">'+calEsc(e.titulo)+'</div><div class="calendar-day-event-meta">'+calEsc(calFonteLabel(e.tipo)+(e.meta?' • '+e.meta:''))+'</div></div>';
 }
 function renderCalendario(){
   const view=document.getElementById('calendarioView');
@@ -1071,6 +1094,56 @@ function calNavegar(d){
   else {const x=new Date(calendarioData);x.setDate(x.getDate()+d);calendarioData=x;}
   renderCalendario();
 }
+function eventoCalendarioSelecionar(tipo,ref){
+  return obterEventosCalendario().find(e=>e.tipo===tipo && String(e.ref)===String(ref)) || null;
+}
+function abrirDetalhesCalendario(tipo,ref){
+  const e=eventoCalendarioSelecionar(tipo,ref); if(!e)return;
+  calendarioEventoAtual={tipo,ref:String(ref)};
+  const data=e.data?calData(e.data).toLocaleDateString('pt-BR'):'—';
+  let extra='';
+  if(e.tipo==='micro'){
+    const parts=String(e.ref).split('-'), t=tarefas.find(x=>Number(x.id)===Number(parts[0])), m=t?.micros.find(x=>Number(x.id)===Number(parts[1]));
+    extra='<div class="calendar-detail-grid"><div class="calendar-detail-item"><span class="calendar-detail-label">Atividade</span><div class="calendar-detail-value">'+calEsc(t?.atividade||e.subtitulo||'—')+'</div></div><div class="calendar-detail-item"><span class="calendar-detail-label">Responsável</span><div class="calendar-detail-value">'+calEsc(m?.responsavel||'—')+'</div></div><div class="calendar-detail-item"><span class="calendar-detail-label">Prazo</span><div class="calendar-detail-value">'+data+'</div></div><div class="calendar-detail-item"><span class="calendar-detail-label">Status</span><div class="calendar-detail-value">'+(m?.status?calEsc(m.status):(e.concluida?'Concluído':'Em aberto'))+'</div></div></div>';
+  }else if(e.tipo==='projeto'){
+    const parts=String(e.ref).split('-'), p=projetos.find(x=>Number(x.id)===Number(parts[0])), a=p?.acoes.find(x=>Number(x.id)===Number(parts[1]));
+    extra='<div class="calendar-detail-grid"><div class="calendar-detail-item"><span class="calendar-detail-label">Projeto</span><div class="calendar-detail-value">'+calEsc(p?.nome||e.subtitulo||'—')+'</div></div><div class="calendar-detail-item"><span class="calendar-detail-label">Responsável</span><div class="calendar-detail-value">'+calEsc(a?.responsavel||'—')+'</div></div><div class="calendar-detail-item"><span class="calendar-detail-label">Prazo</span><div class="calendar-detail-value">'+data+'</div></div><div class="calendar-detail-item"><span class="calendar-detail-label">Status</span><div class="calendar-detail-value">'+(a?.concluida?'Concluído':'Em aberto')+'</div></div></div>'+(a?.observacoes?'<div class="calendar-detail-item calendar-detail-obs"><span class="calendar-detail-label">Observações</span><div class="calendar-detail-value">'+calEsc(a.observacoes)+'</div></div>':'');
+  }else if(e.tipo==='projeto-main'){
+    const p=projetos.find(x=>Number(x.id)===Number(e.ref));
+    extra='<div class="calendar-detail-grid"><div class="calendar-detail-item"><span class="calendar-detail-label">Responsável</span><div class="calendar-detail-value">'+calEsc(p?.responsavel||'—')+'</div></div><div class="calendar-detail-item"><span class="calendar-detail-label">Prazo</span><div class="calendar-detail-value">'+data+'</div></div><div class="calendar-detail-item"><span class="calendar-detail-label">Status</span><div class="calendar-detail-value">'+calEsc(p?.status||'Em andamento')+'</div></div></div>'+(p?.descricao?'<div class="calendar-detail-item calendar-detail-obs"><span class="calendar-detail-label">Descrição</span><div class="calendar-detail-value">'+calEsc(p.descricao)+'</div></div>':'');
+  }else{
+    const t=tarefas.find(x=>Number(x.id)===Number(e.ref));
+    extra='<div class="calendar-detail-grid"><div class="calendar-detail-item"><span class="calendar-detail-label">Assunto</span><div class="calendar-detail-value">'+calEsc(t?.assunto||'—')+'</div></div><div class="calendar-detail-item"><span class="calendar-detail-label">Responsável</span><div class="calendar-detail-value">'+calEsc(t?.responsavel||'—')+'</div></div><div class="calendar-detail-item"><span class="calendar-detail-label">Data</span><div class="calendar-detail-value">'+data+'</div></div><div class="calendar-detail-item"><span class="calendar-detail-label">Status</span><div class="calendar-detail-value">'+calEsc(t?.status||'Sem status')+'</div></div></div>'+(t?.descricao?'<div class="calendar-detail-item calendar-detail-obs"><span class="calendar-detail-label">Descrição</span><div class="calendar-detail-value">'+calEsc(t.descricao)+'</div></div>':'');
+  }
+  document.getElementById('calEventoConteudo').innerHTML='<div class="calendar-detail-source"><i class="ti ti-calendar-event"></i>'+calEsc(calFonteLabel(e.tipo))+'</div><div class="calendar-detail-title">'+calEsc(e.titulo)+'</div>'+extra;
+  document.getElementById('ovCalEvento').classList.add('open');
+}
+function fecharDetalheCalendario(){document.getElementById('ovCalEvento')?.classList.remove('open');calendarioEventoAtual=null;}
+function editarEventoCalendario(){if(!calendarioEventoAtual)return;const x={...calendarioEventoAtual};fecharDetalheCalendario();setTimeout(()=>abrirEventoCalendario(x.tipo,x.ref),0);}
+function navegarParaEventoCalendario(tipo,ref){
+  const emTarefas=(tipo==='tarefa'||tipo==='micro');
+  const scrollPara=()=>{
+    let el=null;
+    if(tipo==='tarefa') el=document.querySelector('.tarefa-row[data-id="'+Number(ref)+'"]');
+    else if(tipo==='micro') el=document.querySelector('.tarefa-row[data-id="'+Number(String(ref).split('-')[0])+'"]');
+    else el=document.getElementById('project-card-'+Number(String(ref).split('-')[0]));
+    if(el)el.scrollIntoView({behavior:'smooth',block:'center'});
+  };
+  fecharDetalheCalendario();
+  if(emTarefas){
+    const tid=tipo==='tarefa'?Number(ref):Number(String(ref).split('-')[0]);
+    const t=tarefas.find(x=>Number(x.id)===tid);
+    const cats=['Documentos','Gerenciamento de Mudanças','Não conformidades','Auditoria','Questionários','Mapeamento de processos','Outras atividades'];
+    if(tipo==='micro')expandedTarefa[tid]=true;
+    selecionarPainel(t && cats.includes(t.assunto)?t.assunto:'todos');
+  }else{
+    projetoExpandido[Number(String(ref).split('-')[0])]=true;
+    selecionarPainel('__projetos__');
+  }
+  setTimeout(scrollPara,100);
+}
+function irParaModuloCalendario(){if(calendarioEventoAtual)navegarParaEventoCalendario(calendarioEventoAtual.tipo,calendarioEventoAtual.ref);}
+
 function abrirEventoCalendario(tipo,ref){
   if(tipo==='tarefa'){
     const t=tarefas.find(x=>String(x.id)===String(ref)); if(t) abrirModalEditarTarefa(t.id);
@@ -1705,6 +1778,7 @@ document.getElementById('ovTarefa').addEventListener('click',e=>{if(e.target===e
 document.getElementById('ovMicro').addEventListener('click',e=>{if(e.target===e.currentTarget)fecharModalMicro();});
 document.getElementById('ovProjeto').addEventListener('click',e=>{if(e.target===e.currentTarget)fecharModalProjeto();});
 document.getElementById('ovProjetoAcao').addEventListener('click',e=>{if(e.target===e.currentTarget)fecharModalProjetoAcao();});
+document.getElementById('ovCalEvento').addEventListener('click',e=>{if(e.target===e.currentTarget)fecharDetalheCalendario();});
 
 carregarDados().then(() => { render(); iniciarSincronizacaoTempoReal(); });
 

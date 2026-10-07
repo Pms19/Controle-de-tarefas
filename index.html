@@ -1558,6 +1558,8 @@ function render() {
   if (painelSelecionado === '__calendario__') {
     if(tarefasView) tarefasView.style.display='none';
     if(projetosView) projetosView.style.display='none';
+    const rv=document.getElementById('reunioesView');
+    if(rv) rv.style.display='none';
     renderCalendario();
     return;
   }

@@ -284,7 +284,7 @@ tr.tarefa-row:hover>td{background:#F7FBFD;}
 .project-progress-fill.done{background:var(--green);}
 .project-checklist{padding:8px 16px 14px;}
 .project-checklist-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;font-size:11px;color:#7B8D99;text-transform:uppercase;letter-spacing:.05em;}
-.project-action-row{display:grid;grid-template-columns:auto minmax(180px,1fr) 120px 105px minmax(150px,1.1fr) auto;gap:10px;align-items:center;padding:11px 0;border-bottom:1px solid #EDF1F3;}
+.project-action-row{display:grid;grid-template-columns:auto minmax(180px,1fr) 120px 105px 105px minmax(150px,1.1fr) auto;gap:10px;align-items:center;padding:11px 0;border-bottom:1px solid #EDF1F3;}
 .project-action-row:last-child{border-bottom:none;}
 .project-action-check{width:22px;height:22px;border-radius:7px;border:2px solid #B4C4CE;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.15s ease;color:#fff;}
 .project-action-check:hover{border-color:var(--brand);}
@@ -305,7 +305,7 @@ tr.tarefa-row:hover>td{background:#F7FBFD;}
 .project-check-field{display:flex;align-items:center;}
 .project-check-label{display:flex!important;align-items:center;gap:8px!important;font-size:13px!important;color:var(--text)!important;margin:0!important;cursor:pointer;}
 .project-check-label input{width:18px!important;height:18px!important;accent-color:var(--green);}
-@media (max-width: 900px){.project-action-row{grid-template-columns:auto minmax(150px,1fr) 105px 90px auto;}.project-action-obs{grid-column:2/-1;}.project-toolbar{align-items:flex-end;}}
+@media (max-width: 900px){.project-action-row{grid-template-columns:auto minmax(150px,1fr) 105px 90px 90px auto;}.project-action-obs{grid-column:2/-1;}.project-toolbar{align-items:flex-end;}}
 @media (max-width: 700px){
   .project-toolbar{flex-direction:column;align-items:stretch;gap:10px;}
   .project-page-title{font-size:20px;}
@@ -500,6 +500,7 @@ tr.tarefa-row:hover>td{background:#F7FBFD;}
       <div class="field full"><label>Mini ação <span style="color:#c0392b">*</span></label><input type="text" id="paDescricao" placeholder="Ex.: Validar matriz de riscos"><div class="err" id="errProjetoAcao">Informe a mini ação</div></div>
       <div class="field"><label>Responsável</label><input type="text" id="paResponsavel" placeholder="Nome"></div>
       <div class="field"><label>Prazo</label><input type="date" id="paPrazo"></div>
+      <div class="field"><label>Data de conclusão</label><input type="date" id="paDataConclusao"></div>
       <div class="field full"><label>Observações</label><textarea id="paObservacoes" placeholder="Observações, impedimentos ou informações importantes."></textarea></div>
       <div class="field full project-check-field">
         <label class="project-check-label"><input type="checkbox" id="paConcluida"> <span>Mini ação concluída</span></label>
@@ -664,7 +665,7 @@ async function carregarDados() {
       }));
       (cloudProjetoAcoes||[]).forEach(a => {
         const p=projetos.find(x=>Number(x.id)===Number(a.projeto_id));
-        if(p) p.acoes.push({id:Number(a.id), descricao:a.descricao||'', responsavel:a.responsavel||'', prazo:a.prazo||'', observacoes:a.observacoes||'', concluida:!!a.concluida});
+        if(p) p.acoes.push({id:Number(a.id), descricao:a.descricao||'', responsavel:a.responsavel||'', prazo:a.prazo||'', data_conclusao:a.data_conclusao||'', observacoes:a.observacoes||'', concluida:!!a.concluida});
       });
       nextProjetoId=Math.max(1000,...projetos.map(p=>Number(p.id)||0)+1);
       nextProjetoAcaoId=Math.max(2000,...projetos.flatMap(p=>p.acoes).map(a=>Number(a.id)||0)+1);
@@ -702,7 +703,7 @@ async function sincronizarProjetos() {
   const actionRows = [];
   projetos.forEach(p => (p.acoes||[]).forEach(a => actionRows.push({
     id:Number(a.id), projeto_id:Number(p.id), descricao:a.descricao, responsavel:a.responsavel||'',
-    prazo:a.prazo||null, observacoes:a.observacoes||'', concluida:!!a.concluida, updated_at:new Date().toISOString()
+    prazo:a.prazo||null, data_conclusao:a.data_conclusao||null, observacoes:a.observacoes||'', concluida:!!a.concluida, updated_at:new Date().toISOString()
   })));
   if(actionRows.length){
     const {error} = await sb.from('projeto_acoes').upsert(actionRows,{onConflict:'id'});
@@ -767,7 +768,7 @@ function renderProjetos(){
       +(p.descricao?'<div class="project-description">'+escHtml(p.descricao)+'</div>':'')
       +'</div><div class="project-actions"><button class="btn-icon" onclick="toggleProjeto('+p.id+')" title="'+(aberto?'Recolher':'Expandir')+'"><i class="ti ti-chevron-'+(aberto?'up':'down')+'"></i></button><button class="btn-icon" onclick="abrirModalProjeto('+p.id+')" title="Editar projeto"><i class="ti ti-pencil"></i></button><button class="btn-icon" onclick="excluirProjeto('+p.id+')" title="Excluir projeto"><i class="ti ti-trash"></i></button></div></div>'
       +'<div class="project-progress"><div class="project-progress-top"><span><strong>'+prog.concluidas+'</strong> de '+prog.total+' mini ações concluídas</span><span>'+prog.percent+'%</span></div><div class="project-progress-bar"><div class="project-progress-fill '+(prog.percent===100?'done':'')+'" style="width:'+prog.percent+'%"></div></div></div>'
-      +(aberto?'<div class="project-checklist"><div class="project-checklist-head"><span>Mini ações</span><span>Responsável • Prazo • Observações</span></div>'+rows+'</div><div class="project-add-action"><button class="btn-primary" onclick="abrirModalProjetoAcao('+p.id+')" style="height:38px"><i class="ti ti-plus"></i> Adicionar mini ação</button></div>':'')
+      +(aberto?'<div class="project-checklist"><div class="project-checklist-head"><span>Mini ações</span><span>Responsável • Prazo • Conclusão • Observações</span></div>'+rows+'</div><div class="project-add-action"><button class="btn-primary" onclick="abrirModalProjetoAcao('+p.id+')" style="height:38px"><i class="ti ti-plus"></i> Adicionar mini ação</button></div>':'')
       +'</section>';
   }).join('');
 }
@@ -804,7 +805,7 @@ async function receberNuvem() {
     (cloudMicros||[]).forEach(m => { const t=tarefas.find(x=>String(x.id)===String(m.tarefa_id)); if(t) t.micros.push({id:Number(m.id),desc:m.descricao||'',responsavel:m.responsavel||'',prazo:m.prazo||'',status:m.status||'',prio:m.prio||''}); });
     if (cloudProjetos) {
       projetos = cloudProjetos.map(p=>({id:Number(p.id),nome:p.nome||'',descricao:p.descricao||'',responsavel:p.responsavel||'',prazo:p.prazo||'',status:p.status||'Em andamento',acoes:[]}));
-      (cloudProjetoAcoes||[]).forEach(a=>{ const p=projetos.find(x=>Number(x.id)===Number(a.projeto_id)); if(p) p.acoes.push({id:Number(a.id),descricao:a.descricao||'',responsavel:a.responsavel||'',prazo:a.prazo||'',observacoes:a.observacoes||'',concluida:!!a.concluida}); });
+      (cloudProjetoAcoes||[]).forEach(a=>{ const p=projetos.find(x=>Number(x.id)===Number(a.projeto_id)); if(p) p.acoes.push({id:Number(a.id),descricao:a.descricao||'',responsavel:a.responsavel||'',prazo:a.prazo||'',data_conclusao:a.data_conclusao||'',observacoes:a.observacoes||'',concluida:!!a.concluida}); });
       nextProjetoId=Math.max(1000,...projetos.map(p=>Number(p.id)||0)+1);
       nextProjetoAcaoId=Math.max(2000,...projetos.flatMap(p=>p.acoes).map(a=>Number(a.id)||0)+1);
       salvarProjetosLocal();
@@ -1111,6 +1112,7 @@ function abrirModalProjetoAcao(pid,aid=null){
   document.getElementById('paDescricao').value=a?.descricao||'';
   document.getElementById('paResponsavel').value=a?.responsavel||'';
   document.getElementById('paPrazo').value=a?.prazo||'';
+  document.getElementById('paDataConclusao').value=a?.data_conclusao||'';
   document.getElementById('paObservacoes').value=a?.observacoes||'';
   document.getElementById('paConcluida').checked=!!a?.concluida;
   document.getElementById('errProjetoAcao').style.display='none';
@@ -1120,7 +1122,11 @@ function fecharModalProjetoAcao(){document.getElementById('ovProjetoAcao').class
 async function salvarProjetoAcao(){
   const descricao=document.getElementById('paDescricao').value.trim();
   if(!descricao){document.getElementById('errProjetoAcao').style.display='block';document.getElementById('paDescricao').focus();return;}
-  const dados={descricao,responsavel:document.getElementById('paResponsavel').value.trim(),prazo:document.getElementById('paPrazo').value,observacoes:document.getElementById('paObservacoes').value.trim(),concluida:document.getElementById('paConcluida').checked};
+  const concluida=document.getElementById('paConcluida').checked;
+  let data_conclusao=document.getElementById('paDataConclusao').value;
+  if(concluida && !data_conclusao) data_conclusao=new Date().toISOString().slice(0,10);
+  if(!concluida) data_conclusao='';
+  const dados={descricao,responsavel:document.getElementById('paResponsavel').value.trim(),prazo:document.getElementById('paPrazo').value,data_conclusao,observacoes:document.getElementById('paObservacoes').value.trim(),concluida};
   const p=projetos.find(x=>Number(x.id)===Number(projetoAlvo)); if(!p) return;
   try{
     if(projetoAcaoEditando!==null){
@@ -1150,12 +1156,13 @@ async function alternarProjetoAcao(pid,aid){
   const p=projetos.find(x=>Number(x.id)===Number(pid)); if(!p) return;
   const a=p.acoes.find(x=>Number(x.id)===Number(aid)); if(!a) return;
   const novo=!a.concluida;
+  const data_conclusao=novo?(a.data_conclusao||new Date().toISOString().slice(0,10)):'';
   try{
     if(sb){
-      const {error}=await sb.from('projeto_acoes').update({concluida:novo,updated_at:new Date().toISOString()}).eq('id',Number(a.id));
+      const {error}=await sb.from('projeto_acoes').update({concluida:novo,data_conclusao:data_conclusao||null,updated_at:new Date().toISOString()}).eq('id',Number(a.id));
       if(error) throw error;
     }
-    a.concluida=novo; salvarProjetosLocal(); render();
+    a.concluida=novo; a.data_conclusao=data_conclusao; salvarProjetosLocal(); render();
   }catch(e){alert('Não foi possível atualizar a conclusão da mini ação.\n\nDetalhes: '+(e.message||'erro desconhecido'));}
 }
 async function excluirProjetoAcao(pid,aid){

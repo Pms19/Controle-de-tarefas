@@ -260,6 +260,62 @@ tr.tarefa-row:hover>td{background:#F7FBFD;}
 .btn-cancel:hover{background:#F0F6FA;}
 .field input:focus,.field select:focus,.field textarea:focus{border-color:#8EBBD0;box-shadow:0 0 0 3px rgba(47,128,237,.09);}
 
+
+.project-toolbar{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:16px;padding:4px 1px 0;}
+.project-page-title{font-size:22px;font-weight:700;color:var(--brand-dark);letter-spacing:-.02em;}
+.project-page-subtitle{margin-top:3px;font-size:13px;color:var(--muted);}
+.project-card{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 3px 12px rgba(15,76,110,.035);margin-bottom:14px;overflow:hidden;}
+.project-card-head{padding:15px 16px 12px;display:flex;align-items:flex-start;gap:14px;justify-content:space-between;border-bottom:1px solid #E7EDF0;}
+.project-main{min-width:0;flex:1;}
+.project-title-row{display:flex;align-items:center;gap:9px;flex-wrap:wrap;}
+.project-title{font-size:16px;font-weight:700;color:var(--brand-dark);}
+.project-meta{margin-top:6px;font-size:12px;color:var(--muted);display:flex;gap:13px;flex-wrap:wrap;}
+.project-meta span{display:inline-flex;align-items:center;gap:4px;}
+.project-description{margin-top:8px;font-size:12px;line-height:1.5;color:#5E7280;white-space:pre-line;}
+.project-actions{display:flex;gap:3px;align-items:center;flex:0 0 auto;}
+.project-status{font-size:11px;font-weight:600;padding:4px 9px;border-radius:20px;background:var(--brand-soft);color:var(--brand);}
+.project-status.done{background:#E4F7ED;color:#16734D;}
+.project-status.paused{background:#FFF3D8;color:#A15C00;}
+.project-status.planned{background:#EEF1F3;color:#61717C;}
+.project-progress{padding:12px 16px;background:#F8FBFC;}
+.project-progress-top{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:11px;color:var(--muted);margin-bottom:7px;}
+.project-progress-bar{height:7px;background:#E4EBEF;border-radius:99px;overflow:hidden;}
+.project-progress-fill{height:100%;background:var(--brand);border-radius:99px;transition:width .2s ease;}
+.project-progress-fill.done{background:var(--green);}
+.project-checklist{padding:8px 16px 14px;}
+.project-checklist-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;font-size:11px;color:#7B8D99;text-transform:uppercase;letter-spacing:.05em;}
+.project-action-row{display:grid;grid-template-columns:auto minmax(180px,1fr) 120px 105px minmax(150px,1.1fr) auto;gap:10px;align-items:center;padding:11px 0;border-bottom:1px solid #EDF1F3;}
+.project-action-row:last-child{border-bottom:none;}
+.project-action-check{width:22px;height:22px;border-radius:7px;border:2px solid #B4C4CE;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.15s ease;color:#fff;}
+.project-action-check:hover{border-color:var(--brand);}
+.project-action-check.checked{background:var(--green);border-color:var(--green);}
+.project-action-check i{font-size:14px;line-height:1;}
+.project-action-desc{font-size:13px;color:var(--text);min-width:0;}
+.project-action-desc.done{text-decoration:line-through;color:#91A0A9;}
+.project-action-person,.project-action-date,.project-action-obs{font-size:11px;color:#647784;min-width:0;word-break:break-word;}
+.project-action-date.overdue{color:#C13D49;font-weight:700;}
+.project-action-obs{white-space:pre-line;}
+.project-action-tools{display:flex;gap:2px;justify-content:flex-end;}
+.project-add-action{padding:0 16px 15px;}
+.project-add-action button{width:100%;justify-content:center;background:#fff;border:1px dashed #BFD0DA;color:var(--brand);box-shadow:none;}
+.project-empty{background:#fff;border:1px dashed #C9D7DE;border-radius:14px;padding:40px 20px;text-align:center;color:#7B8D99;}
+.project-empty i{display:block;font-size:28px;margin-bottom:10px;color:#9AB0BC;}
+.project-empty strong{display:block;font-size:14px;color:var(--brand-dark);margin-bottom:5px;}
+.project-empty span{font-size:12px;}
+.project-check-field{display:flex;align-items:center;}
+.project-check-label{display:flex!important;align-items:center;gap:8px!important;font-size:13px!important;color:var(--text)!important;margin:0!important;cursor:pointer;}
+.project-check-label input{width:18px!important;height:18px!important;accent-color:var(--green);}
+@media (max-width: 900px){.project-action-row{grid-template-columns:auto minmax(150px,1fr) 105px 90px auto;}.project-action-obs{grid-column:2/-1;}.project-toolbar{align-items:flex-end;}}
+@media (max-width: 700px){
+  .project-toolbar{flex-direction:column;align-items:stretch;gap:10px;}
+  .project-page-title{font-size:20px;}
+  .project-card-head{padding:12px;}
+  .project-progress,.project-checklist{padding-left:12px;padding-right:12px;}
+  .project-action-row{grid-template-columns:auto minmax(0,1fr) auto;gap:8px;padding:10px 0;}
+  .project-action-person,.project-action-date,.project-action-obs{grid-column:2/-1;}
+  .project-action-tools{grid-column:3;grid-row:1;}
+}
+
 .sidebar-group-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#8A9AA5;padding:12px 10px 5px;}
 </style>
 </head>
@@ -327,6 +383,7 @@ tr.tarefa-row:hover>td{background:#F7FBFD;}
     <aside class="sidebar">
       <div class="sidebar-title">Gestão</div>
       <button class="sidebar-btn active" data-painel="todos" onclick="selecionarPainel('todos')"><i class="ti ti-layout-dashboard"></i> Todas as atividades <span class="sidebar-count" id="count-todos">0</span></button>
+      <button class="sidebar-btn" data-painel="__projetos__" onclick="selecionarPainel('__projetos__')"><i class="ti ti-briefcase-2"></i> Projetos <span class="sidebar-count" id="count-projetos">0</span></button>
       <div class="sidebar-group-label">Qualidade</div>
       <button class="sidebar-btn" data-painel="Documentos" onclick="selecionarPainel('Documentos')"><i class="ti ti-file-text"></i> Documentos <span class="sidebar-count" id="count-Documentos">0</span></button>
       <button class="sidebar-btn" data-painel="Gerenciamento de Mudanças" onclick="selecionarPainel('Gerenciamento de Mudanças')"><i class="ti ti-arrows-exchange"></i> Gerenciamento de Mudanças <span class="sidebar-count" id="count-Gerenciamento-de-Mudanças">0</span></button>
@@ -338,19 +395,32 @@ tr.tarefa-row:hover>td{background:#F7FBFD;}
       <button class="sidebar-btn" data-painel="Outras atividades" onclick="selecionarPainel('Outras atividades')"><i class="ti ti-dots"></i> Outras atividades <span class="sidebar-count" id="count-Outras-atividades">0</span></button>
     </aside>
     <main class="main-panel">
-      <div class="toolbar">
-        <input type="text" id="busca" placeholder="Buscar por atividade, descrição, responsável ou solicitante…" oninput="window.filtroSomenteAtrasadas=false; render()">
-        <select id="filtroStatus" onchange="window.filtroSomenteAtrasadas=false; render()" title="Filtrar por status" style="height:36px;padding:0 10px;border:0.5px solid #c8c8c4;border-radius:8px;background:#fff;color:#1a1a18;font-size:14px;font-family:inherit;outline:none;min-width:170px;cursor:pointer">
-          <option value="">Todos os status</option>
-          <option value="Pendente">Pendente</option>
-          <option value="Aguardando">Aguardando</option>
-          <option value="Concluído">Concluído</option>
-          <option value="__sem_status__">Sem status</option>
-        </select>
-        <button class="btn-primary" onclick="abrirModalTarefa()"><i class="ti ti-plus"></i> Nova tarefa</button>
+      <div id="tarefasView">
+        <div class="toolbar">
+          <input type="text" id="busca" placeholder="Buscar por atividade, descrição, responsável ou solicitante…" oninput="window.filtroSomenteAtrasadas=false; render()">
+          <select id="filtroStatus" onchange="window.filtroSomenteAtrasadas=false; render()" title="Filtrar por status" style="height:36px;padding:0 10px;border:0.5px solid #c8c8c4;border-radius:8px;background:#fff;color:#1a1a18;font-size:14px;font-family:inherit;outline:none;min-width:170px;cursor:pointer">
+            <option value="">Todos os status</option>
+            <option value="Pendente">Pendente</option>
+            <option value="Aguardando">Aguardando</option>
+            <option value="Concluído">Concluído</option>
+            <option value="__sem_status__">Sem status</option>
+          </select>
+          <button class="btn-primary" onclick="abrirModalTarefa()"><i class="ti ti-plus"></i> Nova tarefa</button>
+        </div>
+        <div id="abasMes" class="mes-tabs"></div>
+        <div id="conteudo"></div>
       </div>
-      <div id="abasMes" class="mes-tabs"></div>
-      <div id="conteudo"></div>
+
+      <div id="projetosView" style="display:none">
+        <div class="project-toolbar">
+          <div>
+            <div class="project-page-title">Projetos</div>
+            <div class="project-page-subtitle">Acompanhe cada projeto e conclua as mini ações diretamente no checklist.</div>
+          </div>
+          <button class="btn-primary" onclick="abrirModalProjeto()"><i class="ti ti-plus"></i> Novo projeto</button>
+        </div>
+        <div id="projetosConteudo"></div>
+      </div>
     </main>
   </div>
 </div>
@@ -393,6 +463,51 @@ tr.tarefa-row:hover>td{background:#F7FBFD;}
     <div class="mactions">
       <button class="btn-cancel" onclick="fecharModalTarefa()">Cancelar</button>
       <button class="btn-save" onclick="salvarTarefa()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- modal projeto -->
+<div class="modal-overlay" id="ovProjeto">
+  <div class="modal project-modal">
+    <h2 id="projetoModalTitulo">Novo projeto</h2>
+    <div class="mgrid">
+      <div class="field full"><label>Nome do projeto <span style="color:#c0392b">*</span></label><input type="text" id="pNome" placeholder="Ex.: Implantação do novo SGI"><div class="err" id="errProjeto">Informe o nome do projeto</div></div>
+      <div class="field full"><label>Descrição</label><textarea id="pDescricao" placeholder="Objetivo, escopo ou contexto do projeto."></textarea></div>
+      <div class="field"><label>Responsável</label><input type="text" id="pResponsavel" placeholder="Nome"></div>
+      <div class="field"><label>Prazo</label><input type="date" id="pPrazo"></div>
+      <div class="field"><label>Status</label>
+        <select id="pStatus">
+          <option value="Planejado">Planejado</option>
+          <option value="Em andamento">Em andamento</option>
+          <option value="Concluído">Concluído</option>
+          <option value="Paralisado">Paralisado</option>
+        </select>
+      </div>
+    </div>
+    <div class="mactions">
+      <button class="btn-cancel" onclick="fecharModalProjeto()">Cancelar</button>
+      <button class="btn-save" onclick="salvarProjeto()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- modal mini ação de projeto -->
+<div class="modal-overlay" id="ovProjetoAcao">
+  <div class="modal project-modal">
+    <h2 id="projetoAcaoTitulo">Nova mini ação</h2>
+    <div class="mgrid">
+      <div class="field full"><label>Mini ação <span style="color:#c0392b">*</span></label><input type="text" id="paDescricao" placeholder="Ex.: Validar matriz de riscos"><div class="err" id="errProjetoAcao">Informe a mini ação</div></div>
+      <div class="field"><label>Responsável</label><input type="text" id="paResponsavel" placeholder="Nome"></div>
+      <div class="field"><label>Prazo</label><input type="date" id="paPrazo"></div>
+      <div class="field full"><label>Observações</label><textarea id="paObservacoes" placeholder="Observações, impedimentos ou informações importantes."></textarea></div>
+      <div class="field full project-check-field">
+        <label class="project-check-label"><input type="checkbox" id="paConcluida"> <span>Mini ação concluída</span></label>
+      </div>
+    </div>
+    <div class="mactions">
+      <button class="btn-cancel" onclick="fecharModalProjetoAcao()">Cancelar</button>
+      <button class="btn-save" onclick="salvarProjetoAcao()">Salvar</button>
     </div>
   </div>
 </div>
@@ -462,7 +577,8 @@ let tarefas = [
   ]},
 ];
 let nextId = 100, nextMicroId = 200;
-let collapsedMes = {}, expandedTarefa = {}, microAlvo = null, mesesSelecionados = new Set(), painelSelecionado = 'todos';
+let projetos = [], nextProjetoId = 1000, nextProjetoAcaoId = 2000, projetoEditando = null, projetoAcaoEditando = null, projetoAlvo = null;
+let collapsedMes = {}, expandedTarefa = {}, microAlvo = null, mesesSelecionados = new Set(), painelSelecionado = 'todos', projetoExpandido = {};
 
 function bc(s){ return s==='Pendente'?'b-p':s==='Aguardando'?'b-a':s==='Concluído'?'b-c':'b-s'; }
 function mbc(s){ return s==='Pendente'?'mb-p':s==='Aguardando'?'mb-a':s==='Concluído'?'mb-c':'mb-s'; }
@@ -526,6 +642,8 @@ async function carregarDados() {
   try {
     const t = localStorage.getItem('tarefas');
     if (t) { tarefas = JSON.parse(t); nextId = parseInt(localStorage.getItem('ct_nextId')||100); nextMicroId = parseInt(localStorage.getItem('ct_nextMicroId')||200); }
+    const p = localStorage.getItem('projetos');
+    if (p) { projetos = JSON.parse(p); nextProjetoId = parseInt(localStorage.getItem('ct_nextProjetoId')||1000); nextProjetoAcaoId = parseInt(localStorage.getItem('ct_nextProjetoAcaoId')||2000); }
   } catch(e) {}
 
   if (!SYNC_ENABLED || !sb) return;
@@ -534,6 +652,28 @@ async function carregarDados() {
     if (taskErr) throw taskErr;
     const { data: cloudMicros, error: microErr } = await sb.from('micro_acoes').select('*').order('id');
     if (microErr) throw microErr;
+    const { data: cloudProjetos, error: projetoErr } = await sb.from('projetos').select('*').order('id');
+    if (projetoErr) throw projetoErr;
+    const { data: cloudProjetoAcoes, error: projetoAcaoErr } = await sb.from('projeto_acoes').select('*').order('id');
+    if (projetoAcaoErr) throw projetoAcaoErr;
+
+    if (cloudProjetos && cloudProjetos.length) {
+      projetos = cloudProjetos.map(p => ({
+        id:Number(p.id), nome:p.nome||'', descricao:p.descricao||'', responsavel:p.responsavel||'',
+        prazo:p.prazo||'', status:p.status||'Em andamento', acoes:[]
+      }));
+      (cloudProjetoAcoes||[]).forEach(a => {
+        const p=projetos.find(x=>Number(x.id)===Number(a.projeto_id));
+        if(p) p.acoes.push({id:Number(a.id), descricao:a.descricao||'', responsavel:a.responsavel||'', prazo:a.prazo||'', observacoes:a.observacoes||'', concluida:!!a.concluida});
+      });
+      nextProjetoId=Math.max(1000,...projetos.map(p=>Number(p.id)||0)+1);
+      nextProjetoAcaoId=Math.max(2000,...projetos.flatMap(p=>p.acoes).map(a=>Number(a.id)||0)+1);
+      localStorage.setItem('projetos',JSON.stringify(projetos));
+      localStorage.setItem('ct_nextProjetoId',nextProjetoId);
+      localStorage.setItem('ct_nextProjetoAcaoId',nextProjetoAcaoId);
+    } else if (projetos.length) {
+      await sincronizarProjetos();
+    }
 
     if (cloudTasks && cloudTasks.length) {
       tarefas = cloudTasks.map(t => ({ id:Number(t.id), mes:t.mes||'', assunto:t.assunto||'', atividade:t.atividade||'', descricao:t.descricao||'', solicitante:t.solicitante||'', responsavel:t.responsavel||'', onde:t.onde||'', prioridade:t.prioridade||'', status:t.status||'', periodicidade:t.periodicidade||'Pontual', recorrencia_grupo:t.recorrencia_grupo||null, data_ocorrencia:t.data_ocorrencia||null, micros:[] }));
@@ -548,11 +688,105 @@ async function carregarDados() {
   } catch(e) { console.warn('Banco indisponível; usando cópia local:', e.message || e); }
 }
 
+
+async function sincronizarProjetos() {
+  if (!sb) return;
+  const projectRows = projetos.map(p => ({
+    id:Number(p.id), nome:p.nome||'', descricao:p.descricao||'', responsavel:p.responsavel||'',
+    prazo:p.prazo||null, status:p.status||'Em andamento', updated_at:new Date().toISOString()
+  }));
+  if (projectRows.length) {
+    const {error} = await sb.from('projetos').upsert(projectRows,{onConflict:'id'});
+    if(error) throw error;
+  }
+  const actionRows = [];
+  projetos.forEach(p => (p.acoes||[]).forEach(a => actionRows.push({
+    id:Number(a.id), projeto_id:Number(p.id), descricao:a.descricao, responsavel:a.responsavel||'',
+    prazo:a.prazo||null, observacoes:a.observacoes||'', concluida:!!a.concluida, updated_at:new Date().toISOString()
+  })));
+  if(actionRows.length){
+    const {error} = await sb.from('projeto_acoes').upsert(actionRows,{onConflict:'id'});
+    if(error) throw error;
+  }
+}
+function salvarProjetosLocal(){
+  localStorage.setItem('projetos',JSON.stringify(projetos));
+  localStorage.setItem('ct_nextProjetoId',nextProjetoId);
+  localStorage.setItem('ct_nextProjetoAcaoId',nextProjetoAcaoId);
+}
+function projetoStatusClass(status){
+  return status==='Concluído'?'done':status==='Paralisado'?'paused':status==='Planejado'?'planned':'';
+}
+function projetoPrazoLabel(p){
+  if(!p) return 'Sem prazo';
+  const d=new Date(p+'T00:00:00');
+  const hoje0=new Date(); hoje0.setHours(0,0,0,0);
+  const venc=d<hoje0;
+  return '<span class="'+(venc?'project-action-date overdue':'project-action-date')+'">'+d.toLocaleDateString('pt-BR')+(venc?' • atrasado':'')+'</span>';
+}
+function projetoProgresso(p){
+  const acoes=p.acoes||[];
+  const total=acoes.length;
+  const concluidas=acoes.filter(a=>a.concluida).length;
+  return {total,concluidas,percent:total?Math.round(concluidas/total*100):0};
+}
+function renderProjetos(){
+  const area=document.getElementById('projetosConteudo');
+  const view=document.getElementById('projetosView');
+  const tarefasView=document.getElementById('tarefasView');
+  if(!area||!view||!tarefasView) return;
+  tarefasView.style.display='none';
+  view.style.display='block';
+  const termo=(document.getElementById('busca')?.value||'').trim().toLowerCase();
+  const lista=projetos.filter(p=>!termo || p.nome.toLowerCase().includes(termo) || p.descricao.toLowerCase().includes(termo) || p.responsavel.toLowerCase().includes(termo) || (p.acoes||[]).some(a=>a.descricao.toLowerCase().includes(termo)||a.responsavel.toLowerCase().includes(termo)||a.observacoes.toLowerCase().includes(termo)));
+  const count=document.getElementById('count-projetos');
+  if(count) count.textContent=projetos.length;
+  if(!lista.length){
+    area.innerHTML='<div class="project-empty"><i class="ti ti-briefcase-2"></i><strong>Nenhum projeto cadastrado</strong><span>Crie um projeto para começar a acompanhar suas mini ações.</span></div>';
+    return;
+  }
+  area.innerHTML=lista.map(p=>{
+    const prog=projetoProgresso(p), aberto=projetoExpandido[p.id]!==false;
+    const acoes=(p.acoes||[]);
+    const rows=acoes.length?acoes.map(a=>{
+      const hojeISO=new Date().toISOString().slice(0,10);
+      const atrasada=a.prazo && a.prazo<hojeISO && !a.concluida;
+      return '<div class="project-action-row">'
+        +'<button type="button" class="project-action-check '+(a.concluida?'checked':'')+'" onclick="alternarProjetoAcao('+p.id+','+a.id+')" title="'+(a.concluida?'Desmarcar como concluída':'Marcar como concluída')+'">'+(a.concluida?'<i class="ti ti-check"></i>':'')+'</button>'
+        +'<div class="project-action-desc '+(a.concluida?'done':'')+'">'+escHtml(a.descricao)+'</div>'
+        +'<div class="project-action-person">'+(a.responsavel?'<i class="ti ti-user"></i> '+escHtml(a.responsavel):'—')+'</div>'
+        +'<div class="'+(atrasada?'project-action-date overdue':'project-action-date')+'">'+(a.prazo?(new Date(a.prazo+'T00:00:00').toLocaleDateString('pt-BR')+(atrasada?' • atrasado':'')):'—')+'</div>'
+        +'<div class="project-action-obs">'+(a.observacoes?escHtml(a.observacoes):'—')+'</div>'
+        +'<div class="project-action-tools"><button class="btn-icon" onclick="abrirModalProjetoAcao('+p.id+','+a.id+')" title="Editar mini ação"><i class="ti ti-pencil"></i></button><button class="btn-icon" onclick="excluirProjetoAcao('+p.id+','+a.id+')" title="Excluir mini ação"><i class="ti ti-trash"></i></button></div>'
+        +'</div>';
+    }).join(''):'<div style="padding:16px 0 8px;color:#91A0A9;font-size:12px">Nenhuma mini ação cadastrada ainda.</div>';
+    return '<section class="project-card">'
+      +'<div class="project-card-head"><div class="project-main">'
+      +'<div class="project-title-row"><div class="project-title">'+escHtml(p.nome)+'</div><span class="project-status '+projetoStatusClass(p.status)+'">'+escHtml(p.status||'Em andamento')+'</span></div>'
+      +(p.responsavel||p.prazo?'<div class="project-meta">'+(p.responsavel?'<span><i class="ti ti-user"></i>'+escHtml(p.responsavel)+'</span>':'')+(p.prazo?'<span><i class="ti ti-calendar"></i>'+new Date(p.prazo+'T00:00:00').toLocaleDateString('pt-BR')+'</span>':'')+'</div>':'')
+      +(p.descricao?'<div class="project-description">'+escHtml(p.descricao)+'</div>':'')
+      +'</div><div class="project-actions"><button class="btn-icon" onclick="toggleProjeto('+p.id+')" title="'+(aberto?'Recolher':'Expandir')+'"><i class="ti ti-chevron-'+(aberto?'up':'down')+'"></i></button><button class="btn-icon" onclick="abrirModalProjeto('+p.id+')" title="Editar projeto"><i class="ti ti-pencil"></i></button><button class="btn-icon" onclick="excluirProjeto('+p.id+')" title="Excluir projeto"><i class="ti ti-trash"></i></button></div></div>'
+      +'<div class="project-progress"><div class="project-progress-top"><span><strong>'+prog.concluidas+'</strong> de '+prog.total+' mini ações concluídas</span><span>'+prog.percent+'%</span></div><div class="project-progress-bar"><div class="project-progress-fill '+(prog.percent===100?'done':'')+'" style="width:'+prog.percent+'%"></div></div></div>'
+      +(aberto?'<div class="project-checklist"><div class="project-checklist-head"><span>Mini ações</span><span>Responsável • Prazo • Observações</span></div>'+rows+'</div><div class="project-add-action"><button class="btn-primary" onclick="abrirModalProjetoAcao('+p.id+')" style="height:38px"><i class="ti ti-plus"></i> Adicionar mini ação</button></div>':'')
+      +'</section>';
+  }).join('');
+}
+function escHtml(v){
+  return String(v??'').replace(/[&<>"']/g, s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+}
+function selecionarProjetosBusca(){
+  const inp=document.getElementById('projetosBusca');
+  if(!inp) return;
+  renderProjetos();
+}
+
 function iniciarSincronizacaoTempoReal() {
   if (!SYNC_ENABLED || !sb) return;
   syncChannel = sb.channel('ct-sync')
     .on('postgres_changes', { event:'*', schema:'public', table:'tarefas' }, () => receberNuvem())
     .on('postgres_changes', { event:'*', schema:'public', table:'micro_acoes' }, () => receberNuvem())
+    .on('postgres_changes', { event:'*', schema:'public', table:'projetos' }, () => receberNuvem())
+    .on('postgres_changes', { event:'*', schema:'public', table:'projeto_acoes' }, () => receberNuvem())
     .subscribe();
 }
 
@@ -563,9 +797,18 @@ async function receberNuvem() {
   try {
     const { data: cloudTasks } = await sb.from('tarefas').select('*').order('id');
     const { data: cloudMicros } = await sb.from('micro_acoes').select('*').order('id');
+    const { data: cloudProjetos } = await sb.from('projetos').select('*').order('id');
+    const { data: cloudProjetoAcoes } = await sb.from('projeto_acoes').select('*').order('id');
     if (!cloudTasks) return;
     tarefas = cloudTasks.map(t => ({ id:Number(t.id), mes:t.mes||'', assunto:t.assunto||'', atividade:t.atividade||'', descricao:t.descricao||'', solicitante:t.solicitante||'', responsavel:t.responsavel||'', onde:t.onde||'', prioridade:t.prioridade||'', status:t.status||'', micros:[] }));
     (cloudMicros||[]).forEach(m => { const t=tarefas.find(x=>String(x.id)===String(m.tarefa_id)); if(t) t.micros.push({id:Number(m.id),desc:m.descricao||'',responsavel:m.responsavel||'',prazo:m.prazo||'',status:m.status||'',prio:m.prio||''}); });
+    if (cloudProjetos) {
+      projetos = cloudProjetos.map(p=>({id:Number(p.id),nome:p.nome||'',descricao:p.descricao||'',responsavel:p.responsavel||'',prazo:p.prazo||'',status:p.status||'Em andamento',acoes:[]}));
+      (cloudProjetoAcoes||[]).forEach(a=>{ const p=projetos.find(x=>Number(x.id)===Number(a.projeto_id)); if(p) p.acoes.push({id:Number(a.id),descricao:a.descricao||'',responsavel:a.responsavel||'',prazo:a.prazo||'',observacoes:a.observacoes||'',concluida:!!a.concluida}); });
+      nextProjetoId=Math.max(1000,...projetos.map(p=>Number(p.id)||0)+1);
+      nextProjetoAcaoId=Math.max(2000,...projetos.flatMap(p=>p.acoes).map(a=>Number(a.id)||0)+1);
+      salvarProjetosLocal();
+    }
     localStorage.setItem('tarefas', JSON.stringify(tarefas));
     render();
   } finally { recebendoNuvem=false; }
@@ -583,6 +826,8 @@ function atualizarContadoresPainel() {
   const ids = {'Documentos':'count-Documentos','Gerenciamento de Mudanças':'count-Gerenciamento-de-Mudanças','Não conformidades':'count-Não-conformidades','Auditoria':'count-Auditoria','Questionários':'count-Questionários','Mapeamento de processos':'count-Mapeamento-de-processos','Outras atividades':'count-Outras-atividades'};
   const elTodos=document.getElementById('count-todos');
   if(elTodos) elTodos.textContent=tarefas.length;
+  const elProjetos=document.getElementById('count-projetos');
+  if(elProjetos) elProjetos.textContent=projetos.length;
   categorias.forEach(a => { const el=document.getElementById(ids[a]); if(el) el.textContent=tarefas.filter(t => (t.assunto||'')===a).length; });
 }
 
@@ -693,11 +938,21 @@ function mostrarAtrasadas() {
 }
 
 function render() {
+  atualizarDashboard();
+  atualizarContadoresPainel();
+  const tarefasView=document.getElementById('tarefasView');
+  const projetosView=document.getElementById('projetosView');
+  if (painelSelecionado === '__projetos__') {
+    if(tarefasView) tarefasView.style.display='none';
+    if(projetosView) projetosView.style.display='block';
+    renderProjetos();
+    return;
+  }
+  if(tarefasView) tarefasView.style.display='block';
+  if(projetosView) projetosView.style.display='none';
   const busca = document.getElementById('busca').value.toLowerCase();
   const filtroStatus = document.getElementById('filtroStatus')?.value || '';
   let lista = tarefas;
-  atualizarDashboard();
-  atualizarContadoresPainel();
   if (painelSelecionado !== 'todos') lista = lista.filter(t => (t.assunto||'') === painelSelecionado);
   if (busca) lista = lista.filter(t => t.atividade.toLowerCase().includes(busca) || (t.descricao||'').toLowerCase().includes(busca) || t.solicitante.toLowerCase().includes(busca) || t.responsavel.toLowerCase().includes(busca) || t.micros.some(m => m.desc.toLowerCase().includes(busca) || m.responsavel.toLowerCase().includes(busca)));
   if (filtroStatus) lista = lista.filter(t => filtroStatus === '__sem_status__' ? !t.status : t.status === filtroStatus);
@@ -793,6 +1048,123 @@ function render() {
       </table></div>`:''}
     </div>`;
   }).join('');
+}
+
+
+function abrirModalProjeto(id=null){
+  projetoEditando=id!==null?Number(id):null;
+  const p=projetoEditando!==null?projetos.find(x=>Number(x.id)===projetoEditando):null;
+  document.getElementById('projetoModalTitulo').textContent=p?'Editar projeto':'Novo projeto';
+  document.getElementById('pNome').value=p?.nome||'';
+  document.getElementById('pDescricao').value=p?.descricao||'';
+  document.getElementById('pResponsavel').value=p?.responsavel||'';
+  document.getElementById('pPrazo').value=p?.prazo||'';
+  document.getElementById('pStatus').value=p?.status||'Em andamento';
+  document.getElementById('errProjeto').style.display='none';
+  document.getElementById('ovProjeto').classList.add('open');
+}
+function fecharModalProjeto(){ document.getElementById('ovProjeto').classList.remove('open'); projetoEditando=null; }
+async function salvarProjeto(){
+  const nome=document.getElementById('pNome').value.trim();
+  if(!nome){document.getElementById('errProjeto').style.display='block';document.getElementById('pNome').focus();return;}
+  const dados={nome,descricao:document.getElementById('pDescricao').value.trim(),responsavel:document.getElementById('pResponsavel').value.trim(),prazo:document.getElementById('pPrazo').value,status:document.getElementById('pStatus').value};
+  const editando=projetoEditando!==null;
+  try{
+    if(editando){
+      const p=projetos.find(x=>Number(x.id)===Number(projetoEditando)); if(!p) return;
+      if(sb){
+        const {error}=await sb.from('projetos').update({...dados,prazo:dados.prazo||null,updated_at:new Date().toISOString()}).eq('id',Number(p.id));
+        if(error) throw error;
+      }
+      Object.assign(p,dados);
+    }else{
+      if(sb){
+        const {data,error}=await sb.from('projetos').insert({...dados,prazo:dados.prazo||null}).select('id').single();
+        if(error) throw error;
+        projetos.push({id:Number(data.id),...dados,acoes:[]});
+        nextProjetoId=Math.max(nextProjetoId,Number(data.id)+1);
+      }else{
+        projetos.push({id:nextProjetoId++,...dados,acoes:[]});
+      }
+    }
+    salvarProjetosLocal(); fecharModalProjeto(); render();
+  }catch(e){
+    console.error('Erro ao salvar projeto:',e);
+    alert('Não foi possível salvar o projeto.\n\nDetalhes: '+(e.message||'erro desconhecido'));
+  }
+}
+async function excluirProjeto(id){
+  const p=projetos.find(x=>Number(x.id)===Number(id)); if(!p) return;
+  if(!confirm('Excluir este projeto e todas as suas mini ações?')) return;
+  try{
+    if(sb){const {error}=await sb.from('projetos').delete().eq('id',Number(id)); if(error) throw error;}
+    projetos=projetos.filter(x=>Number(x.id)!==Number(id)); delete projetoExpandido[id];
+    salvarProjetosLocal(); render();
+  }catch(e){alert('Não foi possível excluir o projeto.\n\nDetalhes: '+(e.message||'erro desconhecido'));}
+}
+function toggleProjeto(id){projetoExpandido[id]=projetoExpandido[id]===false; render();}
+function abrirModalProjetoAcao(pid,aid=null){
+  projetoAlvo=Number(pid); projetoAcaoEditando=aid!==null?Number(aid):null;
+  const p=projetos.find(x=>Number(x.id)===projetoAlvo);
+  const a=projetoAcaoEditando!==null&&p?p.acoes.find(x=>Number(x.id)===projetoAcaoEditando):null;
+  document.getElementById('projetoAcaoTitulo').textContent=a?'Editar mini ação':'Nova mini ação';
+  document.getElementById('paDescricao').value=a?.descricao||'';
+  document.getElementById('paResponsavel').value=a?.responsavel||'';
+  document.getElementById('paPrazo').value=a?.prazo||'';
+  document.getElementById('paObservacoes').value=a?.observacoes||'';
+  document.getElementById('paConcluida').checked=!!a?.concluida;
+  document.getElementById('errProjetoAcao').style.display='none';
+  document.getElementById('ovProjetoAcao').classList.add('open');
+}
+function fecharModalProjetoAcao(){document.getElementById('ovProjetoAcao').classList.remove('open');projetoAlvo=null;projetoAcaoEditando=null;}
+async function salvarProjetoAcao(){
+  const descricao=document.getElementById('paDescricao').value.trim();
+  if(!descricao){document.getElementById('errProjetoAcao').style.display='block';document.getElementById('paDescricao').focus();return;}
+  const dados={descricao,responsavel:document.getElementById('paResponsavel').value.trim(),prazo:document.getElementById('paPrazo').value,observacoes:document.getElementById('paObservacoes').value.trim(),concluida:document.getElementById('paConcluida').checked};
+  const p=projetos.find(x=>Number(x.id)===Number(projetoAlvo)); if(!p) return;
+  try{
+    if(projetoAcaoEditando!==null){
+      const a=p.acoes.find(x=>Number(x.id)===Number(projetoAcaoEditando)); if(!a) return;
+      if(sb){
+        const {error}=await sb.from('projeto_acoes').update({...dados,prazo:dados.prazo||null,updated_at:new Date().toISOString()}).eq('id',Number(a.id));
+        if(error) throw error;
+      }
+      Object.assign(a,dados);
+    }else{
+      if(sb){
+        const {data,error}=await sb.from('projeto_acoes').insert({projeto_id:Number(p.id),...dados,prazo:dados.prazo||null}).select('id').single();
+        if(error) throw error;
+        p.acoes.push({id:Number(data.id),...dados});
+        nextProjetoAcaoId=Math.max(nextProjetoAcaoId,Number(data.id)+1);
+      }else{
+        p.acoes.push({id:nextProjetoAcaoId++,...dados});
+      }
+    }
+    salvarProjetosLocal(); fecharModalProjetoAcao(); projetoExpandido[p.id]=true; render();
+  }catch(e){
+    console.error('Erro ao salvar mini ação:',e);
+    alert('Não foi possível salvar a mini ação.\n\nDetalhes: '+(e.message||'erro desconhecido'));
+  }
+}
+async function alternarProjetoAcao(pid,aid){
+  const p=projetos.find(x=>Number(x.id)===Number(pid)); if(!p) return;
+  const a=p.acoes.find(x=>Number(x.id)===Number(aid)); if(!a) return;
+  const novo=!a.concluida;
+  try{
+    if(sb){
+      const {error}=await sb.from('projeto_acoes').update({concluida:novo,updated_at:new Date().toISOString()}).eq('id',Number(a.id));
+      if(error) throw error;
+    }
+    a.concluida=novo; salvarProjetosLocal(); render();
+  }catch(e){alert('Não foi possível atualizar a conclusão da mini ação.\n\nDetalhes: '+(e.message||'erro desconhecido'));}
+}
+async function excluirProjetoAcao(pid,aid){
+  const p=projetos.find(x=>Number(x.id)===Number(pid)); if(!p) return;
+  if(!confirm('Excluir esta mini ação?')) return;
+  try{
+    if(sb){const {error}=await sb.from('projeto_acoes').delete().eq('id',Number(aid)); if(error) throw error;}
+    p.acoes=p.acoes.filter(a=>Number(a.id)!==Number(aid)); salvarProjetosLocal(); render();
+  }catch(e){alert('Não foi possível excluir a mini ação.\n\nDetalhes: '+(e.message||'erro desconhecido'));}
 }
 
 function toggleMes(k){ collapsedMes[k]=collapsedMes[k]!==true; render(); }
@@ -994,6 +1366,8 @@ async function salvarMicro(){
 
 document.getElementById('ovTarefa').addEventListener('click',e=>{if(e.target===e.currentTarget)fecharModalTarefa();});
 document.getElementById('ovMicro').addEventListener('click',e=>{if(e.target===e.currentTarget)fecharModalMicro();});
+document.getElementById('ovProjeto').addEventListener('click',e=>{if(e.target===e.currentTarget)fecharModalProjeto();});
+document.getElementById('ovProjetoAcao').addEventListener('click',e=>{if(e.target===e.currentTarget)fecharModalProjetoAcao();});
 
 carregarDados().then(() => { render(); iniciarSincronizacaoTempoReal(); });
 

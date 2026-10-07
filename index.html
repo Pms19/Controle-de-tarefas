@@ -912,7 +912,7 @@ function renderProjetos(){
         +'<div class="project-action-tools"><button class="btn-icon" onclick="abrirModalProjetoAcao('+p.id+','+a.id+')" title="Editar mini ação"><i class="ti ti-pencil"></i></button><button class="btn-icon" onclick="excluirProjetoAcao('+p.id+','+a.id+')" title="Excluir mini ação"><i class="ti ti-trash"></i></button></div>'
         +'</div>';
     }).join(''):'<div style="padding:16px 0 8px;color:#91A0A9;font-size:12px">Nenhuma mini ação cadastrada ainda.</div>';
-    return '<section class="project-card" id="project-card-'+p.id+'">
+    return '<section class="project-card" id="project-card-'+p.id+'">'
       +'<div class="project-card-head"><div class="project-main">'
       +'<div class="project-title-row"><div class="project-title">'+escHtml(p.nome)+'</div><span class="project-status '+projetoStatusClass(p.status)+'">'+escHtml(p.status||'Em andamento')+'</span></div>'
       +(p.responsavel||p.prazo?'<div class="project-meta">'+(p.responsavel?'<span><i class="ti ti-user"></i>'+escHtml(p.responsavel)+'</span>':'')+(p.prazo?'<span><i class="ti ti-calendar"></i>'+new Date(p.prazo+'T00:00:00').toLocaleDateString('pt-BR')+'</span>':'')+'</div>':'')

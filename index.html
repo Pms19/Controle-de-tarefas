@@ -127,6 +127,24 @@ th:nth-child(9),td:nth-child(9){width:14%}
 .btn-add-micro:hover { background:#f1efea; color:#1a1a18; }
 
 .micro-row td { background:#fafaf8 !important; border-bottom:0.5px solid #e0deda; }
+.micro-todo{display:grid;grid-template-columns:auto minmax(180px,1.4fr) 150px 120px 95px auto;gap:10px;align-items:center;padding:10px 8px;border-bottom:1px solid #EDF1F3;background:#fff;border-radius:8px;margin-bottom:6px;}
+.micro-todo:last-child{margin-bottom:0;}
+.micro-todo-check{width:21px;height:21px;border-radius:6px;border:2px solid #B4C4CE;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;transition:.15s ease;padding:0;}
+.micro-todo-check:hover{border-color:var(--brand);}
+.micro-todo-check.checked{background:var(--green);border-color:var(--green);}
+.micro-todo-check i{font-size:13px;line-height:1;}
+.micro-todo-desc{font-size:12px;color:var(--text);line-height:1.35;min-width:0;}
+.micro-todo-desc.done{text-decoration:line-through;color:#91A0A9;}
+.micro-todo-person,.micro-todo-date,.micro-todo-prio{font-size:11px;color:#647784;min-width:0;word-break:break-word;}
+.micro-todo-date.overdue{color:#C13D49;font-weight:700;}
+.micro-todo-tools{display:flex;justify-content:flex-end;gap:2px;}
+.micro-todo-wrap{padding:7px 0 3px;}
+.micro-todo-head{display:grid;grid-template-columns:auto minmax(180px,1.4fr) 150px 120px 95px auto;gap:10px;align-items:center;padding:0 8px 5px;color:#8193A0;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;}
+.micro-progress{margin:4px 0 8px;padding:7px 8px;background:#F8FBFC;border:1px solid #EDF1F3;border-radius:8px;display:flex;align-items:center;justify-content:space-between;font-size:10px;color:#718591;}
+.micro-progress-bar{height:5px;flex:1;margin-left:10px;background:#E4EBEF;border-radius:99px;overflow:hidden;}
+.micro-progress-fill{height:100%;background:var(--green);border-radius:99px;transition:width .2s ease;}
+@media(max-width:900px){.micro-todo,.micro-todo-head{grid-template-columns:auto minmax(160px,1fr) 115px 100px auto;}.micro-todo-prio{display:none;}.micro-todo-head div:nth-child(5){display:none;}}
+@media(max-width:700px){.micro-todo-wrap{min-width:650px;}.micro-todo,.micro-todo-head{grid-template-columns:auto minmax(180px,1fr) 110px 95px auto;}.micro-todo-person,.micro-todo-date{font-size:10px;}}
 .micro-actions-row td { background:#fafaf8 !important; border-bottom:0.5px solid #e0deda; padding:6px 10px 10px 46px; }
 .micro-content { padding:0 0 0 36px; }
 .micro-table { width:100%; border-collapse:collapse; }
@@ -1402,22 +1420,29 @@ function render() {
 
       if (!exp) return tarefaRow;
 
-      const microRows = t.micros.length ? t.micros.map(m=>`<tr>
-        <td>${m.desc}</td>
-        <td>${m.responsavel||'—'}</td>
-        <td>${prazoLabel(m.prazo)}</td>
-        <td><span class="micro-badge ${mbc(m.status)}">${m.status||'—'}</span></td>
-        <td style="display:flex;align-items:center;justify-content:space-between">${prioLabel(m.prio)}<span style="display:inline-flex;gap:2px"><button class="btn-icon" style="font-size:13px" onclick="abrirModalMicro(${t.id},${m.id})" title="Editar micro ação"><i class="ti ti-pencil"></i></button><button class="btn-icon" style="font-size:13px" onclick="excluirMicro(${t.id},${m.id})" title="Excluir micro ação"><i class="ti ti-trash"></i></button></span></td>
-      </tr>`).join('') : '<tr><td colspan="5" style="color:#aaa;font-style:italic">Nenhuma micro ação ainda</td></tr>';
+      const mcTotal=t.micros.length;
+      const mcDone=t.micros.filter(m=>(m.status||'')==='Concluído').length;
+      const mcPct=mcTotal?Math.round(mcDone/mcTotal*100):0;
+      const microRows = t.micros.length ? t.micros.map(m=>{
+        const hojeISO=new Date().toISOString().slice(0,10);
+        const atrasada=m.prazo && m.prazo<hojeISO && (m.status||'')!=='Concluído';
+        return '<div class="micro-todo">'
+          +'<button type="button" class="micro-todo-check '+((m.status||'')==='Concluído'?'checked':'')+'" onclick="alternarMicroConclusao('+t.id+','+m.id+')" title="'+((m.status||'')==='Concluído'?'Desmarcar como concluída':'Marcar como concluída')+'">'+(((m.status||'')==='Concluído')?'<i class="ti ti-check"></i>':'')+'</button>'
+          +'<div class="micro-todo-desc '+((m.status||'')==='Concluído'?'done':'')+'">'+escHtml(m.desc)+'</div>'
+          +'<div class="micro-todo-person">'+(m.responsavel?'<i class="ti ti-user"></i> '+escHtml(m.responsavel):'—')+'</div>'
+          +'<div class="'+(atrasada?'micro-todo-date overdue':'micro-todo-date')+'">'+(m.prazo?(new Date(m.prazo+'T00:00:00').toLocaleDateString('pt-BR')+(atrasada?' • atrasado':'')):'—')+'</div>'
+          +'<div class="micro-todo-prio">'+prioLabel(m.prio)+'</div>'
+          +'<div class="micro-todo-tools"><button class="btn-icon" onclick="abrirModalMicro('+t.id+','+m.id+')" title="Editar micro ação"><i class="ti ti-pencil"></i></button><button class="btn-icon" onclick="excluirMicro('+t.id+','+m.id+')" title="Excluir micro ação"><i class="ti ti-trash"></i></button></div>'
+          +'</div>';
+      }).join('') : '<div style="padding:10px 0;color:#91A0A9;font-size:12px;font-style:italic">Nenhuma micro ação ainda.</div>';
 
-      const microBlock = `<tr class="micro-row"><td colspan="9"><div class="micro-content">
-        <table class="micro-table"><thead><tr>
-          <td>Micro ação</td><td>Responsável</td><td>Prazo</td><td>Status</td><td>Prioridade</td>
-        </tr></thead><tbody>${microRows}</tbody></table>
-      </div></td></tr>
-      <tr class="micro-actions-row"><td colspan="8">
-        <button class="btn-add-micro" onclick="abrirModalMicro(${t.id})"><i class="ti ti-plus" style="font-size:12px"></i> Adicionar micro ação</button>
-      </td></tr>`;
+      const microBlock = '<tr class="micro-row"><td colspan="9"><div class="micro-content micro-todo-wrap">'
+        +'<div class="micro-progress"><span><strong>'+mcDone+'</strong> de '+mcTotal+' micro ações concluídas</span><span>'+mcPct+'%</span><div class="micro-progress-bar"><div class="micro-progress-fill" style="width:'+mcPct+'%"></div></div></div>'
+        +'<div class="micro-todo-head"><div></div><div>Micro ação</div><div>Responsável</div><div>Prazo</div><div>Prioridade</div><div>Ações</div></div>'
+        +microRows
+      +'</div></td></tr><tr class="micro-actions-row"><td colspan="8">'
+        +'<button class="btn-add-micro" onclick="abrirModalMicro('+t.id+')"><i class="ti ti-plus" style="font-size:12px"></i> Adicionar micro ação</button>'
+      +'</td></tr>';
 
       return tarefaRow + microBlock;
     }).join('');
@@ -1580,6 +1605,24 @@ async function excluirProjetoAcao(pid,aid){
 function toggleMes(k){ collapsedMes[k]=collapsedMes[k]!==true; render(); }
 function toggleTarefa(id){ expandedTarefa[id]=expandedTarefa[id]!==true; render(); }
 async function excluirTarefa(id){ if(!confirm('Excluir esta tarefa e suas micro ações?')) return; tarefas=tarefas.filter(t=>t.id!==id); salvarDados(); if(sb){ await sb.from('micro_acoes').delete().eq('tarefa_id',String(id)); await sb.from('tarefas').delete().eq('id',String(id)); } render(); }
+async function alternarMicroConclusao(tid,mid){
+  const t=tarefas.find(x=>Number(x.id)===Number(tid)); if(!t)return;
+  const m=t.micros.find(x=>Number(x.id)===Number(mid)); if(!m)return;
+  const novo=(m.status||'')!=='Concluído';
+  const statusAnterior=m.status||'';
+  try{
+    if(sb){
+      const {error}=await sb.from('micro_acoes').update({status:novo?'Concluído':'Pendente',updated_at:new Date().toISOString()}).eq('id',Number(m.id));
+      if(error)throw error;
+    }
+    m.status=novo?'Concluído':'Pendente';
+    localStorage.setItem('tarefas',JSON.stringify(tarefas));
+    render();
+  }catch(e){
+    m.status=statusAnterior;
+    alert('Não foi possível atualizar a conclusão da micro ação.\n\nDetalhes: '+(e.message||'erro desconhecido'));
+  }
+}
 async function excluirMicro(tid,mid){
   const t=tarefas.find(t=>t.id===tid); if(!t) return;
   if(!confirm('Excluir esta micro ação?')) return;

@@ -448,6 +448,44 @@ tr.tarefa-row:hover>td{background:#F7FBFD;}
 
 .meetings-view{display:none;}
 .meeting-toolbar{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:16px;padding:4px 1px 0;}
+.meeting-series-card{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 3px 12px rgba(15,76,110,.035);margin-bottom:14px;overflow:hidden;}
+.meeting-series-head{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:14px;background:#F8FBFC;border-bottom:1px solid #E7EDF0;}
+.meeting-series-main{min-width:0;flex:1;}
+.meeting-series-title{font-size:16px;font-weight:700;color:var(--brand-dark);}
+.meeting-series-meta{margin-top:5px;font-size:11px;color:#647784;display:flex;gap:12px;flex-wrap:wrap;}
+.meeting-series-actions{display:flex;align-items:center;gap:4px;flex:0 0 auto;}
+.meeting-series-count{display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;background:var(--brand-soft);color:var(--brand);font-size:10px;font-weight:700;}
+.meeting-series-body{padding:12px 16px 16px;}
+.meeting-timeline{position:relative;}
+.meeting-timeline:before{content:"";position:absolute;left:13px;top:10px;bottom:12px;width:2px;background:#DCE8EE;}
+.meeting-history-item{position:relative;padding-left:38px;margin-bottom:12px;}
+.meeting-history-item:last-child{margin-bottom:0;}
+.meeting-history-dot{position:absolute;left:6px;top:10px;width:17px;height:17px;border-radius:50%;background:#fff;border:3px solid var(--brand);}
+.meeting-history-item.latest .meeting-history-dot{background:var(--brand);}
+.meeting-history-card{border:1px solid #E2EBEF;border-radius:11px;background:#fff;overflow:hidden;}
+.meeting-history-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:11px 12px 9px;border-bottom:1px solid #EDF1F3;}
+.meeting-history-title{font-size:13px;font-weight:700;color:var(--brand-dark);}
+.meeting-history-meta{margin-top:4px;display:flex;gap:10px;flex-wrap:wrap;font-size:10px;color:#758793;}
+.meeting-history-tools{display:flex;gap:3px;align-items:center;}
+.meeting-history-body{padding:10px 12px;}
+.meeting-history-summary{font-size:11px;line-height:1.5;color:#5E7280;white-space:pre-line;}
+.meeting-history-decisions{margin-top:7px;padding:7px 9px;border-left:3px solid #7B61A8;background:#F8F5FC;border-radius:6px;font-size:10px;line-height:1.45;color:#5C526B;white-space:pre-line;}
+.meeting-history-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-top:8px;}
+.meeting-history-info{padding:7px 8px;background:#F8FBFC;border:1px solid #EDF1F3;border-radius:7px;}
+.meeting-history-info label{display:block;font-size:9px;text-transform:uppercase;letter-spacing:.04em;color:#8A9AA5;margin-bottom:2px;}
+.meeting-history-info div{font-size:10px;color:#536C7B;line-height:1.35;word-break:break-word;}
+.meeting-followup-btn{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 11px;border:1px solid #BFD0DA;border-radius:8px;background:#fff;color:var(--brand);font-size:11px;font-family:inherit;cursor:pointer;font-weight:600;}
+.meeting-followup-btn:hover{background:var(--brand-soft);}
+@media(max-width:700px){
+  .meeting-series-head{padding:12px;align-items:flex-start;flex-direction:column;}
+  .meeting-series-actions{width:100%;justify-content:flex-end;}
+  .meeting-series-body{padding:10px 12px 12px;}
+  .meeting-history-item{padding-left:30px;}
+  .meeting-timeline:before{left:10px;}
+  .meeting-history-dot{left:3px;}
+  .meeting-history-grid{grid-template-columns:1fr 1fr;}
+}
+
 .meeting-page-title{font-size:22px;font-weight:700;color:var(--brand-dark);letter-spacing:-.02em;}
 .meeting-page-subtitle{margin-top:3px;font-size:13px;color:var(--muted);}
 .meeting-card{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 3px 12px rgba(15,76,110,.035);margin-bottom:14px;overflow:hidden;}
@@ -846,7 +884,7 @@ let tarefas = [
 let nextId = 100, nextMicroId = 200;
 let projetos = [], nextProjetoId = 1000, nextProjetoAcaoId = 2000, projetoEditando = null, projetoAcaoEditando = null, projetoAlvo = null;
 let calendarioView='month', calendarioData=new Date(), calendarioEventoAtual=null;
-let reunioes=[], nextReuniaoId=3000, nextReuniaoAcaoId=4000, reuniaoEditando=null, reuniaoAcaoEditando=null, reuniaoAlvo=null, reuniaoExpandida={};
+let reunioes=[], nextReuniaoId=3000, nextReuniaoAcaoId=4000, reuniaoEditando=null, reuniaoAcaoEditando=null, reuniaoAlvo=null, reuniaoExpandida={}, reuniaoGrupoAtual=null;
 let collapsedMes = {}, expandedTarefa = {}, microAlvo = null, mesesSelecionados = new Set(), painelSelecionado = 'todos', projetoExpandido = {};
 
 function bc(s){ return s==='Pendente'?'b-p':s==='Aguardando'?'b-a':s==='Concluído'?'b-c':'b-s'; }
@@ -951,7 +989,7 @@ async function carregarDados() {
     }
 
     if (cloudReunioes && cloudReunioes.length) {
-      reunioes=cloudReunioes.map(r=>({id:Number(r.id),data:r.data||'',hora:r.hora||'',duracao_minutos:r.duracao_minutos||'',tipo:r.tipo||'Reunião',assunto:r.assunto||'',organizador:r.organizador||'',participantes:r.participantes||'',local_link:r.local_link||'',modulo:r.modulo||'',resumo:r.resumo||'',decisoes:r.decisoes||'',proximos_passos:r.proximos_passos||'',proxima_reuniao:r.proxima_reuniao||'',status:r.status||'Realizada',acoes:[]}));
+      reunioes=cloudReunioes.map(r=>({id:Number(r.id),data:r.data||'',hora:r.hora||'',duracao_minutos:r.duracao_minutos||'',tipo:r.tipo||'Reunião',assunto:r.assunto||'',grupo_reuniao:r.grupo_reuniao||'',organizador:r.organizador||'',participantes:r.participantes||'',local_link:r.local_link||'',modulo:r.modulo||'',resumo:r.resumo||'',decisoes:r.decisoes||'',proximos_passos:r.proximos_passos||'',proxima_reuniao:r.proxima_reuniao||'',status:r.status||'Realizada',acoes:[]}));
       (cloudReuniaoAcoes||[]).forEach(a=>{const r=reunioes.find(x=>Number(x.id)===Number(a.reuniao_id));if(r)r.acoes.push({id:Number(a.id),descricao:a.descricao||'',responsavel:a.responsavel||'',prazo:a.prazo||'',observacoes:a.observacoes||'',concluida:!!a.concluida,data_conclusao:a.data_conclusao||''});});
       nextReuniaoId=Math.max(3000,...reunioes.map(r=>Number(r.id)||0)+1);
       nextReuniaoAcaoId=Math.max(4000,...reunioes.flatMap(r=>r.acoes).map(a=>Number(a.id)||0)+1);
@@ -1067,7 +1105,7 @@ function salvarReunioesLocal(){
 }
 async function sincronizarReunioes(){
   if(!sb)return;
-  const rows=reunioes.map(r=>({id:Number(r.id),data:r.data||null,hora:r.hora||null,duracao_minutos:r.duracao_minutos?Number(r.duracao_minutos):null,tipo:r.tipo||'Reunião',assunto:r.assunto||'',organizador:r.organizador||'',participantes:r.participantes||'',local_link:r.local_link||'',modulo:r.modulo||'',resumo:r.resumo||'',decisoes:r.decisoes||'',proximos_passos:r.proximos_passos||'',proxima_reuniao:r.proxima_reuniao||null,status:r.status||'Realizada',updated_at:new Date().toISOString()}));
+  const rows=reunioes.map(r=>({id:Number(r.id),data:r.data||null,hora:r.hora||null,duracao_minutos:r.duracao_minutos?Number(r.duracao_minutos):null,tipo:r.tipo||'Reunião',assunto:r.assunto||'',grupo_reuniao:r.grupo_reuniao||'',organizador:r.organizador||'',participantes:r.participantes||'',local_link:r.local_link||'',modulo:r.modulo||'',resumo:r.resumo||'',decisoes:r.decisoes||'',proximos_passos:r.proximos_passos||'',proxima_reuniao:r.proxima_reuniao||null,status:r.status||'Realizada',updated_at:new Date().toISOString()}));
   if(rows.length){const {error}=await sb.from('reunioes').upsert(rows,{onConflict:'id'});if(error)throw error;}
   const actions=[];reunioes.forEach(r=>(r.acoes||[]).forEach(a=>actions.push({id:Number(a.id),reuniao_id:Number(r.id),descricao:a.descricao,responsavel:a.responsavel||'',prazo:a.prazo||null,observacoes:a.observacoes||'',concluida:!!a.concluida,data_conclusao:a.data_conclusao||'',updated_at:new Date().toISOString()})));
   if(actions.length){const {error}=await sb.from('reuniao_acoes').upsert(actions,{onConflict:'id'});if(error)throw error;}
@@ -1076,47 +1114,109 @@ function reuniaoProgresso(r){const a=r.acoes||[],total=a.length,done=a.filter(x=
 function reuniaoStatusClass(s){return s==='Realizada'?'done':s==='Cancelada'?'cancelled':'';}
 function formatarDataReuniao(v){return v?new Date(v+'T00:00:00').toLocaleDateString('pt-BR'):'—';}
 function formatarHorarioReuniao(r){return r.hora?(r.duracao_minutos?r.hora+' • '+r.duracao_minutos+' min':r.hora):'Horário não informado';}
+function chaveGrupoReuniao(r){return r.grupo_reuniao||('individual-'+r.id);}
+function criarGrupoReuniao(){return 'grp-reuniao-'+Date.now()+'-'+Math.random().toString(36).slice(2,8);}
+function reunioesDoGrupo(grupo){return reunioes.filter(r=>chaveGrupoReuniao(r)===grupo);}
+function renderAcaoReuniao(r,a){
+  const hojeISO=new Date().toISOString().slice(0,10),atrasada=a.prazo&&a.prazo<hojeISO&&!a.concluida;
+  return '<div class="meeting-action-row">'
+    +'<button type="button" class="meeting-action-check '+(a.concluida?'checked':'')+'" onclick="alternarReuniaoAcao('+r.id+','+a.id+')" title="'+(a.concluida?'Desmarcar como concluída':'Marcar como concluída')+'">'+(a.concluida?'<i class="ti ti-check"></i>':'')+'</button>'
+    +'<div class="meeting-action-desc '+(a.concluida?'done':'')+'">'+escHtml(a.descricao)+'</div>'
+    +'<div class="meeting-action-person">'+(a.responsavel?'<i class="ti ti-user"></i> '+escHtml(a.responsavel):'—')+'</div>'
+    +'<div class="'+(atrasada?'meeting-action-date overdue':'meeting-action-date')+'">'+(a.prazo?(new Date(a.prazo+'T00:00:00').toLocaleDateString('pt-BR')+(atrasada?' • atrasado':'')):'—')+'</div>'
+    +'<div class="meeting-action-obs">'+(a.observacoes?escHtml(a.observacoes):'—')+'</div>'
+    +'<div class="meeting-action-tools"><button class="btn-icon" onclick="abrirModalReuniaoAcao('+r.id+','+a.id+')" title="Editar ação"><i class="ti ti-pencil"></i></button><button class="btn-icon" onclick="excluirReuniaoAcao('+r.id+','+a.id+')" title="Excluir ação"><i class="ti ti-trash"></i></button></div>'
+    +'</div>';
+}
+function renderReuniaoHistorico(r,index,total){
+  const prog=reuniaoProgresso(r),actions=r.acoes||[];
+  const rows=actions.length?actions.map(a=>renderAcaoReuniao(r,a)).join(''):'<div style="padding:10px 0;color:#91A0A9;font-size:12px;font-style:italic">Nenhuma ação cadastrada nesta reunião.</div>';
+  return '<div class="meeting-history-item '+(index===total-1?'latest':'')+'">'
+    +'<span class="meeting-history-dot"></span>'
+    +'<div class="meeting-history-card">'
+    +'<div class="meeting-history-header"><div><div class="meeting-history-title">Reunião '+(index+1)+'</div>'
+    +'<div class="meeting-history-meta"><span><i class="ti ti-calendar"></i>'+formatarDataReuniao(r.data)+'</span><span><i class="ti ti-clock"></i>'+formatarHorarioReuniao(r)+'</span><span><i class="ti ti-tag"></i>'+escHtml(r.tipo||'Reunião')+'</span>'+(r.modulo?'<span><i class="ti ti-folders"></i>'+escHtml(r.modulo)+'</span>':'')+'</div>'
+    +(r.organizador||r.participantes?'<div class="meeting-history-meta">'+(r.organizador?'<span><i class="ti ti-user"></i>'+escHtml(r.organizador)+'</span>':'')+(r.participantes?'<span><i class="ti ti-users"></i>'+escHtml(r.participantes)+'</span>':'')+'</div>':'')
+    +'</div><div class="meeting-history-tools"><span class="meeting-badge '+reuniaoStatusClass(r.status)+'">'+escHtml(r.status||'Realizada')+'</span><button class="btn-icon" onclick="abrirModalReuniao('+r.id+')" title="Editar reunião"><i class="ti ti-pencil"></i></button><button class="btn-icon" onclick="excluirReuniao('+r.id+')" title="Excluir reunião"><i class="ti ti-trash"></i></button></div></div>'
+    +'<div class="meeting-history-body">'
+    +(r.resumo?'<div class="meeting-history-summary">'+escHtml(r.resumo)+'</div>':'')
+    +(r.decisoes?'<div class="meeting-history-decisions"><strong>Decisões:</strong> '+escHtml(r.decisoes)+'</div>':'')
+    +'<div class="meeting-history-grid"><div class="meeting-history-info"><label>Local / Link</label><div>'+escHtml(r.local_link||'—')+'</div></div><div class="meeting-history-info"><label>Próximos passos</label><div>'+escHtml(r.proximos_passos||'—')+'</div></div><div class="meeting-history-info"><label>Ações</label><div>'+prog.done+' de '+prog.total+' concluídas</div></div></div>'
+    +'<div class="meeting-checklist" style="padding:10px 0 0"><div class="meeting-checklist-head"><span>Ações / Encaminhamentos</span><span>Responsável • Prazo • Observações</span></div><div class="meeting-progress"><span><strong>'+prog.done+'</strong> de '+prog.total+' ações concluídas</span><span>'+prog.percent+'%</span><div class="meeting-progress-bar"><div class="meeting-progress-fill" style="width:'+prog.percent+'%"></div></div></div><div class="meeting-action-wrap"><div class="meeting-action-head"><div></div><div>Ação</div><div>Responsável</div><div>Prazo</div><div>Observações</div><div>Ações</div></div>'+rows+'</div></div>'
+    +'<div class="meeting-add-action" style="padding:10px 0 0"><button class="btn-primary" onclick="abrirModalReuniaoAcao('+r.id+')" style="height:36px"><i class="ti ti-plus"></i> Adicionar ação</button></div>'
+    +'</div></div></div>';
+}
 function renderReunioes(){
   const area=document.getElementById('reunioesConteudo');if(!area)return;
   const termo=(document.getElementById('buscaReunioes')?.value||'').trim().toLowerCase();
   const fs=document.getElementById('filtroStatusReuniao')?.value||'',ft=document.getElementById('filtroTipoReuniao')?.value||'';
   let lista=reunioes.filter(r=>(!fs||r.status===fs)&&(!ft||r.tipo===ft)&&(!termo||(r.assunto||'').toLowerCase().includes(termo)||(r.resumo||'').toLowerCase().includes(termo)||(r.participantes||'').toLowerCase().includes(termo)||(r.organizador||'').toLowerCase().includes(termo)||(r.acoes||[]).some(a=>(a.descricao||'').toLowerCase().includes(termo)||(a.responsavel||'').toLowerCase().includes(termo))));
-  lista.sort((a,b)=>(b.data||'').localeCompare(a.data||'')||(b.hora||'').localeCompare(a.hora||'')||(b.id-a.id));
+  const gruposMap=new Map();
+  lista.forEach(r=>{const k=chaveGrupoReuniao(r);if(!gruposMap.has(k))gruposMap.set(k,[]);gruposMap.get(k).push(r);});
+  const grupos=[...gruposMap.entries()].map(([chave,rs])=>({chave,reunioes:rs.sort((a,b)=>(a.data||'').localeCompare(b.data||'')||(a.hora||'').localeCompare(b.hora||'')||a.id-b.id)})).sort((a,b)=>(b.reunioes[b.reunioes.length-1]?.data||'').localeCompare(a.reunioes[a.reunioes.length-1]?.data||''));
   const count=document.getElementById('count-reunioes');if(count)count.textContent=reunioes.length;
-  if(!lista.length){area.innerHTML='<div class="meeting-empty"><i class="ti ti-users-group"></i><strong>Nenhuma reunião cadastrada</strong><span>Registre as reuniões importantes, decisões e respectivos encaminhamentos.</span></div>';return;}
-  area.innerHTML=lista.map(r=>{
-    const prog=reuniaoProgresso(r),aberto=reuniaoExpandida[r.id]!==false,actions=r.acoes||[];
-    const rows=actions.length?actions.map(a=>{const hojeISO=new Date().toISOString().slice(0,10),atrasada=a.prazo&&a.prazo<hojeISO&&!a.concluida;return '<div class="meeting-action-row">'
-      +'<button type="button" class="meeting-action-check '+(a.concluida?'checked':'')+'" onclick="alternarReuniaoAcao('+r.id+','+a.id+')" title="'+(a.concluida?'Desmarcar como concluída':'Marcar como concluída')+'">'+(a.concluida?'<i class="ti ti-check"></i>':'')+'</button>'
-      +'<div class="meeting-action-desc '+(a.concluida?'done':'')+'">'+escHtml(a.descricao)+'</div>'
-      +'<div class="meeting-action-person">'+(a.responsavel?'<i class="ti ti-user"></i> '+escHtml(a.responsavel):'—')+'</div>'
-      +'<div class="'+(atrasada?'meeting-action-date overdue':'meeting-action-date')+'">'+(a.prazo?(new Date(a.prazo+'T00:00:00').toLocaleDateString('pt-BR')+(atrasada?' • atrasado':'')):'—')+'</div>'
-      +'<div class="meeting-action-obs">'+(a.observacoes?escHtml(a.observacoes):'—')+'</div>'
-      +'<div class="meeting-action-tools"><button class="btn-icon" onclick="abrirModalReuniaoAcao('+r.id+','+a.id+')" title="Editar ação"><i class="ti ti-pencil"></i></button><button class="btn-icon" onclick="excluirReuniaoAcao('+r.id+','+a.id+')" title="Excluir ação"><i class="ti ti-trash"></i></button></div></div>';}).join(''):'<div style="padding:12px 0;color:#91A0A9;font-size:12px;font-style:italic">Nenhuma ação cadastrada nesta reunião.</div>';
-    return '<section class="meeting-card" id="reuniao-card-'+r.id+'"><div class="meeting-card-head"><div class="meeting-main">'
-      +'<div class="meeting-title-row"><div class="meeting-title">'+escHtml(r.assunto)+'</div><span class="meeting-badge '+reuniaoStatusClass(r.status)+'">'+escHtml(r.status||'Realizada')+'</span></div>'
-      +'<div class="meeting-meta"><span><i class="ti ti-calendar"></i>'+formatarDataReuniao(r.data)+'</span><span><i class="ti ti-clock"></i>'+formatarHorarioReuniao(r)+'</span><span><i class="ti ti-tag"></i>'+escHtml(r.tipo||'Reunião')+'</span>'+(r.modulo?'<span><i class="ti ti-folders"></i>'+escHtml(r.modulo)+'</span>':'')+'</div>'
-      +(r.organizador||r.participantes?'<div class="meeting-meta">'+(r.organizador?'<span><i class="ti ti-user"></i>'+escHtml(r.organizador)+'</span>':'')+(r.participantes?'<span><i class="ti ti-users"></i>'+escHtml(r.participantes)+'</span>':'')+'</div>':'')
-      +(r.resumo?'<div class="meeting-summary">'+escHtml(r.resumo)+'</div>':'')
-      +(r.decisoes?'<div class="meeting-decisions"><strong>Decisões:</strong> '+escHtml(r.decisoes)+'</div>':'')
-      +'</div><div class="meeting-actions"><button class="btn-icon" onclick="toggleReuniao('+r.id+')" title="'+(aberto?'Recolher':'Expandir')+'"><i class="ti ti-chevron-'+(aberto?'up':'down')+'"></i></button><button class="btn-icon" onclick="abrirModalReuniao('+r.id+')" title="Editar reunião"><i class="ti ti-pencil"></i></button><button class="btn-icon" onclick="excluirReuniao('+r.id+')" title="Excluir reunião"><i class="ti ti-trash"></i></button></div></div>'
-      +(aberto?'<div class="meeting-info-grid"><div class="meeting-info-item"><span class="meeting-info-label">Local / Link</span><div class="meeting-info-value">'+escHtml(r.local_link||'—')+'</div></div><div class="meeting-info-item"><span class="meeting-info-label">Próxima reunião</span><div class="meeting-info-value">'+formatarDataReuniao(r.proxima_reuniao)+'</div></div><div class="meeting-info-item"><span class="meeting-info-label">Próximos passos</span><div class="meeting-info-value">'+escHtml(r.proximos_passos||'—')+'</div></div><div class="meeting-info-item"><span class="meeting-info-label">Ações</span><div class="meeting-info-value">'+prog.done+' de '+prog.total+' concluídas</div></div></div><div class="meeting-checklist"><div class="meeting-checklist-head"><span>Ações / Encaminhamentos</span><span>Responsável • Prazo • Observações</span></div><div class="meeting-progress"><span><strong>'+prog.done+'</strong> de '+prog.total+' ações concluídas</span><span>'+prog.percent+'%</span><div class="meeting-progress-bar"><div class="meeting-progress-fill" style="width:'+prog.percent+'%"></div></div></div><div class="meeting-action-wrap"><div class="meeting-action-head"><div></div><div>Ação</div><div>Responsável</div><div>Prazo</div><div>Observações</div><div>Ações</div></div>'+rows+'</div></div><div class="meeting-add-action"><button class="btn-primary" onclick="abrirModalReuniaoAcao('+r.id+')" style="height:38px"><i class="ti ti-plus"></i> Adicionar ação</button></div>':'')
-      +'</section>';
+  if(!grupos.length){area.innerHTML='<div class="meeting-empty"><i class="ti ti-users-group"></i><strong>Nenhuma reunião cadastrada</strong><span>Registre as reuniões importantes, decisões e respectivos encaminhamentos.</span></div>';return;}
+  area.innerHTML=grupos.map(g=>{
+    const rs=g.reunioes,total=rs.length,latest=rs[total-1],aberto=reuniaoExpandida['g:'+g.chave]!==false;
+    return '<section class="meeting-series-card"><div class="meeting-series-head"><div class="meeting-series-main"><div class="meeting-title-row"><div class="meeting-series-title">'+escHtml(latest?.assunto||rs[0]?.assunto||'Reunião')+'</div><span class="meeting-series-count">'+total+' '+(total===1?'reunião':'reuniões')+'</span></div><div class="meeting-series-meta"><span><i class="ti ti-calendar"></i>Último encontro: '+formatarDataReuniao(latest?.data)+'</span>'+(latest?.modulo?'<span><i class="ti ti-folders"></i>'+escHtml(latest.modulo)+'</span>':'')+'</div></div><div class="meeting-series-actions"><button class="meeting-followup-btn" onclick="novaReuniaoDoAssunto('+latest.id+')" title="Adicionar outra reunião sobre este assunto"><i class="ti ti-plus"></i> Nova reunião sobre este assunto</button><button class="btn-icon" onclick="toggleGrupoReuniao(\''+g.chave+'\')" title="'+(aberto?'Recolher histórico':'Expandir histórico')+'"><i class="ti ti-chevron-'+(aberto?'up':'down')+'"></i></button></div></div>'
+    +(aberto?'<div class="meeting-series-body"><div class="meeting-timeline">'+rs.map((r,i)=>renderReuniaoHistorico(r,i,total)).join('')+'</div></div>':'')
+    +'</section>';
   }).join('');
 }
-function abrirModalReuniao(id=null){
-  reuniaoEditando=id!==null?Number(id):null;const r=reuniaoEditando!==null?reunioes.find(x=>Number(x.id)===reuniaoEditando):null;
+function abrirModalReuniao(id=null, grupo=null){
+  reuniaoEditando=id!==null?Number(id):null;
+  reuniaoGrupoAtual=grupo||null;
+  const r=reuniaoEditando!==null?reunioes.find(x=>Number(x.id)===reuniaoEditando):null;
   document.getElementById('reuniaoModalTitulo').textContent=r?'Editar reunião':'Nova reunião';
-  document.getElementById('rData').value=r?.data||new Date().toISOString().slice(0,10);document.getElementById('rHora').value=r?.hora||'';document.getElementById('rDuracao').value=r?.duracao_minutos||'';document.getElementById('rTipo').value=r?.tipo||'Alinhamento';document.getElementById('rAssunto').value=r?.assunto||'';document.getElementById('rOrganizador').value=r?.organizador||'';document.getElementById('rModulo').value=r?.modulo||'';document.getElementById('rParticipantes').value=r?.participantes||'';document.getElementById('rLocal').value=r?.local_link||'';document.getElementById('rResumo').value=r?.resumo||'';document.getElementById('rDecisoes').value=r?.decisoes||'';document.getElementById('rProximos').value=r?.proximos_passos||'';document.getElementById('rProxima').value=r?.proxima_reuniao||'';document.getElementById('rStatus').value=r?.status||'Realizada';document.getElementById('errReuniao').style.display='none';document.getElementById('ovReuniao').classList.add('open');
+  document.getElementById('rData').value=r?.data||new Date().toISOString().slice(0,10);
+  document.getElementById('rHora').value=r?.hora||'';
+  document.getElementById('rDuracao').value=r?.duracao_minutos||'';
+  document.getElementById('rTipo').value=r?.tipo||'Alinhamento';
+  document.getElementById('rAssunto').value=r?.assunto||'';
+  document.getElementById('rOrganizador').value=r?.organizador||'';
+  document.getElementById('rModulo').value=r?.modulo||'';
+  document.getElementById('rParticipantes').value=r?.participantes||'';
+  document.getElementById('rLocal').value=r?.local_link||'';
+  document.getElementById('rResumo').value=r?.resumo||'';
+  document.getElementById('rDecisoes').value=r?.decisoes||'';
+  document.getElementById('rProximos').value=r?.proximos_passos||'';
+  document.getElementById('rProxima').value=r?.proxima_reuniao||'';
+  document.getElementById('rStatus').value=r?.status||'Realizada';
+  document.getElementById('errReuniao').style.display='none';
+  document.getElementById('ovReuniao').classList.add('open');
 }
-function fecharModalReuniao(){document.getElementById('ovReuniao').classList.remove('open');reuniaoEditando=null;}
+function fecharModalReuniao(){document.getElementById('ovReuniao').classList.remove('open');reuniaoEditando=null;reuniaoGrupoAtual=null;}
 async function salvarReuniao(){
-  const data=document.getElementById('rData').value,assunto=document.getElementById('rAssunto').value.trim();if(!data||!assunto){document.getElementById('errReuniao').textContent=!data?'Informe a data da reunião':'Informe o assunto da reunião';document.getElementById('errReuniao').style.display='block';return;}
-  const dados={data,hora:document.getElementById('rHora').value,duracao_minutos:document.getElementById('rDuracao').value,tipo:document.getElementById('rTipo').value,assunto,organizador:document.getElementById('rOrganizador').value.trim(),modulo:document.getElementById('rModulo').value,participantes:document.getElementById('rParticipantes').value.trim(),local_link:document.getElementById('rLocal').value.trim(),resumo:document.getElementById('rResumo').value.trim(),decisoes:document.getElementById('rDecisoes').value.trim(),proximos_passos:document.getElementById('rProximos').value.trim(),proxima_reuniao:document.getElementById('rProxima').value,status:document.getElementById('rStatus').value};
-  try{if(reuniaoEditando!==null){const r=reunioes.find(x=>Number(x.id)===Number(reuniaoEditando));if(!r)return;if(sb){const {error}=await sb.from('reunioes').update({...dados,duracao_minutos:dados.duracao_minutos?Number(dados.duracao_minutos):null,hora:dados.hora||null,proxima_reuniao:dados.proxima_reuniao||null,updated_at:new Date().toISOString()}).eq('id',Number(r.id));if(error)throw error;}Object.assign(r,dados);
-  }else{if(sb){const {data:novo,error}=await sb.from('reunioes').insert({...dados,duracao_minutos:dados.duracao_minutos?Number(dados.duracao_minutos):null,hora:dados.hora||null,proxima_reuniao:dados.proxima_reuniao||null}).select('id').single();if(error)throw error;reunioes.push({id:Number(novo.id),...dados,acoes:[]});nextReuniaoId=Math.max(nextReuniaoId,Number(novo.id)+1);}else{reunioes.push({id:nextReuniaoId++,...dados,acoes:[]});}}
-  salvarReunioesLocal();fecharModalReuniao();render();
+  const data=document.getElementById('rData').value,assunto=document.getElementById('rAssunto').value.trim();
+  if(!data||!assunto){document.getElementById('errReuniao').textContent=!data?'Informe a data da reunião':'Informe o assunto da reunião';document.getElementById('errReuniao').style.display='block';return;}
+  const grupo=reuniaoGrupoAtual||(reuniaoEditando!==null?(reunioes.find(x=>Number(x.id)===Number(reuniaoEditando))?.grupo_reuniao||null):null);
+  const dados={data,hora:document.getElementById('rHora').value,duracao_minutos:document.getElementById('rDuracao').value,tipo:document.getElementById('rTipo').value,assunto,grupo_reuniao:grupo||'',organizador:document.getElementById('rOrganizador').value.trim(),modulo:document.getElementById('rModulo').value,participantes:document.getElementById('rParticipantes').value.trim(),local_link:document.getElementById('rLocal').value.trim(),resumo:document.getElementById('rResumo').value.trim(),decisoes:document.getElementById('rDecisoes').value.trim(),proximos_passos:document.getElementById('rProximos').value.trim(),proxima_reuniao:document.getElementById('rProxima').value,status:document.getElementById('rStatus').value};
+  try{
+    if(reuniaoEditando!==null){
+      const r=reunioes.find(x=>Number(x.id)===Number(reuniaoEditando));if(!r)return;
+      if(sb){const {error}=await sb.from('reunioes').update({...dados,duracao_minutos:dados.duracao_minutos?Number(dados.duracao_minutos):null,hora:dados.hora||null,proxima_reuniao:dados.proxima_reuniao||null,grupo_reuniao:dados.grupo_reuniao||null,updated_at:new Date().toISOString()}).eq('id',Number(r.id));if(error)throw error;}
+      Object.assign(r,dados);
+    }else{
+      if(sb){const {data:novo,error}=await sb.from('reunioes').insert({...dados,duracao_minutos:dados.duracao_minutos?Number(dados.duracao_minutos):null,hora:dados.hora||null,proxima_reuniao:dados.proxima_reuniao||null,grupo_reuniao:dados.grupo_reuniao||null}).select('id').single();if(error)throw error;reunioes.push({id:Number(novo.id),...dados,acoes:[]});nextReuniaoId=Math.max(nextReuniaoId,Number(novo.id)+1);}else{reunioes.push({id:nextReuniaoId++,...dados,acoes:[]});}
+    }
+    salvarReunioesLocal();fecharModalReuniao();render();
   }catch(e){alert('Não foi possível salvar a reunião.\n\nDetalhes: '+(e.message||'erro desconhecido'));}}
+async function garantirGrupoReuniao(id){
+  const r=reunioes.find(x=>Number(x.id)===Number(id));if(!r)return null;
+  if(r.grupo_reuniao)return r.grupo_reuniao;
+  const grupo=criarGrupoReuniao();
+  try{
+    if(sb){const {error}=await sb.from('reunioes').update({grupo_reuniao:grupo,updated_at:new Date().toISOString()}).eq('id',Number(r.id));if(error)throw error;}
+    r.grupo_reuniao=grupo;salvarReunioesLocal();return grupo;
+  }catch(e){alert('Não foi possível criar o histórico deste assunto.\n\nDetalhes: '+(e.message||'erro desconhecido'));return null;}
+}
+async function novaReuniaoDoAssunto(id){
+  const r=reunioes.find(x=>Number(x.id)===Number(id));if(!r)return;
+  const grupo=await garantirGrupoReuniao(id);if(!grupo)return;
+  reuniaoGrupoAtual=grupo;
+  abrirModalReuniao(null,grupo);
+}
+function toggleGrupoReuniao(chave){reuniaoExpandida['g:'+chave]=reuniaoExpandida['g:'+chave]===false;render();}
 async function excluirReuniao(id){if(!confirm('Excluir esta reunião e todas as suas ações?'))return;try{if(sb){const {error}=await sb.from('reunioes').delete().eq('id',Number(id));if(error)throw error;}reunioes=reunioes.filter(r=>Number(r.id)!==Number(id));delete reuniaoExpandida[id];salvarReunioesLocal();render();}catch(e){alert('Não foi possível excluir a reunião.\n\nDetalhes: '+(e.message||'erro desconhecido'));}}
 function toggleReuniao(id){reuniaoExpandida[id]=reuniaoExpandida[id]===false;render();}
 function abrirModalReuniaoAcao(rid,aid=null){reuniaoAlvo=Number(rid);reuniaoAcaoEditando=aid!==null?Number(aid):null;const r=reunioes.find(x=>Number(x.id)===reuniaoAlvo);const a=reuniaoAcaoEditando!==null&&r?r.acoes.find(x=>Number(x.id)===reuniaoAcaoEditando):null;document.getElementById('reuniaoAcaoModalTitulo').textContent=a?'Editar ação':'Nova ação';document.getElementById('raDescricao').value=a?.descricao||'';document.getElementById('raResponsavel').value=a?.responsavel||'';document.getElementById('raPrazo').value=a?.prazo||'';document.getElementById('raObservacoes').value=a?.observacoes||'';document.getElementById('raConcluida').checked=!!a?.concluida;document.getElementById('errReuniaoAcao').style.display='none';document.getElementById('ovReuniaoAcao').classList.add('open');}
@@ -1164,7 +1264,7 @@ async function receberNuvem() {
       salvarProjetosLocal();
     }
     if (cloudReunioes) {
-      reunioes=cloudReunioes.map(r=>({id:Number(r.id),data:r.data||'',hora:r.hora||'',duracao_minutos:r.duracao_minutos||'',tipo:r.tipo||'Reunião',assunto:r.assunto||'',organizador:r.organizador||'',participantes:r.participantes||'',local_link:r.local_link||'',modulo:r.modulo||'',resumo:r.resumo||'',decisoes:r.decisoes||'',proximos_passos:r.proximos_passos||'',proxima_reuniao:r.proxima_reuniao||'',status:r.status||'Realizada',acoes:[]}));
+      reunioes=cloudReunioes.map(r=>({id:Number(r.id),data:r.data||'',hora:r.hora||'',duracao_minutos:r.duracao_minutos||'',tipo:r.tipo||'Reunião',assunto:r.assunto||'',grupo_reuniao:r.grupo_reuniao||'',organizador:r.organizador||'',participantes:r.participantes||'',local_link:r.local_link||'',modulo:r.modulo||'',resumo:r.resumo||'',decisoes:r.decisoes||'',proximos_passos:r.proximos_passos||'',proxima_reuniao:r.proxima_reuniao||'',status:r.status||'Realizada',acoes:[]}));
       (cloudReuniaoAcoes||[]).forEach(a=>{const r=reunioes.find(x=>Number(x.id)===Number(a.reuniao_id));if(r)r.acoes.push({id:Number(a.id),descricao:a.descricao||'',responsavel:a.responsavel||'',prazo:a.prazo||'',observacoes:a.observacoes||'',concluida:!!a.concluida,data_conclusao:a.data_conclusao||''});});
       nextReuniaoId=Math.max(3000,...reunioes.map(r=>Number(r.id)||0)+1);
       nextReuniaoAcaoId=Math.max(4000,...reunioes.flatMap(r=>r.acoes).map(a=>Number(a.id)||0)+1);

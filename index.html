@@ -448,6 +448,37 @@ tr.tarefa-row:hover>td{background:#F7FBFD;}
 
 .meetings-view{display:none;}
 .meeting-toolbar{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:16px;padding:4px 1px 0;}
+
+.ncs-view{display:none;}
+.ncs-toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:4px 0 15px;flex-wrap:wrap;}
+.ncs-page-title{font-size:22px;font-weight:700;color:var(--brand-dark);letter-spacing:-.02em;}
+.ncs-page-subtitle{margin-top:4px;font-size:13px;color:var(--muted);}
+.ncs-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px;}
+.ncs-summary-card{background:#fff;border:1px solid var(--line);border-radius:11px;padding:12px 14px;}
+.ncs-summary-label{display:block;font-size:11px;color:var(--muted);margin-bottom:5px;}
+.ncs-summary-card strong{font-size:21px;color:var(--brand-dark);}
+.ncs-filters{display:flex;gap:9px;align-items:center;margin-bottom:12px;flex-wrap:wrap;}
+.ncs-filters input,.ncs-filters select{height:39px;border:1px solid var(--line);border-radius:9px;background:#fff;padding:0 11px;font-family:inherit;font-size:12px;color:var(--text);}
+.ncs-filters input{flex:1;min-width:220px;}
+.ncs-list{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;}
+.ncs-list-head,.ncs-row{display:grid;grid-template-columns:95px 125px minmax(190px,1.7fr) 130px 105px 160px minmax(140px,1.2fr) 68px;gap:9px;align-items:center;padding:11px 12px;}
+.ncs-list-head{background:#F2F6F8;border-bottom:1px solid var(--line);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.045em;color:#718591;}
+.ncs-row{border-bottom:1px solid #EDF1F3;font-size:11px;color:var(--text);}
+.ncs-row:last-child{border-bottom:0;}
+.ncs-row:hover{background:#FAFCFD;}
+.ncs-cell{min-width:0;overflow-wrap:anywhere;line-height:1.4;}
+.ncs-number{font-weight:750;color:var(--brand-dark);font-size:12px;}
+.ncs-secondary{font-size:10px;color:#83939D;margin-top:3px;white-space:pre-line;}
+.ncs-status{display:inline-block;padding:4px 8px;border-radius:20px;font-size:9px;font-weight:650;background:#EAF3F8;color:#0F4C6E;line-height:1.25;}
+.ncs-status.waiting{background:#FFF4DA;color:#986300;}
+.ncs-status.efficacy{background:#F3EAFE;color:#7050A0;}
+.ncs-status.closed{background:#E4F7ED;color:#16734D;}
+.ncs-status.late{background:#FDEBED;color:#C13D49;}
+.ncs-row-tools{display:flex;justify-content:flex-end;gap:2px;}
+.ncs-empty{padding:42px 16px;text-align:center;color:#81929D;font-size:12px;}
+.ncs-empty i{display:block;font-size:25px;margin-bottom:8px;color:#A2B3BD;}
+@media(max-width:1200px){.ncs-list-head{display:none;}.ncs-row{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;}.ncs-row-tools{justify-content:flex-start;}.ncs-cell[data-label]:before{content:attr(data-label);display:block;font-size:9px;color:#8798A2;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px;font-weight:700;}}
+@media(max-width:800px){.ncs-summary{grid-template-columns:repeat(2,minmax(0,1fr));}.ncs-row{grid-template-columns:repeat(2,minmax(0,1fr));padding:12px;}.ncs-toolbar{align-items:stretch;}.ncs-toolbar .btn-primary{width:100%;}.ncs-filters input{width:100%;min-width:0;flex:1 1 100%;}.ncs-filters select{flex:1;min-width:0;}}
 .nfs-view{display:none;}
 .nfs-toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:4px 0 15px;flex-wrap:wrap;}
 .nfs-page-title{font-size:22px;font-weight:700;color:var(--brand-dark);letter-spacing:-.02em;}
@@ -633,6 +664,7 @@ tr.tarefa-row:hover>td{background:#F7FBFD;}
       <button class="sidebar-btn" data-painel="__projetos__" onclick="selecionarPainel('__projetos__')"><i class="ti ti-briefcase-2"></i> Projetos <span class="sidebar-count" id="count-projetos">0</span></button>
       <button class="sidebar-btn" data-painel="__reunioes__" onclick="selecionarPainel('__reunioes__')"><i class="ti ti-users-group"></i> Reuniões <span class="sidebar-count" id="count-reunioes">0</span></button>
       <button class="sidebar-btn" data-painel="__nfs__" onclick="selecionarPainel('__nfs__')"><i class="ti ti-receipt"></i> Controle de NFs <span class="sidebar-count" id="count-nfs">0</span></button>
+      <button class="sidebar-btn" data-painel="__ncs__" onclick="selecionarPainel('__ncs__')"><i class="ti ti-alert-triangle"></i> Controle de NCs <span class="sidebar-count" id="count-ncs">0</span></button>
       <div class="sidebar-group-label">Qualidade</div>
       <button class="sidebar-btn" data-painel="Documentos" onclick="selecionarPainel('Documentos')"><i class="ti ti-file-text"></i> Documentos <span class="sidebar-count" id="count-Documentos">0</span></button>
       <button class="sidebar-btn" data-painel="Auditoria" onclick="selecionarPainel('Auditoria')"><i class="ti ti-clipboard-check"></i> Auditoria <span class="sidebar-count" id="count-Auditoria">0</span></button>
@@ -697,6 +729,33 @@ tr.tarefa-row:hover>td{background:#F7FBFD;}
         <div id="reunioesConteudo"></div>
       </div>
 
+      <div id="ncsView" class="ncs-view">
+        <div class="ncs-toolbar">
+          <div>
+            <div class="ncs-page-title">Controle de Não Conformidades</div>
+            <div class="ncs-page-subtitle">Acompanhe a origem, as ações, os responsáveis e os prazos das NCs.</div>
+          </div>
+          <button class="btn-primary" onclick="abrirModalNC()"><i class="ti ti-plus"></i> Nova NC</button>
+        </div>
+        <div class="ncs-summary">
+          <div class="ncs-summary-card"><span class="ncs-summary-label">Total de NCs</span><strong id="ncsTotal">0</strong></div>
+          <div class="ncs-summary-card"><span class="ncs-summary-label">Aguardando ação</span><strong id="ncsAguardando">0</strong></div>
+          <div class="ncs-summary-card"><span class="ncs-summary-label">Aguardando eficácia</span><strong id="ncsEficacia">0</strong></div>
+          <div class="ncs-summary-card"><span class="ncs-summary-label">Prazos vencidos</span><strong id="ncsVencidas">0</strong></div>
+        </div>
+        <div class="ncs-filters">
+          <input type="text" id="buscaNCs" placeholder="Buscar por número, origem, ação, responsável ou observações..." oninput="renderNCs()">
+          <select id="filtroStatusNCs" onchange="renderNCs()">
+            <option value="">Todos os status</option>
+            <option>Aberta</option><option>Aguardando ação</option><option>Aguardando avaliação de eficácia</option><option>Em andamento</option><option>Encerrada</option>
+          </select>
+          <select id="filtroOrigemNCs" onchange="renderNCs()">
+            <option value="">Todas as origens</option><option>Serviço não conforme</option><option>Análise crítica</option><option>Falha de processo</option><option>Auditoria interna</option><option>Auditoria externa</option><option>Cliente</option><option>Outra</option>
+          </select>
+        </div>
+        <div id="ncsConteudo"></div>
+      </div>
+
       <div id="nfsView" class="nfs-view">
         <div class="nfs-toolbar">
           <div>
@@ -731,6 +790,27 @@ tr.tarefa-row:hover>td{background:#F7FBFD;}
         <div id="projetosConteudo"></div>
       </div>
     </main>
+  </div>
+</div>
+
+<!-- modal controle de NC -->
+<div class="modal-overlay" id="ovNC">
+  <div class="modal" style="width:700px">
+    <h2 id="ncModalTitulo">Nova NC</h2>
+    <div class="mgrid">
+      <div class="field"><label>Nº da NC <span style="color:#c0392b">*</span></label><input type="text" id="ncNumero" placeholder="Ex.: 0264-26"><div class="err" id="errNC">Informe o número da NC</div></div>
+      <div class="field"><label>Origem</label><input type="text" id="ncOrigem" list="ncOrigens" placeholder="Ex.: Falha de processo"><datalist id="ncOrigens"><option value="Serviço não conforme"><option value="Análise crítica"><option value="Falha de processo"><option value="Auditoria interna"><option value="Auditoria externa"><option value="Cliente"><option value="Outra"></datalist></div>
+      <div class="field full"><label>Ação / encaminhamento</label><textarea id="ncAcao" placeholder="Descreva a ação pendente, a avaliação de eficácia ou o encaminhamento."></textarea></div>
+      <div class="field"><label>Responsável</label><input type="text" id="ncResponsavel" placeholder="Nome ou setor"></div>
+      <div class="field"><label>Status</label><select id="ncStatus"><option>Aberta</option><option>Aguardando ação</option><option>Aguardando avaliação de eficácia</option><option>Em andamento</option><option>Encerrada</option></select></div>
+      <div class="field"><label>Data da solicitação</label><input type="date" id="ncDataSolicitacao"></div>
+      <div class="field"><label>Prazo</label><input type="date" id="ncPrazo"></div>
+      <div class="field full"><label>Observações</label><textarea id="ncObservacoes" placeholder="Ex.: Solicitado em 14/10/2026, evidências, pendências ou outros registros."></textarea></div>
+    </div>
+    <div class="mactions">
+      <button class="btn-cancel" onclick="fecharModalNC()">Cancelar</button>
+      <button class="btn-save" onclick="salvarNC()">Salvar NC</button>
+    </div>
   </div>
 </div>
 
@@ -960,6 +1040,7 @@ let projetos = [], nextProjetoId = 1000, nextProjetoAcaoId = 2000, projetoEditan
 let calendarioView='month', calendarioData=new Date(), calendarioEventoAtual=null;
 let reunioes=[], nextReuniaoId=3000, nextReuniaoAcaoId=4000, reuniaoEditando=null, reuniaoAcaoEditando=null, reuniaoAlvo=null, reuniaoExpandida={}, reuniaoGrupoAtual=null;
 let nfs=[], nextNfId=5000, nfEditando=null;
+let ncs=[], nextNcId=6000, ncEditando=null;
 let collapsedMes = {}, expandedTarefa = {}, microAlvo = null, mesesSelecionados = new Set(), painelSelecionado = 'todos', projetoExpandido = {};
 
 function bc(s){ return s==='Pendente'?'b-p':s==='Aguardando'?'b-a':s==='Concluído'?'b-c':'b-s'; }
@@ -1030,6 +1111,8 @@ async function carregarDados() {
     if (r) { reunioes = JSON.parse(r); nextReuniaoId = parseInt(localStorage.getItem('ct_nextReuniaoId')||3000); nextReuniaoAcaoId = parseInt(localStorage.getItem('ct_nextReuniaoAcaoId')||4000); }
     const nfLocal = localStorage.getItem('controle_nfs');
     if (nfLocal) { nfs = JSON.parse(nfLocal); nextNfId = parseInt(localStorage.getItem('ct_nextNfId')||5000); }
+    const ncLocal = localStorage.getItem('controle_ncs');
+    if (ncLocal) { ncs = JSON.parse(ncLocal); nextNcId = parseInt(localStorage.getItem('ct_nextNcId')||6000); }
   } catch(e) {}
 
   if (!SYNC_ENABLED || !sb) return;
@@ -1048,6 +1131,8 @@ async function carregarDados() {
     if (reuniaoAcaoErr) throw reuniaoAcaoErr;
     const { data: cloudNFs, error: nfErr } = await sb.from('controle_nfs').select('*').order('data_lancamento',{ascending:false}).order('id',{ascending:false});
     if (nfErr) throw nfErr;
+    const { data: cloudNCs, error: ncErr } = await sb.from('controle_ncs').select('*').order('numero_nc');
+    if (ncErr) throw ncErr;
 
     if (cloudProjetos && cloudProjetos.length) {
       projetos = cloudProjetos.map(p => ({
@@ -1083,6 +1168,14 @@ async function carregarDados() {
       salvarNFsLocal();
     } else if (nfs.length) {
       await sincronizarNFs();
+    }
+
+    if (cloudNCs && cloudNCs.length) {
+      ncs=cloudNCs.map(n=>({id:Number(n.id),numero_nc:n.numero_nc||'',origem:n.origem||'',acao:n.acao||'',observacoes:n.observacoes||'',responsavel:n.responsavel||'',data_solicitacao:n.data_solicitacao||'',prazo:n.prazo||'',status:n.status||'Aberta'}));
+      nextNcId=Math.max(6000,...ncs.map(n=>Number(n.id)||0))+1;
+      salvarNCsLocal();
+    } else if (ncs.length) {
+      await sincronizarNCs();
     }
 
     if (cloudTasks && cloudTasks.length) {
@@ -1318,6 +1411,89 @@ function selecionarProjetosBusca(){
 }
 
 
+
+function salvarNCsLocal(){
+  localStorage.setItem('controle_ncs',JSON.stringify(ncs));
+  localStorage.setItem('ct_nextNcId',nextNcId);
+}
+async function sincronizarNCs(){
+  if(!sb||!ncs.length)return;
+  const rows=ncs.map(n=>({id:Number(n.id),numero_nc:n.numero_nc,origem:n.origem||'',acao:n.acao||'',observacoes:n.observacoes||'',responsavel:n.responsavel||'',data_solicitacao:n.data_solicitacao||null,prazo:n.prazo||null,status:n.status||'Aberta',updated_at:new Date().toISOString()}));
+  const {error}=await sb.from('controle_ncs').upsert(rows,{onConflict:'id'});
+  if(error)throw error;
+}
+function ncDataBR(v){return v?new Date(v+'T00:00:00').toLocaleDateString('pt-BR'):'—';}
+function ncStatusClass(s){if(s==='Aguardando ação')return 'waiting';if(s==='Aguardando avaliação de eficácia')return 'efficacy';if(s==='Encerrada')return 'closed';return '';}
+function renderNCs(){
+  const area=document.getElementById('ncsConteudo');if(!area)return;
+  const termo=(document.getElementById('buscaNCs')?.value||'').trim().toLowerCase();
+  const fs=document.getElementById('filtroStatusNCs')?.value||'';
+  const fo=document.getElementById('filtroOrigemNCs')?.value||'';
+  const hojeISO=new Date().toISOString().slice(0,10);
+  const abertas=ncs.filter(n=>n.status!=='Encerrada');
+  const total=document.getElementById('ncsTotal'),aguardando=document.getElementById('ncsAguardando'),eficacia=document.getElementById('ncsEficacia'),vencidas=document.getElementById('ncsVencidas');
+  if(total)total.textContent=ncs.length;
+  if(aguardando)aguardando.textContent=ncs.filter(n=>n.status==='Aguardando ação').length;
+  if(eficacia)eficacia.textContent=ncs.filter(n=>n.status==='Aguardando avaliação de eficácia').length;
+  if(vencidas)vencidas.textContent=ncs.filter(n=>n.prazo&&n.prazo<hojeISO&&n.status!=='Encerrada').length;
+  const count=document.getElementById('count-ncs');if(count)count.textContent=ncs.length;
+  const lista=ncs.filter(n=>(!fs||n.status===fs)&&(!fo||n.origem===fo)&&(!termo||[n.numero_nc,n.origem,n.acao,n.observacoes,n.responsavel,n.status].some(v=>String(v||'').toLowerCase().includes(termo)))).slice().sort((a,b)=>(a.prazo||'9999-12-31').localeCompare(b.prazo||'9999-12-31')||String(a.numero_nc).localeCompare(String(b.numero_nc)));
+  if(!lista.length){area.innerHTML='<div class="ncs-list"><div class="ncs-empty"><i class="ti ti-alert-triangle"></i><strong>Nenhuma NC encontrada</strong><div>Cadastre uma não conformidade para começar o acompanhamento.</div></div></div>';return;}
+  area.innerHTML='<div class="ncs-list"><div class="ncs-list-head"><div>Nº</div><div>Origem</div><div>Ação / encaminhamento</div><div>Responsável</div><div>Prazo</div><div>Status</div><div>Observações</div><div></div></div>'
+    +lista.map(n=>{
+      const atrasada=n.prazo&&n.prazo<hojeISO&&n.status!=='Encerrada';
+      return '<div class="ncs-row">'
+        +'<div class="ncs-cell" data-label="Nº"><div class="ncs-number">'+escHtml(n.numero_nc)+'</div>'+(n.data_solicitacao?'<div class="ncs-secondary">Solicitada '+ncDataBR(n.data_solicitacao)+'</div>':'')+'</div>'
+        +'<div class="ncs-cell" data-label="Origem">'+escHtml(n.origem||'—')+'</div>'
+        +'<div class="ncs-cell" data-label="Ação / encaminhamento">'+escHtml(n.acao||'—')+'</div>'
+        +'<div class="ncs-cell" data-label="Responsável">'+escHtml(n.responsavel||'—')+'</div>'
+        +'<div class="ncs-cell" data-label="Prazo"><span class="'+(atrasada?'ncs-status late':'')+'">'+(n.prazo?ncDataBR(n.prazo):'—')+'</span>'+(atrasada?'<div class="ncs-secondary">Prazo vencido</div>':'')+'</div>'
+        +'<div class="ncs-cell" data-label="Status"><span class="ncs-status '+ncStatusClass(n.status)+'">'+escHtml(n.status||'Aberta')+'</span></div>'
+        +'<div class="ncs-cell" data-label="Observações">'+(n.observacoes?escHtml(n.observacoes):'—')+'</div>'
+        +'<div class="ncs-row-tools"><button class="btn-icon" onclick="abrirModalNC('+n.id+')" title="Editar NC"><i class="ti ti-pencil"></i></button><button class="btn-icon" onclick="excluirNC('+n.id+')" title="Excluir NC"><i class="ti ti-trash"></i></button></div>'
+        +'</div>';
+    }).join('')+'</div>';
+}
+function abrirModalNC(id=null){
+  ncEditando=id!==null?Number(id):null;
+  const n=ncEditando!==null?ncs.find(x=>Number(x.id)===ncEditando):null;
+  document.getElementById('ncModalTitulo').textContent=n?'Editar NC':'Nova NC';
+  document.getElementById('ncNumero').value=n?.numero_nc||'';
+  document.getElementById('ncOrigem').value=n?.origem||'';
+  document.getElementById('ncAcao').value=n?.acao||'';
+  document.getElementById('ncResponsavel').value=n?.responsavel||'';
+  document.getElementById('ncStatus').value=n?.status||'Aberta';
+  document.getElementById('ncDataSolicitacao').value=n?.data_solicitacao||'';
+  document.getElementById('ncPrazo').value=n?.prazo||'';
+  document.getElementById('ncObservacoes').value=n?.observacoes||'';
+  document.getElementById('errNC').style.display='none';
+  document.getElementById('ovNC').classList.add('open');
+}
+function fecharModalNC(){document.getElementById('ovNC').classList.remove('open');ncEditando=null;}
+async function salvarNC(){
+  const numero_nc=document.getElementById('ncNumero').value.trim();
+  if(!numero_nc){document.getElementById('errNC').textContent='Informe o número da NC';document.getElementById('errNC').style.display='block';document.getElementById('ncNumero').focus();return;}
+  const dados={numero_nc,origem:document.getElementById('ncOrigem').value.trim(),acao:document.getElementById('ncAcao').value.trim(),responsavel:document.getElementById('ncResponsavel').value.trim(),status:document.getElementById('ncStatus').value,data_solicitacao:document.getElementById('ncDataSolicitacao').value,prazo:document.getElementById('ncPrazo').value,observacoes:document.getElementById('ncObservacoes').value.trim()};
+  try{
+    if(ncEditando!==null){
+      const n=ncs.find(x=>Number(x.id)===Number(ncEditando));if(!n)return;
+      if(sb){const {error}=await sb.from('controle_ncs').update({...dados,data_solicitacao:dados.data_solicitacao||null,prazo:dados.prazo||null,updated_at:new Date().toISOString()}).eq('id',Number(n.id));if(error)throw error;}
+      Object.assign(n,dados);
+    }else{
+      if(ncs.some(n=>n.numero_nc.toLowerCase()===numero_nc.toLowerCase())){document.getElementById('errNC').textContent='Já existe uma NC com esse número.';document.getElementById('errNC').style.display='block';return;}
+      if(sb){const {data,error}=await sb.from('controle_ncs').insert({...dados,data_solicitacao:dados.data_solicitacao||null,prazo:dados.prazo||null}).select('id').single();if(error)throw error;ncs.push({id:Number(data.id),...dados});nextNcId=Math.max(nextNcId,Number(data.id)+1);}
+      else ncs.push({id:nextNcId++,...dados});
+    }
+    salvarNCsLocal();fecharModalNC();render();
+  }catch(e){console.error('Erro ao salvar NC:',e);alert('Não foi possível salvar a NC.\n\nDetalhes: '+(e.message||'erro desconhecido'));}
+}
+async function excluirNC(id){
+  const n=ncs.find(x=>Number(x.id)===Number(id));if(!n)return;
+  if(!confirm('Excluir a NC '+n.numero_nc+' do controle?'))return;
+  try{if(sb){const {error}=await sb.from('controle_ncs').delete().eq('id',Number(id));if(error)throw error;}ncs=ncs.filter(x=>Number(x.id)!==Number(id));salvarNCsLocal();render();}
+  catch(e){alert('Não foi possível excluir a NC.\n\nDetalhes: '+(e.message||'erro desconhecido'));}
+}
+
 function salvarNFsLocal(){
   localStorage.setItem('controle_nfs',JSON.stringify(nfs));
   localStorage.setItem('ct_nextNfId',nextNfId);
@@ -1403,6 +1579,7 @@ function iniciarSincronizacaoTempoReal() {
     .on('postgres_changes', { event:'*', schema:'public', table:'reunioes' }, () => receberNuvem())
     .on('postgres_changes', { event:'*', schema:'public', table:'reuniao_acoes' }, () => receberNuvem())
     .on('postgres_changes', { event:'*', schema:'public', table:'controle_nfs' }, () => receberNuvem())
+    .on('postgres_changes', { event:'*', schema:'public', table:'controle_ncs' }, () => receberNuvem())
     .subscribe();
 }
 
@@ -1418,6 +1595,7 @@ async function receberNuvem() {
     const { data: cloudReunioes } = await sb.from('reunioes').select('*').order('data',{ascending:false}).order('id',{ascending:false});
     const { data: cloudReuniaoAcoes } = await sb.from('reuniao_acoes').select('*').order('id');
     const { data: cloudNFs } = await sb.from('controle_nfs').select('*').order('data_lancamento',{ascending:false}).order('id',{ascending:false});
+    const { data: cloudNCs } = await sb.from('controle_ncs').select('*').order('numero_nc');
     if (!cloudTasks) return;
     tarefas = cloudTasks.map(t => ({ id:Number(t.id), mes:t.mes||'', assunto:t.assunto||'', atividade:t.atividade||'', descricao:t.descricao||'', solicitante:t.solicitante||'', responsavel:t.responsavel||'', onde:t.onde||'', prioridade:t.prioridade||'', status:t.status||'', micros:[] }));
     (cloudMicros||[]).forEach(m => { const t=tarefas.find(x=>String(x.id)===String(m.tarefa_id)); if(t) t.micros.push({id:Number(m.id),desc:m.descricao||'',responsavel:m.responsavel||'',prazo:m.prazo||'',status:m.status||'',prio:m.prio||''}); });
@@ -1439,6 +1617,11 @@ async function receberNuvem() {
       nfs=cloudNFs.map(n=>({id:Number(n.id),numero_nf:n.numero_nf||'',data_lancamento:n.data_lancamento||'',fornecedor:n.fornecedor||'',descricao:n.descricao||'',valor:n.valor===null||n.valor===undefined?'':String(n.valor),status:n.status||'Lançada',observacoes:n.observacoes||''}));
       nextNfId=Math.max(5000,...nfs.map(n=>Number(n.id)||0))+1;
       salvarNFsLocal();
+    }
+    if (cloudNCs) {
+      ncs=cloudNCs.map(n=>({id:Number(n.id),numero_nc:n.numero_nc||'',origem:n.origem||'',acao:n.acao||'',observacoes:n.observacoes||'',responsavel:n.responsavel||'',data_solicitacao:n.data_solicitacao||'',prazo:n.prazo||'',status:n.status||'Aberta'}));
+      nextNcId=Math.max(6000,...ncs.map(n=>Number(n.id)||0))+1;
+      salvarNCsLocal();
     }
     localStorage.setItem('tarefas', JSON.stringify(tarefas));
     render();
@@ -1662,6 +1845,8 @@ function atualizarContadoresPainel() {
   if(elReunioes) elReunioes.textContent=reunioes.length;
   const elNFs=document.getElementById('count-nfs');
   if(elNFs) elNFs.textContent=nfs.length;
+  const elNCs=document.getElementById('count-ncs');
+  if(elNCs) elNCs.textContent=ncs.length;
   categorias.forEach(a => { const el=document.getElementById(ids[a]); if(el) el.textContent=tarefas.filter(t => (t.assunto||'')===a).length; });
 }
 
@@ -1804,8 +1989,20 @@ function render() {
   const tarefasView=document.getElementById('tarefasView');
   const projetosView=document.getElementById('projetosView');
   const nfsView=document.getElementById('nfsView');
+  const ncsView=document.getElementById('ncsView');
+  if (painelSelecionado === '__ncs__') {
+    if(tarefasView) tarefasView.style.display='none';
+    if(projetosView) projetosView.style.display='none';
+    if(nfsView) nfsView.style.display='none';
+    const cv=document.getElementById('calendarioView'); if(cv) cv.style.display='none';
+    const rv=document.getElementById('reunioesView'); if(rv) rv.style.display='none';
+    if(ncsView) ncsView.style.display='block';
+    renderNCs();
+    return;
+  }
   if (painelSelecionado === '__nfs__') {
     if(tarefasView) tarefasView.style.display='none';
+    if(ncsView) ncsView.style.display='none';
     if(projetosView) projetosView.style.display='none';
     const cv=document.getElementById('calendarioView'); if(cv) cv.style.display='none';
     const rv=document.getElementById('reunioesView'); if(rv) rv.style.display='none';
@@ -1815,6 +2012,7 @@ function render() {
   }
   if (painelSelecionado === '__projetos__') {
     if(tarefasView) tarefasView.style.display='none';
+    if(ncsView) ncsView.style.display='none';
     if(nfsView) nfsView.style.display='none';
     if(projetosView) projetosView.style.display='block';
     const cv=document.getElementById('calendarioView');
@@ -1826,6 +2024,7 @@ function render() {
   }
   if (painelSelecionado === '__reunioes__') {
     if(tarefasView) tarefasView.style.display='none';
+    if(ncsView) ncsView.style.display='none';
     if(nfsView) nfsView.style.display='none';
     if(projetosView) projetosView.style.display='none';
     const cv=document.getElementById('calendarioView');
@@ -1837,6 +2036,7 @@ function render() {
   }
   if (painelSelecionado === '__calendario__') {
     if(tarefasView) tarefasView.style.display='none';
+    if(ncsView) ncsView.style.display='none';
     if(nfsView) nfsView.style.display='none';
     if(projetosView) projetosView.style.display='none';
     const rv=document.getElementById('reunioesView');
@@ -1846,6 +2046,7 @@ function render() {
   }
   if(tarefasView) tarefasView.style.display='block';
   if(projetosView) projetosView.style.display='none';
+  if(ncsView) ncsView.style.display='none';
   if(nfsView) nfsView.style.display='none';
   const reunioesViewEl=document.getElementById('reunioesView');
   if(reunioesViewEl) reunioesViewEl.style.display='none';
@@ -2320,6 +2521,7 @@ document.getElementById('ovCalEvento').addEventListener('click',e=>{if(e.target=
 document.getElementById('ovReuniao').addEventListener('click',e=>{if(e.target===e.currentTarget)fecharModalReuniao();});
 document.getElementById('ovReuniaoAcao').addEventListener('click',e=>{if(e.target===e.currentTarget)fecharModalReuniaoAcao();});
 document.getElementById('ovNF').addEventListener('click',e=>{if(e.target===e.currentTarget)fecharModalNF();});
+document.getElementById('ovNC').addEventListener('click',e=>{if(e.target===e.currentTarget)fecharModalNC();});
 
 carregarDados().then(() => { render(); iniciarSincronizacaoTempoReal(); });
 

@@ -370,6 +370,10 @@ tr.tarefa-row:hover>td{background:#F7FBFD;}
 .calendar-dot.micro{background:#2F80ED;}
 .calendar-dot.project{background:#22A06B;}
 .calendar-dot.project-main{background:#7B61A8;}
+.calendar-dot.nc{background:#C13D49;}
+.calendar-event.nc{border-left-color:#C13D49;background:#FFF6F6;}
+.calendar-day-event.nc{border-left-color:#C13D49;background:#FFF6F6;}
+.calendar-list-event.nc .calendar-list-dot{background:#C13D49;}
 .calendar-undated{margin-left:auto;color:#8A9AA5;}
 .calendar-grid{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(15,76,110,.025);}
 .calendar-weekdays{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));background:#F2F6F8;border-bottom:1px solid var(--line);}
@@ -710,7 +714,7 @@ tr.tarefa-row:hover>td{background:#F7FBFD;}
           <span><i class="calendar-dot"></i> Tarefas</span>
           <span><i class="calendar-dot micro"></i> Micro ações</span>
           <span><i class="calendar-dot project"></i> Mini ações de projetos</span>
-          <span><i class="calendar-dot project-main"></i> Projetos</span>
+          <span><i class="calendar-dot project-main"></i> Projetos</span><span><i class="calendar-dot nc"></i> Prazos de NCs</span>
           <span class="calendar-undated" id="calendarUndated"></span>
         </div>
         <div id="calendarContent"></div>
@@ -1442,7 +1446,7 @@ function renderNCs(){
   area.innerHTML='<div class="ncs-list"><div class="ncs-list-head"><div>Nº</div><div>Origem</div><div>Ação / encaminhamento</div><div>Responsável</div><div>Prazo</div><div>Status</div><div>Observações</div><div></div></div>'
     +lista.map(n=>{
       const atrasada=n.prazo&&n.prazo<hojeISO&&n.status!=='Encerrada';
-      return '<div class="ncs-row">'
+      return '<div class="ncs-row" id="nc-row-'+n.id+'">'
         +'<div class="ncs-cell" data-label="Nº"><div class="ncs-number">'+escHtml(n.numero_nc)+'</div>'+(n.data_solicitacao?'<div class="ncs-secondary">Solicitada '+ncDataBR(n.data_solicitacao)+'</div>':'')+'</div>'
         +'<div class="ncs-cell" data-label="Origem">'+escHtml(n.origem||'—')+'</div>'
         +'<div class="ncs-cell" data-label="Ação / encaminhamento">'+escHtml(n.acao||'—')+'</div>'
@@ -1636,8 +1640,8 @@ function calFimSemana(d){const x=calInicioSemana(d);x.setDate(x.getDate()+6);ret
 function calMesmoDia(a,b){return calISO(a)===calISO(b);}
 function calPrimeiroDiaMes(d){return new Date(d.getFullYear(),d.getMonth(),1);}
 function calUltimoDiaMes(d){return new Date(d.getFullYear(),d.getMonth()+1,0);}
-function calEventClass(tipo){return tipo==='micro'?'micro':tipo==='projeto'?'project':tipo==='projeto-main'?'project-main':'';}
-function calFonteLabel(tipo){return tipo==='micro'?'Micro ação':tipo==='projeto'?'Mini ação de projeto':tipo==='projeto-main'?'Projeto':'Tarefa';}
+function calEventClass(tipo){return tipo==='micro'?'micro':tipo==='projeto'?'project':tipo==='projeto-main'?'project-main':tipo==='nc'?'nc':'';}
+function calFonteLabel(tipo){return tipo==='micro'?'Micro ação':tipo==='projeto'?'Mini ação de projeto':tipo==='projeto-main'?'Projeto':tipo==='nc'?'Prazo de NC':'Tarefa';}
 
 function obterEventosCalendario(){
   const eventos=[];
@@ -1659,6 +1663,7 @@ function obterEventosCalendario(){
       add(a.prazo,'projeto',a.descricao,p.nome,a.responsavel||'',p.id+'-'+a.id,a.concluida);
     });
   });
+  ncs.forEach(n=>{if(n.prazo) add(n.prazo,'nc','NC '+n.numero_nc+(n.acao?' — '+n.acao:''),n.origem||'Não conformidade',n.responsavel||'',n.id,n.status==='Encerrada');});
   return eventos.sort((a,b)=>a.data.localeCompare(b.data)||a.titulo.localeCompare(b.titulo,'pt-BR'));
 }
 
@@ -1695,7 +1700,8 @@ function renderCalendario(){
   const possiveisSemData=tarefas.filter(t=>!t.data_ocorrencia).length
     +tarefas.reduce((n,t)=>n+(t.micros||[]).filter(m=>!m.prazo).length,0)
     +projetos.filter(p=>!p.prazo).length
-    +projetos.reduce((n,p)=>n+(p.acoes||[]).filter(a=>!a.prazo).length,0);
+    +projetos.reduce((n,p)=>n+(p.acoes||[]).filter(a=>!a.prazo).length,0)
+    +ncs.filter(n=>!n.prazo).length;
   const ud=document.getElementById('calendarUndated');
   if(ud) ud.textContent=possiveisSemData?possiveisSemData+' item(ns) sem data/prazo':'Todos os itens possuem data/prazo';
   const c=document.getElementById('calendarContent');
@@ -1773,6 +1779,9 @@ function abrirDetalhesCalendario(tipo,ref){
   }else if(e.tipo==='projeto-main'){
     const p=projetos.find(x=>Number(x.id)===Number(e.ref));
     extra='<div class="calendar-detail-grid"><div class="calendar-detail-item"><span class="calendar-detail-label">Responsável</span><div class="calendar-detail-value">'+calEsc(p?.responsavel||'—')+'</div></div><div class="calendar-detail-item"><span class="calendar-detail-label">Prazo</span><div class="calendar-detail-value">'+data+'</div></div><div class="calendar-detail-item"><span class="calendar-detail-label">Status</span><div class="calendar-detail-value">'+calEsc(p?.status||'Em andamento')+'</div></div></div>'+(p?.descricao?'<div class="calendar-detail-item calendar-detail-obs"><span class="calendar-detail-label">Descrição</span><div class="calendar-detail-value">'+calEsc(p.descricao)+'</div></div>':'');
+  }else if(e.tipo==='nc'){
+    const n=ncs.find(x=>Number(x.id)===Number(e.ref));
+    extra='<div class="calendar-detail-grid"><div class="calendar-detail-item"><span class="calendar-detail-label">Número da NC</span><div class="calendar-detail-value">'+calEsc(n?.numero_nc||'—')+'</div></div><div class="calendar-detail-item"><span class="calendar-detail-label">Origem</span><div class="calendar-detail-value">'+calEsc(n?.origem||'—')+'</div></div><div class="calendar-detail-item"><span class="calendar-detail-label">Responsável</span><div class="calendar-detail-value">'+calEsc(n?.responsavel||'—')+'</div></div><div class="calendar-detail-item"><span class="calendar-detail-label">Prazo</span><div class="calendar-detail-value">'+data+'</div></div><div class="calendar-detail-item"><span class="calendar-detail-label">Status</span><div class="calendar-detail-value">'+calEsc(n?.status||'Aberta')+'</div></div></div>'+(n?.acao?'<div class="calendar-detail-item calendar-detail-obs"><span class="calendar-detail-label">Ação / encaminhamento</span><div class="calendar-detail-value">'+calEsc(n.acao)+'</div></div>':'')+(n?.observacoes?'<div class="calendar-detail-item calendar-detail-obs"><span class="calendar-detail-label">Observações</span><div class="calendar-detail-value">'+calEsc(n.observacoes)+'</div></div>':'');
   }else{
     const t=tarefas.find(x=>Number(x.id)===Number(e.ref));
     extra='<div class="calendar-detail-grid"><div class="calendar-detail-item"><span class="calendar-detail-label">Assunto</span><div class="calendar-detail-value">'+calEsc(t?.assunto||'—')+'</div></div><div class="calendar-detail-item"><span class="calendar-detail-label">Responsável</span><div class="calendar-detail-value">'+calEsc(t?.responsavel||'—')+'</div></div><div class="calendar-detail-item"><span class="calendar-detail-label">Data</span><div class="calendar-detail-value">'+data+'</div></div><div class="calendar-detail-item"><span class="calendar-detail-label">Status</span><div class="calendar-detail-value">'+calEsc(t?.status||'Sem status')+'</div></div></div>'+(t?.descricao?'<div class="calendar-detail-item calendar-detail-obs"><span class="calendar-detail-label">Descrição</span><div class="calendar-detail-value">'+calEsc(t.descricao)+'</div></div>':'');
@@ -1783,11 +1792,12 @@ function abrirDetalhesCalendario(tipo,ref){
 function fecharDetalheCalendario(){document.getElementById('ovCalEvento')?.classList.remove('open');calendarioEventoAtual=null;}
 function editarEventoCalendario(){if(!calendarioEventoAtual)return;const x={...calendarioEventoAtual};fecharDetalheCalendario();setTimeout(()=>abrirEventoCalendario(x.tipo,x.ref),0);}
 function navegarParaEventoCalendario(tipo,ref){
-  const emTarefas=(tipo==='tarefa'||tipo==='micro');
+  const emTarefas=(tipo==='tarefa'||tipo==='micro'); const emNC=(tipo==='nc');
   const scrollPara=()=>{
     let el=null;
     if(tipo==='tarefa') el=document.querySelector('.tarefa-row[data-id="'+Number(ref)+'"]');
     else if(tipo==='micro') el=document.querySelector('.tarefa-row[data-id="'+Number(String(ref).split('-')[0])+'"]');
+    else if(tipo==='nc') el=document.getElementById('nc-row-'+Number(ref));
     else el=document.getElementById('project-card-'+Number(String(ref).split('-')[0]));
     if(el)el.scrollIntoView({behavior:'smooth',block:'center'});
   };
@@ -1798,7 +1808,8 @@ function navegarParaEventoCalendario(tipo,ref){
     const cats=['Documentos','Auditoria','Questionários','Mapeamento de processos','Outras atividades'];
     if(tipo==='micro')expandedTarefa[tid]=true;
     selecionarPainel(t && cats.includes(t.assunto)?t.assunto:'todos');
-  }else{
+  }else if(emNC){selecionarPainel('__ncs__');}
+  else{
     projetoExpandido[Number(String(ref).split('-')[0])]=true;
     selecionarPainel('__projetos__');
   }
@@ -1815,6 +1826,9 @@ function abrirEventoCalendario(tipo,ref){
     const parts=String(ref).split('-'); const tid=Number(parts[0]),mid=Number(parts[1]);
     if(Number.isFinite(tid)&&Number.isFinite(mid)) abrirModalMicro(tid,mid);
     return;
+  }
+  if(tipo==='nc'){
+    abrirModalNC(Number(ref)); return;
   }
   if(tipo==='projeto-main'){
     abrirModalProjeto(Number(ref)); return;

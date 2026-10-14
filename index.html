@@ -453,6 +453,48 @@ tr.tarefa-row:hover>td{background:#F7FBFD;}
 .meetings-view{display:none;}
 .meeting-toolbar{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:16px;padding:4px 1px 0;}
 
+
+.gestao-semanal-view{display:none;}
+.gs-toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:4px 0 15px;}
+.gs-title{font-size:22px;font-weight:700;letter-spacing:-.02em;color:var(--brand-dark);}
+.gs-subtitle{font-size:13px;color:var(--muted);margin-top:4px;line-height:1.45;}
+.gs-week-controls{display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+.gs-week-controls input{height:36px;padding:0 10px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--text);font:12px inherit;}
+.gs-nav{height:36px;min-width:36px;padding:0 10px;border:1px solid var(--line);background:#fff;border-radius:9px;color:#536B7A;cursor:pointer;}
+.gs-range-label{font-size:11px;color:#6E8390;white-space:nowrap;}
+.gs-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px;}
+.gs-summary-card{background:#fff;border:1px solid var(--line);border-radius:11px;padding:12px 14px;}
+.gs-summary-label{display:block;font-size:11px;color:var(--muted);margin-bottom:5px;}
+.gs-summary-card strong{font-size:21px;color:var(--brand-dark);}
+.gs-week-grid{display:grid;grid-template-columns:repeat(5,minmax(175px,1fr));gap:10px;overflow-x:auto;padding:1px 1px 8px;}
+.gs-day-card{background:#fff;border:1px solid var(--line);border-radius:12px;min-height:280px;overflow:hidden;display:flex;flex-direction:column;}
+.gs-day-head{background:#F2F6F8;padding:11px 12px;border-bottom:1px solid #E4EBEF;}
+.gs-day-name{font-size:12px;font-weight:750;color:var(--brand-dark);}
+.gs-day-date{font-size:10px;color:#7A8D99;margin-top:3px;}
+.gs-day-count{font-size:10px;color:#7A8D99;margin-top:6px;}
+.gs-day-entries{padding:9px;display:flex;flex-direction:column;gap:8px;flex:1;}
+.gs-entry{border:1px solid #E6EDF1;border-left:3px solid var(--brand);border-radius:8px;padding:9px;background:#fff;}
+.gs-entry.status-done{border-left-color:#22A06B;}
+.gs-entry.status-progress{border-left-color:#2F80ED;}
+.gs-entry.status-pending{border-left-color:#D99A21;}
+.gs-entry-top{display:flex;justify-content:space-between;align-items:flex-start;gap:5px;}
+.gs-entry-title{font-size:11px;line-height:1.4;font-weight:700;color:var(--text);overflow-wrap:anywhere;}
+.gs-entry-tools{display:flex;gap:0;flex:0 0 auto;margin-top:-5px;margin-right:-5px;}
+.gs-entry-tools .btn-icon{width:24px;height:24px;}
+.gs-entry-module{display:inline-block;margin-top:6px;background:#EAF3F8;color:#0F4C6E;border-radius:5px;padding:3px 6px;font-size:9px;font-weight:650;}
+.gs-entry-result{font-size:10px;color:#5E7280;line-height:1.45;margin-top:7px;white-space:pre-line;overflow-wrap:anywhere;}
+.gs-entry-footer{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:8px;padding-top:7px;border-top:1px solid #EDF1F3;}
+.gs-entry-hours{font-size:10px;color:#667D8A;}
+.gs-entry-status{font-size:9px;font-weight:700;border-radius:20px;padding:3px 6px;background:#F1F3F5;color:#637785;}
+.gs-entry-status.done{background:#E4F7ED;color:#16734D;}
+.gs-entry-status.progress{background:#E8F2FF;color:#1E64B4;}
+.gs-entry-status.pending{background:#FFF4DA;color:#986300;}
+.gs-day-empty{font-size:10px;color:#A0ADB5;text-align:center;padding:24px 7px;}
+.gs-add-day{margin:0 9px 10px;width:calc(100% - 18px);height:34px;display:flex;justify-content:center;align-items:center;gap:5px;border:1px dashed #BFD0DA;background:#fff;color:var(--brand);border-radius:8px;font:600 11px inherit;cursor:pointer;}
+.gs-add-day:hover{background:var(--brand-soft);}
+.gs-modal-help{font-size:11px;color:#7A8D99;margin-top:-3px;}
+@media(max-width:850px){.gs-summary{grid-template-columns:repeat(2,minmax(0,1fr));}.gs-toolbar{align-items:flex-start;}.gs-week-grid{grid-template-columns:repeat(5,minmax(190px,1fr));}}
+@media(max-width:600px){.gs-toolbar{flex-direction:column;align-items:stretch;}.gs-week-controls{width:100%;}.gs-week-controls input{flex:1;min-width:100px;}.gs-range-label{width:100%;}.gs-summary-card{padding:10px;}.gs-summary-card strong{font-size:18px;}}
 .ncs-view{display:none;}
 .ncs-toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:4px 0 15px;flex-wrap:wrap;}
 .ncs-page-title{font-size:22px;font-weight:700;color:var(--brand-dark);letter-spacing:-.02em;}
@@ -669,6 +711,7 @@ tr.tarefa-row:hover>td{background:#F7FBFD;}
       <button class="sidebar-btn" data-painel="__reunioes__" onclick="selecionarPainel('__reunioes__')"><i class="ti ti-users-group"></i> Reuniões <span class="sidebar-count" id="count-reunioes">0</span></button>
       <button class="sidebar-btn" data-painel="__nfs__" onclick="selecionarPainel('__nfs__')"><i class="ti ti-receipt"></i> Controle de NFs <span class="sidebar-count" id="count-nfs">0</span></button>
       <button class="sidebar-btn" data-painel="__ncs__" onclick="selecionarPainel('__ncs__')"><i class="ti ti-alert-triangle"></i> Controle de NCs <span class="sidebar-count" id="count-ncs">0</span></button>
+      <button class="sidebar-btn" data-painel="__gestao_semanal__" onclick="selecionarPainel('__gestao_semanal__')"><i class="ti ti-calendar-week"></i> Gestão Semanal <span class="sidebar-count" id="count-gestao-semanal">0</span></button>
       <div class="sidebar-group-label">Qualidade</div>
       <button class="sidebar-btn" data-painel="Documentos" onclick="selecionarPainel('Documentos')"><i class="ti ti-file-text"></i> Documentos <span class="sidebar-count" id="count-Documentos">0</span></button>
       <button class="sidebar-btn" data-painel="Auditoria" onclick="selecionarPainel('Auditoria')"><i class="ti ti-clipboard-check"></i> Auditoria <span class="sidebar-count" id="count-Auditoria">0</span></button>
@@ -733,6 +776,29 @@ tr.tarefa-row:hover>td{background:#F7FBFD;}
         <div id="reunioesConteudo"></div>
       </div>
 
+      <div id="gestaoSemanalView" class="gestao-semanal-view">
+        <div class="gs-toolbar">
+          <div>
+            <div class="gs-title">Gestão Semanal</div>
+            <div class="gs-subtitle">Registre suas atividades e entregas nos cinco dias úteis para manter um histórico do que foi realizado.</div>
+          </div>
+          <div class="gs-week-controls">
+            <button class="gs-nav" type="button" onclick="navegarSemanaGestao(-1)" title="Semana anterior"><i class="ti ti-chevron-left"></i></button>
+            <input type="date" id="gsSemana" onchange="mudarSemanaGestao(this.value)" aria-label="Escolher semana">
+            <button class="gs-nav" type="button" onclick="navegarSemanaGestao(1)" title="Próxima semana"><i class="ti ti-chevron-right"></i></button>
+            <button class="gs-nav" type="button" onclick="semanaAtualGestao()" title="Semana atual">Hoje</button>
+            <span class="gs-range-label" id="gsRangeLabel"></span>
+          </div>
+        </div>
+        <div class="gs-summary">
+          <div class="gs-summary-card"><span class="gs-summary-label">Atividades registradas</span><strong id="gsTotal">0</strong></div>
+          <div class="gs-summary-card"><span class="gs-summary-label">Concluídas</span><strong id="gsConcluidas">0</strong></div>
+          <div class="gs-summary-card"><span class="gs-summary-label">Pendentes / em andamento</span><strong id="gsPendentes">0</strong></div>
+          <div class="gs-summary-card"><span class="gs-summary-label">Horas registradas</span><strong id="gsHoras">0 h</strong></div>
+        </div>
+        <div id="gsWeekGrid" class="gs-week-grid"></div>
+      </div>
+
       <div id="ncsView" class="ncs-view">
         <div class="ncs-toolbar">
           <div>
@@ -794,6 +860,27 @@ tr.tarefa-row:hover>td{background:#F7FBFD;}
         <div id="projetosConteudo"></div>
       </div>
     </main>
+  </div>
+</div>
+
+<!-- modal gestão semanal -->
+<div class="modal-overlay" id="ovGestaoSemanal">
+  <div class="modal" style="width:680px">
+    <h2 id="gsModalTitulo">Registrar atividade</h2>
+    <div class="mgrid">
+      <div class="field"><label>Data <span style="color:#c0392b">*</span></label><input type="date" id="gsData"></div>
+      <div class="field"><label>Módulo / área</label><input type="text" id="gsModulo" list="gsModulos" placeholder="Ex.: Qualidade, SGI, Auditoria"><datalist id="gsModulos"><option value="Qualidade"><option value="SGI"><option value="Documentos"><option value="Auditoria"><option value="Controle de NCs"><option value="Controle de NFs"><option value="Projetos"><option value="Reuniões"><option value="Indicadores"><option value="Administrativo"><option value="Outro"></datalist></div>
+      <div class="field full"><label>O que você fez? <span style="color:#c0392b">*</span></label><textarea id="gsAtividade" placeholder="Descreva a atividade realizada. Ex.: Revisão do procedimento de gestão de documentos."></textarea><div class="err" id="errGS">Informe a atividade realizada.</div></div>
+      <div class="field full"><label>Resultado / entrega</label><textarea id="gsResultado" placeholder="O que foi entregue, concluído, atualizado ou encaminhado?"></textarea></div>
+      <div class="field"><label>Horas dedicadas</label><input type="number" id="gsHorasInput" min="0" max="24" step="0.25" placeholder="Ex.: 1,5"></div>
+      <div class="field"><label>Status</label><select id="gsStatus"><option>Concluído</option><option>Em andamento</option><option>Pendente</option></select></div>
+      <div class="field full"><label>Observações / próximos passos</label><textarea id="gsObservacoes" placeholder="Pendências, dependências ou o que precisa ser retomado."></textarea></div>
+    </div>
+    <div class="gs-modal-help">O registro ficará vinculado à semana da data selecionada.</div>
+    <div class="mactions">
+      <button class="btn-cancel" onclick="fecharModalGestaoSemanal()">Cancelar</button>
+      <button class="btn-save" onclick="salvarGestaoSemanal()">Salvar registro</button>
+    </div>
   </div>
 </div>
 
@@ -1045,6 +1132,7 @@ let calendarioView='month', calendarioData=new Date(), calendarioEventoAtual=nul
 let reunioes=[], nextReuniaoId=3000, nextReuniaoAcaoId=4000, reuniaoEditando=null, reuniaoAcaoEditando=null, reuniaoAlvo=null, reuniaoExpandida={}, reuniaoGrupoAtual=null;
 let nfs=[], nextNfId=5000, nfEditando=null;
 let ncs=[], nextNcId=6000, ncEditando=null;
+let gestaoSemanal=[], nextGestaoSemanalId=7000, gsEditando=null, gsDataReferencia='';
 let collapsedMes = {}, expandedTarefa = {}, microAlvo = null, mesesSelecionados = new Set(), painelSelecionado = 'todos', projetoExpandido = {};
 
 function bc(s){ return s==='Pendente'?'b-p':s==='Aguardando'?'b-a':s==='Concluído'?'b-c':'b-s'; }
@@ -1117,6 +1205,8 @@ async function carregarDados() {
     if (nfLocal) { nfs = JSON.parse(nfLocal); nextNfId = parseInt(localStorage.getItem('ct_nextNfId')||5000); }
     const ncLocal = localStorage.getItem('controle_ncs');
     if (ncLocal) { ncs = JSON.parse(ncLocal); nextNcId = parseInt(localStorage.getItem('ct_nextNcId')||6000); }
+    const gsLocal = localStorage.getItem('gestao_semanal');
+    if (gsLocal) { gestaoSemanal = JSON.parse(gsLocal); nextGestaoSemanalId = parseInt(localStorage.getItem('ct_nextGestaoSemanalId')||7000); }
   } catch(e) {}
 
   if (!SYNC_ENABLED || !sb) return;
@@ -1137,6 +1227,8 @@ async function carregarDados() {
     if (nfErr) throw nfErr;
     const { data: cloudNCs, error: ncErr } = await sb.from('controle_ncs').select('*').order('numero_nc');
     if (ncErr) throw ncErr;
+    const { data: cloudGestaoSemanal, error: gsErr } = await sb.from('gestao_semanal').select('*').order('data',{ascending:false}).order('id',{ascending:false});
+    if (gsErr) throw gsErr;
 
     if (cloudProjetos && cloudProjetos.length) {
       projetos = cloudProjetos.map(p => ({
@@ -1180,6 +1272,13 @@ async function carregarDados() {
       salvarNCsLocal();
     } else if (ncs.length) {
       await sincronizarNCs();
+    }
+    if (cloudGestaoSemanal && cloudGestaoSemanal.length) {
+      gestaoSemanal=cloudGestaoSemanal.map(g=>({id:Number(g.id),data:g.data||'',modulo:g.modulo||'',atividade:g.atividade||'',resultado:g.resultado||'',horas:g.horas===null||g.horas===undefined?'':String(g.horas),status:g.status||'Concluído',observacoes:g.observacoes||''}));
+      nextGestaoSemanalId=Math.max(7000,...gestaoSemanal.map(g=>Number(g.id)||0))+1;
+      salvarGestaoSemanalLocal();
+    } else if (gestaoSemanal.length) {
+      await sincronizarGestaoSemanal();
     }
 
     if (cloudTasks && cloudTasks.length) {
@@ -1416,6 +1515,163 @@ function selecionarProjetosBusca(){
 
 
 
+
+function gsIso(data){
+  const d=new Date(data.getFullYear(),data.getMonth(),data.getDate());
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function gsParseIso(iso){
+  const p=String(iso||'').split('-').map(Number);
+  if(p.length!==3||!p[0]||!p[1]||!p[2])return new Date();
+  return new Date(p[0],p[1]-1,p[2]);
+}
+function gsInicioSemana(data){
+  const d=new Date(data.getFullYear(),data.getMonth(),data.getDate());
+  d.setDate(d.getDate()-((d.getDay()+6)%7));
+  return d;
+}
+function gsDataBonita(iso){
+  return iso?gsParseIso(iso).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'}):'—';
+}
+function gsObterSemana(){
+  const val=document.getElementById('gsSemana')?.value||gsDataReferencia;
+  const base=val?gsParseIso(val):new Date();
+  return gsInicioSemana(base);
+}
+function gsIntervaloSemana(){
+  const inicio=gsObterSemana(), dias=[];
+  for(let i=0;i<5;i++){const d=new Date(inicio);d.setDate(inicio.getDate()+i);dias.push({data:gsIso(d),date:d});}
+  return dias;
+}
+function mudarSemanaGestao(iso){
+  if(!iso)return;
+  gsDataReferencia=gsIso(gsInicioSemana(gsParseIso(iso)));
+  renderGestaoSemanal();
+}
+function navegarSemanaGestao(delta){
+  const inicio=gsObterSemana();inicio.setDate(inicio.getDate()+delta*7);
+  gsDataReferencia=gsIso(inicio);
+  renderGestaoSemanal();
+}
+function semanaAtualGestao(){
+  gsDataReferencia=gsIso(gsInicioSemana(new Date()));
+  renderGestaoSemanal();
+}
+function salvarGestaoSemanalLocal(){
+  localStorage.setItem('gestao_semanal',JSON.stringify(gestaoSemanal));
+  localStorage.setItem('ct_nextGestaoSemanalId',nextGestaoSemanalId);
+}
+async function sincronizarGestaoSemanal(){
+  if(!sb||!gestaoSemanal.length)return;
+  const rows=gestaoSemanal.map(g=>({
+    id:Number(g.id),data:g.data,modulo:g.modulo||'',atividade:g.atividade,
+    resultado:g.resultado||'',horas:g.horas===''||g.horas===null?null:Number(g.horas),
+    status:g.status||'Concluído',observacoes:g.observacoes||'',updated_at:new Date().toISOString()
+  }));
+  const {error}=await sb.from('gestao_semanal').upsert(rows,{onConflict:'id'});
+  if(error)throw error;
+}
+function gsStatusClass(s){return s==='Concluído'?'done':s==='Em andamento'?'progress':'pending';}
+function renderGestaoSemanal(){
+  const area=document.getElementById('gsWeekGrid');if(!area)return;
+  const inicio=gsObterSemana(),dias=gsIntervaloSemana(),isoInicio=gsIso(inicio);
+  gsDataReferencia=isoInicio;
+  const input=document.getElementById('gsSemana');if(input&&input.value!==isoInicio)input.value=isoInicio;
+  const fim=new Date(inicio);fim.setDate(inicio.getDate()+4);
+  const range=document.getElementById('gsRangeLabel');
+  if(range)range.textContent=gsDataBonita(isoInicio)+' – '+gsDataBonita(gsIso(fim));
+  const semanaSet=new Set(dias.map(d=>d.data));
+  const lista=gestaoSemanal.filter(g=>semanaSet.has(g.data));
+  const concluidas=lista.filter(g=>g.status==='Concluído').length;
+  const pendentes=lista.filter(g=>g.status!=='Concluído').length;
+  const horas=lista.reduce((s,g)=>s+(Number(g.horas)||0),0);
+  const txtHoras=horas.toLocaleString('pt-BR',{maximumFractionDigits:2});
+  document.getElementById('gsTotal').textContent=lista.length;
+  document.getElementById('gsConcluidas').textContent=concluidas;
+  document.getElementById('gsPendentes').textContent=pendentes;
+  document.getElementById('gsHoras').textContent=txtHoras+' h';
+  const count=document.getElementById('count-gestao-semanal');if(count)count.textContent=gestaoSemanal.length;
+  const nomes=['Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira'];
+  area.innerHTML=dias.map((d,i)=>{
+    const entries=lista.filter(g=>g.data===d.data).sort((a,b)=>Number(a.id)-Number(b.id));
+    const totalHoras=entries.reduce((s,g)=>s+(Number(g.horas)||0),0);
+    const conteudo=entries.length?entries.map(g=>{
+      return '<article class="gs-entry status-'+(g.status==='Concluído'?'done':g.status==='Em andamento'?'progress':'pending')+'">'
+        +'<div class="gs-entry-top"><div class="gs-entry-title">'+escHtml(g.atividade)+'</div><div class="gs-entry-tools"><button class="btn-icon" onclick="abrirModalGestaoSemanal('+g.id+')" title="Editar registro"><i class="ti ti-pencil"></i></button><button class="btn-icon" onclick="excluirGestaoSemanal('+g.id+')" title="Excluir registro"><i class="ti ti-trash"></i></button></div></div>'
+        +(g.modulo?'<span class="gs-entry-module">'+escHtml(g.modulo)+'</span>':'')
+        +(g.resultado?'<div class="gs-entry-result"><strong>Entrega:</strong> '+escHtml(g.resultado)+'</div>':'')
+        +(g.observacoes?'<div class="gs-entry-result"><strong>Observações:</strong> '+escHtml(g.observacoes)+'</div>':'')
+        +'<div class="gs-entry-footer"><span class="gs-entry-hours">'+(Number(g.horas)>0?Number(g.horas).toLocaleString('pt-BR',{maximumFractionDigits:2})+' h':'Sem horas')+'</span><span class="gs-entry-status '+gsStatusClass(g.status)+'">'+escHtml(g.status||'Concluído')+'</span></div>'
+        +'</article>';
+    }).join(''):'<div class="gs-day-empty">Nenhuma atividade registrada</div>';
+    return '<section class="gs-day-card"><header class="gs-day-head"><div class="gs-day-name">'+nomes[i]+'</div><div class="gs-day-date">'+gsDataBonita(d.data)+'</div><div class="gs-day-count">'+entries.length+' '+(entries.length===1?'registro':'registros')+' • '+totalHoras.toLocaleString('pt-BR',{maximumFractionDigits:2})+' h</div></header><div class="gs-day-entries">'+conteudo+'</div><button class="gs-add-day" onclick="abrirModalGestaoSemanal(null,\''+d.data+'\')"><i class="ti ti-plus"></i> Registrar atividade</button></section>';
+  }).join('');
+}
+function abrirModalGestaoSemanal(id=null,dataPadrao=null){
+  gsEditando=id!==null?Number(id):null;
+  const g=gsEditando!==null?gestaoSemanal.find(x=>Number(x.id)===gsEditando):null;
+  document.getElementById('gsModalTitulo').textContent=g?'Editar registro':'Registrar atividade';
+  document.getElementById('gsData').value=g?.data||dataPadrao||gsDataReferencia||gsIso(gsInicioSemana(new Date()));
+  document.getElementById('gsModulo').value=g?.modulo||'';
+  document.getElementById('gsAtividade').value=g?.atividade||'';
+  document.getElementById('gsResultado').value=g?.resultado||'';
+  document.getElementById('gsHorasInput').value=g?.horas??'';
+  document.getElementById('gsStatus').value=g?.status||'Concluído';
+  document.getElementById('gsObservacoes').value=g?.observacoes||'';
+  document.getElementById('errGS').style.display='none';
+  document.getElementById('ovGestaoSemanal').classList.add('open');
+}
+function fecharModalGestaoSemanal(){
+  document.getElementById('ovGestaoSemanal').classList.remove('open');
+  gsEditando=null;
+}
+async function salvarGestaoSemanal(){
+  const data=document.getElementById('gsData').value;
+  const atividade=document.getElementById('gsAtividade').value.trim();
+  if(!data||!atividade){
+    document.getElementById('errGS').textContent=!data?'Informe a data.':'Informe a atividade realizada.';
+    document.getElementById('errGS').style.display='block';
+    return;
+  }
+  const h=document.getElementById('gsHorasInput').value;
+  const dados={data,modulo:document.getElementById('gsModulo').value.trim(),atividade,resultado:document.getElementById('gsResultado').value.trim(),horas:h===''?'':Number(h),status:document.getElementById('gsStatus').value,observacoes:document.getElementById('gsObservacoes').value.trim()};
+  if(data>'' && !['1','2','3','4','5'].includes(String(gsParseIso(data).getDay()))){
+    // Mantém intencionalmente possível registrar fim de semana; a visão é focada nos cinco dias úteis.
+  }
+  try{
+    if(gsEditando!==null){
+      const g=gestaoSemanal.find(x=>Number(x.id)===Number(gsEditando));if(!g)return;
+      if(sb){
+        const {error}=await sb.from('gestao_semanal').update({...dados,horas:dados.horas===''?null:dados.horas,updated_at:new Date().toISOString()}).eq('id',Number(g.id));
+        if(error)throw error;
+      }
+      Object.assign(g,dados);
+    }else{
+      if(sb){
+        const {data:novo,error}=await sb.from('gestao_semanal').insert({...dados,horas:dados.horas===''?null:dados.horas}).select('id').single();
+        if(error)throw error;
+        gestaoSemanal.push({id:Number(novo.id),...dados});
+        nextGestaoSemanalId=Math.max(nextGestaoSemanalId,Number(novo.id)+1);
+      }else{
+        gestaoSemanal.push({id:nextGestaoSemanalId++,...dados});
+      }
+    }
+    salvarGestaoSemanalLocal();
+    gsDataReferencia=gsIso(gsInicioSemana(gsParseIso(data)));
+    fecharModalGestaoSemanal();
+    render();
+  }catch(e){console.error('Erro ao salvar gestão semanal:',e);alert('Não foi possível salvar o registro.\n\nDetalhes: '+(e.message||'erro desconhecido'));}
+}
+async function excluirGestaoSemanal(id){
+  const g=gestaoSemanal.find(x=>Number(x.id)===Number(id));if(!g)return;
+  if(!confirm('Excluir este registro da gestão semanal?'))return;
+  try{
+    if(sb){const {error}=await sb.from('gestao_semanal').delete().eq('id',Number(id));if(error)throw error;}
+    gestaoSemanal=gestaoSemanal.filter(x=>Number(x.id)!==Number(id));
+    salvarGestaoSemanalLocal();render();
+  }catch(e){alert('Não foi possível excluir o registro.\n\nDetalhes: '+(e.message||'erro desconhecido'));}
+}
+
 function salvarNCsLocal(){
   localStorage.setItem('controle_ncs',JSON.stringify(ncs));
   localStorage.setItem('ct_nextNcId',nextNcId);
@@ -1584,6 +1840,7 @@ function iniciarSincronizacaoTempoReal() {
     .on('postgres_changes', { event:'*', schema:'public', table:'reuniao_acoes' }, () => receberNuvem())
     .on('postgres_changes', { event:'*', schema:'public', table:'controle_nfs' }, () => receberNuvem())
     .on('postgres_changes', { event:'*', schema:'public', table:'controle_ncs' }, () => receberNuvem())
+    .on('postgres_changes', { event:'*', schema:'public', table:'gestao_semanal' }, () => receberNuvem())
     .subscribe();
 }
 
@@ -1600,6 +1857,7 @@ async function receberNuvem() {
     const { data: cloudReuniaoAcoes } = await sb.from('reuniao_acoes').select('*').order('id');
     const { data: cloudNFs } = await sb.from('controle_nfs').select('*').order('data_lancamento',{ascending:false}).order('id',{ascending:false});
     const { data: cloudNCs } = await sb.from('controle_ncs').select('*').order('numero_nc');
+    const { data: cloudGestaoSemanal } = await sb.from('gestao_semanal').select('*').order('data',{ascending:false}).order('id',{ascending:false});
     if (!cloudTasks) return;
     tarefas = cloudTasks.map(t => ({ id:Number(t.id), mes:t.mes||'', assunto:t.assunto||'', atividade:t.atividade||'', descricao:t.descricao||'', solicitante:t.solicitante||'', responsavel:t.responsavel||'', onde:t.onde||'', prioridade:t.prioridade||'', status:t.status||'', micros:[] }));
     (cloudMicros||[]).forEach(m => { const t=tarefas.find(x=>String(x.id)===String(m.tarefa_id)); if(t) t.micros.push({id:Number(m.id),desc:m.descricao||'',responsavel:m.responsavel||'',prazo:m.prazo||'',status:m.status||'',prio:m.prio||''}); });
@@ -1626,6 +1884,11 @@ async function receberNuvem() {
       ncs=cloudNCs.map(n=>({id:Number(n.id),numero_nc:n.numero_nc||'',origem:n.origem||'',acao:n.acao||'',observacoes:n.observacoes||'',responsavel:n.responsavel||'',data_solicitacao:n.data_solicitacao||'',prazo:n.prazo||'',status:n.status||'Aberta'}));
       nextNcId=Math.max(6000,...ncs.map(n=>Number(n.id)||0))+1;
       salvarNCsLocal();
+    }
+    if (cloudGestaoSemanal) {
+      gestaoSemanal=cloudGestaoSemanal.map(g=>({id:Number(g.id),data:g.data||'',modulo:g.modulo||'',atividade:g.atividade||'',resultado:g.resultado||'',horas:g.horas===null||g.horas===undefined?'':String(g.horas),status:g.status||'Concluído',observacoes:g.observacoes||''}));
+      nextGestaoSemanalId=Math.max(7000,...gestaoSemanal.map(g=>Number(g.id)||0))+1;
+      salvarGestaoSemanalLocal();
     }
     localStorage.setItem('tarefas', JSON.stringify(tarefas));
     render();
@@ -1861,6 +2124,8 @@ function atualizarContadoresPainel() {
   if(elNFs) elNFs.textContent=nfs.length;
   const elNCs=document.getElementById('count-ncs');
   if(elNCs) elNCs.textContent=ncs.length;
+  const elGS=document.getElementById('count-gestao-semanal');
+  if(elGS) elGS.textContent=gestaoSemanal.length;
   categorias.forEach(a => { const el=document.getElementById(ids[a]); if(el) el.textContent=tarefas.filter(t => (t.assunto||'')===a).length; });
 }
 
@@ -2004,6 +2269,19 @@ function render() {
   const projetosView=document.getElementById('projetosView');
   const nfsView=document.getElementById('nfsView');
   const ncsView=document.getElementById('ncsView');
+  const gsView=document.getElementById('gestaoSemanalView');
+  if (painelSelecionado === '__gestao_semanal__') {
+    if(tarefasView) tarefasView.style.display='none';
+    if(projetosView) projetosView.style.display='none';
+    if(nfsView) nfsView.style.display='none';
+    if(ncsView) ncsView.style.display='none';
+    const cv=document.getElementById('calendarioView'); if(cv) cv.style.display='none';
+    const rv=document.getElementById('reunioesView'); if(rv) rv.style.display='none';
+    if(gsView) gsView.style.display='block';
+    renderGestaoSemanal();
+    return;
+  }
+  if(gsView) gsView.style.display='none';
   if (painelSelecionado === '__ncs__') {
     if(tarefasView) tarefasView.style.display='none';
     if(projetosView) projetosView.style.display='none';
@@ -2536,6 +2814,7 @@ document.getElementById('ovReuniao').addEventListener('click',e=>{if(e.target===
 document.getElementById('ovReuniaoAcao').addEventListener('click',e=>{if(e.target===e.currentTarget)fecharModalReuniaoAcao();});
 document.getElementById('ovNF').addEventListener('click',e=>{if(e.target===e.currentTarget)fecharModalNF();});
 document.getElementById('ovNC').addEventListener('click',e=>{if(e.target===e.currentTarget)fecharModalNC();});
+document.getElementById('ovGestaoSemanal').addEventListener('click',e=>{if(e.target===e.currentTarget)fecharModalGestaoSemanal();});
 
 carregarDados().then(() => { render(); iniciarSincronizacaoTempoReal(); });
 

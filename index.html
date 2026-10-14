@@ -448,6 +448,36 @@ tr.tarefa-row:hover>td{background:#F7FBFD;}
 
 .meetings-view{display:none;}
 .meeting-toolbar{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:16px;padding:4px 1px 0;}
+.nfs-view{display:none;}
+.nfs-toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:4px 0 15px;flex-wrap:wrap;}
+.nfs-page-title{font-size:22px;font-weight:700;color:var(--brand-dark);letter-spacing:-.02em;}
+.nfs-page-subtitle{margin-top:4px;font-size:13px;color:var(--muted);}
+.nfs-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:14px;}
+.nfs-summary-card{background:#fff;border:1px solid var(--line);border-radius:11px;padding:12px 14px;}
+.nfs-summary-label{display:block;font-size:11px;color:var(--muted);margin-bottom:5px;}
+.nfs-summary-card strong{font-size:21px;color:var(--brand-dark);}
+.nfs-filters{display:flex;gap:9px;align-items:center;margin-bottom:12px;flex-wrap:wrap;}
+.nfs-filters input,.nfs-filters select{height:39px;border:1px solid var(--line);border-radius:9px;background:#fff;padding:0 11px;font-family:inherit;font-size:12px;color:var(--text);}
+.nfs-filters input{flex:1;min-width:220px;}
+.nfs-list{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;}
+.nfs-list-head,.nfs-row{display:grid;grid-template-columns:105px 105px minmax(150px,1.5fr) 110px 155px minmax(130px,1.2fr) 74px;gap:10px;align-items:center;padding:11px 13px;}
+.nfs-list-head{background:#F2F6F8;border-bottom:1px solid var(--line);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.045em;color:#718591;}
+.nfs-row{border-bottom:1px solid #EDF1F3;font-size:12px;color:var(--text);}
+.nfs-row:last-child{border-bottom:0;}
+.nfs-row:hover{background:#FAFCFD;}
+.nfs-cell{min-width:0;overflow-wrap:anywhere;}
+.nfs-number{font-weight:700;color:var(--brand-dark);}
+.nfs-secondary{font-size:10px;color:#83939D;margin-top:3px;white-space:pre-line;}
+.nfs-status{display:inline-block;padding:4px 8px;border-radius:20px;font-size:10px;font-weight:650;white-space:nowrap;background:#EAF3F8;color:#0F4C6E;}
+.nfs-status.waiting{background:#FFF4DA;color:#986300;}
+.nfs-status.approved{background:#E4F7ED;color:#16734D;}
+.nfs-status.cancelled{background:#FDEBED;color:#C13D49;}
+.nfs-row-tools{display:flex;justify-content:flex-end;gap:3px;}
+.nfs-empty{padding:42px 16px;text-align:center;color:#81929D;font-size:12px;}
+.nfs-empty i{display:block;font-size:25px;margin-bottom:8px;color:#A2B3BD;}
+@media(max-width:1000px){.nfs-list-head{display:none;}.nfs-row{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;}.nfs-row-tools{justify-content:flex-start;}.nfs-cell:before{display:block;font-size:9px;color:#8798A2;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px;font-weight:700;}.nfs-cell[data-label]:before{content:attr(data-label);}}
+@media(max-width:700px){.nfs-toolbar{align-items:stretch;}.nfs-toolbar .btn-primary{width:100%;}.nfs-summary{gap:7px;}.nfs-summary-card{padding:10px;}.nfs-summary-label{font-size:10px;}.nfs-summary-card strong{font-size:18px;}.nfs-filters input{width:100%;min-width:0;flex:1 1 100%;}.nfs-filters select{flex:1;}.nfs-row{grid-template-columns:repeat(2,minmax(0,1fr));padding:12px;}.nfs-cell{font-size:11px;}}
+
 .meeting-series-card{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 3px 12px rgba(15,76,110,.035);margin-bottom:14px;overflow:hidden;}
 .meeting-series-head{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:14px;background:#F8FBFC;border-bottom:1px solid #E7EDF0;}
 .meeting-series-main{min-width:0;flex:1;}
@@ -602,6 +632,7 @@ tr.tarefa-row:hover>td{background:#F7FBFD;}
       <button class="sidebar-btn" data-painel="__calendario__" onclick="selecionarPainel('__calendario__')"><i class="ti ti-calendar-event"></i> Calendário <span class="sidebar-count" id="count-calendario">0</span></button>
       <button class="sidebar-btn" data-painel="__projetos__" onclick="selecionarPainel('__projetos__')"><i class="ti ti-briefcase-2"></i> Projetos <span class="sidebar-count" id="count-projetos">0</span></button>
       <button class="sidebar-btn" data-painel="__reunioes__" onclick="selecionarPainel('__reunioes__')"><i class="ti ti-users-group"></i> Reuniões <span class="sidebar-count" id="count-reunioes">0</span></button>
+      <button class="sidebar-btn" data-painel="__nfs__" onclick="selecionarPainel('__nfs__')"><i class="ti ti-receipt"></i> Controle de NFs <span class="sidebar-count" id="count-nfs">0</span></button>
       <div class="sidebar-group-label">Qualidade</div>
       <button class="sidebar-btn" data-painel="Documentos" onclick="selecionarPainel('Documentos')"><i class="ti ti-file-text"></i> Documentos <span class="sidebar-count" id="count-Documentos">0</span></button>
       <button class="sidebar-btn" data-painel="Auditoria" onclick="selecionarPainel('Auditoria')"><i class="ti ti-clipboard-check"></i> Auditoria <span class="sidebar-count" id="count-Auditoria">0</span></button>
@@ -666,6 +697,29 @@ tr.tarefa-row:hover>td{background:#F7FBFD;}
         <div id="reunioesConteudo"></div>
       </div>
 
+      <div id="nfsView" class="nfs-view">
+        <div class="nfs-toolbar">
+          <div>
+            <div class="nfs-page-title">Controle de NFs</div>
+            <div class="nfs-page-subtitle">Registre as notas fiscais lançadas e acompanhe o status de cada uma.</div>
+          </div>
+          <button class="btn-primary" onclick="abrirModalNF()"><i class="ti ti-plus"></i> Nova NF</button>
+        </div>
+        <div class="nfs-summary">
+          <div class="nfs-summary-card"><span class="nfs-summary-label">Total de NFs</span><strong id="nfsTotal">0</strong></div>
+          <div class="nfs-summary-card"><span class="nfs-summary-label">Aguardando aprovação</span><strong id="nfsAguardando">0</strong></div>
+          <div class="nfs-summary-card"><span class="nfs-summary-label">Aprovadas / Pagas</span><strong id="nfsAprovadas">0</strong></div>
+        </div>
+        <div class="nfs-filters">
+          <input type="text" id="buscaNFs" placeholder="Buscar por número, fornecedor ou descrição..." oninput="renderNFs()">
+          <select id="filtroStatusNFs" onchange="renderNFs()">
+            <option value="">Todos os status</option>
+            <option>Lançada</option><option>Aguardando aprovação</option><option>Aprovada</option><option>Paga</option><option>Rejeitada</option><option>Cancelada</option>
+          </select>
+        </div>
+        <div id="nfsConteudo"></div>
+      </div>
+
       <div id="projetosView" style="display:none">
         <div class="project-toolbar">
           <div>
@@ -677,6 +731,26 @@ tr.tarefa-row:hover>td{background:#F7FBFD;}
         <div id="projetosConteudo"></div>
       </div>
     </main>
+  </div>
+</div>
+
+<!-- modal controle de NF -->
+<div class="modal-overlay" id="ovNF">
+  <div class="modal" style="width:640px">
+    <h2 id="nfModalTitulo">Nova NF</h2>
+    <div class="mgrid">
+      <div class="field"><label>Número da NF <span style="color:#c0392b">*</span></label><input type="text" id="nfNumero" placeholder="Número da nota"><div class="err" id="errNF">Informe o número da NF</div></div>
+      <div class="field"><label>Data de lançamento <span style="color:#c0392b">*</span></label><input type="date" id="nfData"></div>
+      <div class="field"><label>Fornecedor / Favorecido</label><input type="text" id="nfFornecedor" placeholder="Nome do fornecedor"></div>
+      <div class="field"><label>Valor (R$)</label><input type="number" id="nfValor" min="0" step="0.01" placeholder="0,00"></div>
+      <div class="field full"><label>Descrição</label><input type="text" id="nfDescricao" placeholder="Referência ou breve descrição"></div>
+      <div class="field full"><label>Status</label><select id="nfStatus"><option>Lançada</option><option>Aguardando aprovação</option><option>Aprovada</option><option>Paga</option><option>Rejeitada</option><option>Cancelada</option></select></div>
+      <div class="field full"><label>Observações</label><textarea id="nfObservacoes" placeholder="Informações adicionais, protocolo ou pendências."></textarea></div>
+    </div>
+    <div class="mactions">
+      <button class="btn-cancel" onclick="fecharModalNF()">Cancelar</button>
+      <button class="btn-save" onclick="salvarNF()">Salvar NF</button>
+    </div>
   </div>
 </div>
 
@@ -885,6 +959,7 @@ let nextId = 100, nextMicroId = 200;
 let projetos = [], nextProjetoId = 1000, nextProjetoAcaoId = 2000, projetoEditando = null, projetoAcaoEditando = null, projetoAlvo = null;
 let calendarioView='month', calendarioData=new Date(), calendarioEventoAtual=null;
 let reunioes=[], nextReuniaoId=3000, nextReuniaoAcaoId=4000, reuniaoEditando=null, reuniaoAcaoEditando=null, reuniaoAlvo=null, reuniaoExpandida={}, reuniaoGrupoAtual=null;
+let nfs=[], nextNfId=5000, nfEditando=null;
 let collapsedMes = {}, expandedTarefa = {}, microAlvo = null, mesesSelecionados = new Set(), painelSelecionado = 'todos', projetoExpandido = {};
 
 function bc(s){ return s==='Pendente'?'b-p':s==='Aguardando'?'b-a':s==='Concluído'?'b-c':'b-s'; }
@@ -953,6 +1028,8 @@ async function carregarDados() {
     if (p) { projetos = JSON.parse(p); nextProjetoId = parseInt(localStorage.getItem('ct_nextProjetoId')||1000); nextProjetoAcaoId = parseInt(localStorage.getItem('ct_nextProjetoAcaoId')||2000); }
     const r = localStorage.getItem('reunioes');
     if (r) { reunioes = JSON.parse(r); nextReuniaoId = parseInt(localStorage.getItem('ct_nextReuniaoId')||3000); nextReuniaoAcaoId = parseInt(localStorage.getItem('ct_nextReuniaoAcaoId')||4000); }
+    const nfLocal = localStorage.getItem('controle_nfs');
+    if (nfLocal) { nfs = JSON.parse(nfLocal); nextNfId = parseInt(localStorage.getItem('ct_nextNfId')||5000); }
   } catch(e) {}
 
   if (!SYNC_ENABLED || !sb) return;
@@ -969,6 +1046,8 @@ async function carregarDados() {
     if (reuniaoErr) throw reuniaoErr;
     const { data: cloudReuniaoAcoes, error: reuniaoAcaoErr } = await sb.from('reuniao_acoes').select('*').order('id');
     if (reuniaoAcaoErr) throw reuniaoAcaoErr;
+    const { data: cloudNFs, error: nfErr } = await sb.from('controle_nfs').select('*').order('data_lancamento',{ascending:false}).order('id',{ascending:false});
+    if (nfErr) throw nfErr;
 
     if (cloudProjetos && cloudProjetos.length) {
       projetos = cloudProjetos.map(p => ({
@@ -996,6 +1075,14 @@ async function carregarDados() {
       salvarReunioesLocal();
     } else if (reunioes.length) {
       await sincronizarReunioes();
+    }
+
+    if (cloudNFs && cloudNFs.length) {
+      nfs=cloudNFs.map(n=>({id:Number(n.id),numero_nf:n.numero_nf||'',data_lancamento:n.data_lancamento||'',fornecedor:n.fornecedor||'',descricao:n.descricao||'',valor:n.valor===null||n.valor===undefined?'':String(n.valor),status:n.status||'Lançada',observacoes:n.observacoes||''}));
+      nextNfId=Math.max(5000,...nfs.map(n=>Number(n.id)||0))+1;
+      salvarNFsLocal();
+    } else if (nfs.length) {
+      await sincronizarNFs();
     }
 
     if (cloudTasks && cloudTasks.length) {
@@ -1230,6 +1317,82 @@ function selecionarProjetosBusca(){
   renderProjetos();
 }
 
+
+function salvarNFsLocal(){
+  localStorage.setItem('controle_nfs',JSON.stringify(nfs));
+  localStorage.setItem('ct_nextNfId',nextNfId);
+}
+async function sincronizarNFs(){
+  if(!sb||!nfs.length)return;
+  const rows=nfs.map(n=>({id:Number(n.id),numero_nf:n.numero_nf,data_lancamento:n.data_lancamento,fornecedor:n.fornecedor||'',descricao:n.descricao||'',valor:n.valor===''||n.valor===null?null:Number(n.valor),status:n.status||'Lançada',observacoes:n.observacoes||'',updated_at:new Date().toISOString()}));
+  const {error}=await sb.from('controle_nfs').upsert(rows,{onConflict:'id'});
+  if(error)throw error;
+}
+function nfDataBR(v){return v?new Date(v+'T00:00:00').toLocaleDateString('pt-BR'):'—';}
+function nfValorBR(v){return v!==''&&v!==null&&v!==undefined&&Number.isFinite(Number(v))?Number(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL'}):'—';}
+function nfClasseStatus(s){if(s==='Aprovada'||s==='Paga')return 'approved';if(s==='Aguardando aprovação')return 'waiting';if(s==='Rejeitada'||s==='Cancelada')return 'cancelled';return '';}
+function renderNFs(){
+  const area=document.getElementById('nfsConteudo');if(!area)return;
+  const termo=(document.getElementById('buscaNFs')?.value||'').trim().toLowerCase();
+  const fs=document.getElementById('filtroStatusNFs')?.value||'';
+  const total=document.getElementById('nfsTotal'), aguardando=document.getElementById('nfsAguardando'), aprovadas=document.getElementById('nfsAprovadas');
+  if(total)total.textContent=nfs.length;
+  if(aguardando)aguardando.textContent=nfs.filter(n=>n.status==='Aguardando aprovação').length;
+  if(aprovadas)aprovadas.textContent=nfs.filter(n=>n.status==='Aprovada'||n.status==='Paga').length;
+  const count=document.getElementById('count-nfs');if(count)count.textContent=nfs.length;
+  const lista=nfs.filter(n=>(!fs||n.status===fs)&&(!termo||[n.numero_nf,n.fornecedor,n.descricao,n.observacoes].some(v=>String(v||'').toLowerCase().includes(termo)))).slice().sort((a,b)=>(b.data_lancamento||'').localeCompare(a.data_lancamento||'')||Number(b.id)-Number(a.id));
+  if(!lista.length){area.innerHTML='<div class="nfs-list"><div class="nfs-empty"><i class="ti ti-receipt"></i><strong>Nenhuma NF encontrada</strong><div>Cadastre uma nota fiscal para começar o acompanhamento.</div></div></div>';return;}
+  area.innerHTML='<div class="nfs-list"><div class="nfs-list-head"><div>Nº NF</div><div>Data</div><div>Fornecedor / descrição</div><div>Valor</div><div>Status</div><div>Observações</div><div></div></div>'
+    +lista.map(n=>'<div class="nfs-row">'
+      +'<div class="nfs-cell" data-label="Nº NF"><div class="nfs-number">'+escHtml(n.numero_nf)+'</div></div>'
+      +'<div class="nfs-cell" data-label="Data">'+nfDataBR(n.data_lancamento)+'</div>'
+      +'<div class="nfs-cell" data-label="Fornecedor / descrição"><div>'+escHtml(n.fornecedor||'—')+'</div>'+(n.descricao?'<div class="nfs-secondary">'+escHtml(n.descricao)+'</div>':'')+'</div>'
+      +'<div class="nfs-cell" data-label="Valor">'+nfValorBR(n.valor)+'</div>'
+      +'<div class="nfs-cell" data-label="Status"><span class="nfs-status '+nfClasseStatus(n.status)+'">'+escHtml(n.status||'Lançada')+'</span></div>'
+      +'<div class="nfs-cell" data-label="Observações">'+(n.observacoes?escHtml(n.observacoes):'—')+'</div>'
+      +'<div class="nfs-row-tools"><button class="btn-icon" onclick="abrirModalNF('+n.id+')" title="Editar NF"><i class="ti ti-pencil"></i></button><button class="btn-icon" onclick="excluirNF('+n.id+')" title="Excluir NF"><i class="ti ti-trash"></i></button></div>'
+      +'</div>').join('')+'</div>';
+}
+function abrirModalNF(id=null){
+  nfEditando=id!==null?Number(id):null;
+  const n=nfEditando!==null?nfs.find(x=>Number(x.id)===nfEditando):null;
+  document.getElementById('nfModalTitulo').textContent=n?'Editar NF':'Nova NF';
+  document.getElementById('nfNumero').value=n?.numero_nf||'';
+  document.getElementById('nfData').value=n?.data_lancamento||new Date().toISOString().slice(0,10);
+  document.getElementById('nfFornecedor').value=n?.fornecedor||'';
+  document.getElementById('nfValor').value=n?.valor??'';
+  document.getElementById('nfDescricao').value=n?.descricao||'';
+  document.getElementById('nfStatus').value=n?.status||'Lançada';
+  document.getElementById('nfObservacoes').value=n?.observacoes||'';
+  document.getElementById('errNF').style.display='none';
+  document.getElementById('ovNF').classList.add('open');
+}
+function fecharModalNF(){document.getElementById('ovNF').classList.remove('open');nfEditando=null;}
+async function salvarNF(){
+  const numero_nf=document.getElementById('nfNumero').value.trim();
+  const data_lancamento=document.getElementById('nfData').value;
+  if(!numero_nf||!data_lancamento){document.getElementById('errNF').textContent=!numero_nf?'Informe o número da NF':'Informe a data de lançamento';document.getElementById('errNF').style.display='block';return;}
+  const valorCampo=document.getElementById('nfValor').value;
+  const dados={numero_nf,data_lancamento,fornecedor:document.getElementById('nfFornecedor').value.trim(),descricao:document.getElementById('nfDescricao').value.trim(),valor:valorCampo===''?'':Number(valorCampo),status:document.getElementById('nfStatus').value,observacoes:document.getElementById('nfObservacoes').value.trim()};
+  try{
+    if(nfEditando!==null){
+      const n=nfs.find(x=>Number(x.id)===Number(nfEditando));if(!n)return;
+      if(sb){const {error}=await sb.from('controle_nfs').update({...dados,valor:dados.valor===''?null:dados.valor,updated_at:new Date().toISOString()}).eq('id',Number(n.id));if(error)throw error;}
+      Object.assign(n,dados);
+    }else{
+      if(sb){const {data,error}=await sb.from('controle_nfs').insert({...dados,valor:dados.valor===''?null:dados.valor}).select('id').single();if(error)throw error;nfs.push({id:Number(data.id),...dados});nextNfId=Math.max(nextNfId,Number(data.id)+1);}
+      else nfs.push({id:nextNfId++,...dados});
+    }
+    salvarNFsLocal();fecharModalNF();render();
+  }catch(e){console.error('Erro ao salvar NF:',e);alert('Não foi possível salvar a NF.\n\nDetalhes: '+(e.message||'erro desconhecido'));}
+}
+async function excluirNF(id){
+  const n=nfs.find(x=>Number(x.id)===Number(id));if(!n)return;
+  if(!confirm('Excluir a NF '+n.numero_nf+' do controle?'))return;
+  try{if(sb){const {error}=await sb.from('controle_nfs').delete().eq('id',Number(id));if(error)throw error;}nfs=nfs.filter(x=>Number(x.id)!==Number(id));salvarNFsLocal();render();}
+  catch(e){alert('Não foi possível excluir a NF.\n\nDetalhes: '+(e.message||'erro desconhecido'));}
+}
+
 function iniciarSincronizacaoTempoReal() {
   if (!SYNC_ENABLED || !sb) return;
   syncChannel = sb.channel('ct-sync')
@@ -1239,6 +1402,7 @@ function iniciarSincronizacaoTempoReal() {
     .on('postgres_changes', { event:'*', schema:'public', table:'projeto_acoes' }, () => receberNuvem())
     .on('postgres_changes', { event:'*', schema:'public', table:'reunioes' }, () => receberNuvem())
     .on('postgres_changes', { event:'*', schema:'public', table:'reuniao_acoes' }, () => receberNuvem())
+    .on('postgres_changes', { event:'*', schema:'public', table:'controle_nfs' }, () => receberNuvem())
     .subscribe();
 }
 
@@ -1253,6 +1417,7 @@ async function receberNuvem() {
     const { data: cloudProjetoAcoes } = await sb.from('projeto_acoes').select('*').order('id');
     const { data: cloudReunioes } = await sb.from('reunioes').select('*').order('data',{ascending:false}).order('id',{ascending:false});
     const { data: cloudReuniaoAcoes } = await sb.from('reuniao_acoes').select('*').order('id');
+    const { data: cloudNFs } = await sb.from('controle_nfs').select('*').order('data_lancamento',{ascending:false}).order('id',{ascending:false});
     if (!cloudTasks) return;
     tarefas = cloudTasks.map(t => ({ id:Number(t.id), mes:t.mes||'', assunto:t.assunto||'', atividade:t.atividade||'', descricao:t.descricao||'', solicitante:t.solicitante||'', responsavel:t.responsavel||'', onde:t.onde||'', prioridade:t.prioridade||'', status:t.status||'', micros:[] }));
     (cloudMicros||[]).forEach(m => { const t=tarefas.find(x=>String(x.id)===String(m.tarefa_id)); if(t) t.micros.push({id:Number(m.id),desc:m.descricao||'',responsavel:m.responsavel||'',prazo:m.prazo||'',status:m.status||'',prio:m.prio||''}); });
@@ -1269,6 +1434,11 @@ async function receberNuvem() {
       nextReuniaoId=Math.max(3000,...reunioes.map(r=>Number(r.id)||0)+1);
       nextReuniaoAcaoId=Math.max(4000,...reunioes.flatMap(r=>r.acoes).map(a=>Number(a.id)||0)+1);
       salvarReunioesLocal();
+    }
+    if (cloudNFs) {
+      nfs=cloudNFs.map(n=>({id:Number(n.id),numero_nf:n.numero_nf||'',data_lancamento:n.data_lancamento||'',fornecedor:n.fornecedor||'',descricao:n.descricao||'',valor:n.valor===null||n.valor===undefined?'':String(n.valor),status:n.status||'Lançada',observacoes:n.observacoes||''}));
+      nextNfId=Math.max(5000,...nfs.map(n=>Number(n.id)||0))+1;
+      salvarNFsLocal();
     }
     localStorage.setItem('tarefas', JSON.stringify(tarefas));
     render();
@@ -1490,6 +1660,8 @@ function atualizarContadoresPainel() {
   if(elCalendario) elCalendario.textContent=obterEventosCalendario().length;
   const elReunioes=document.getElementById('count-reunioes');
   if(elReunioes) elReunioes.textContent=reunioes.length;
+  const elNFs=document.getElementById('count-nfs');
+  if(elNFs) elNFs.textContent=nfs.length;
   categorias.forEach(a => { const el=document.getElementById(ids[a]); if(el) el.textContent=tarefas.filter(t => (t.assunto||'')===a).length; });
 }
 
@@ -1631,8 +1803,19 @@ function render() {
   atualizarContadoresPainel();
   const tarefasView=document.getElementById('tarefasView');
   const projetosView=document.getElementById('projetosView');
+  const nfsView=document.getElementById('nfsView');
+  if (painelSelecionado === '__nfs__') {
+    if(tarefasView) tarefasView.style.display='none';
+    if(projetosView) projetosView.style.display='none';
+    const cv=document.getElementById('calendarioView'); if(cv) cv.style.display='none';
+    const rv=document.getElementById('reunioesView'); if(rv) rv.style.display='none';
+    if(nfsView) nfsView.style.display='block';
+    renderNFs();
+    return;
+  }
   if (painelSelecionado === '__projetos__') {
     if(tarefasView) tarefasView.style.display='none';
+    if(nfsView) nfsView.style.display='none';
     if(projetosView) projetosView.style.display='block';
     const cv=document.getElementById('calendarioView');
     if(cv) cv.style.display='none';
@@ -1643,6 +1826,7 @@ function render() {
   }
   if (painelSelecionado === '__reunioes__') {
     if(tarefasView) tarefasView.style.display='none';
+    if(nfsView) nfsView.style.display='none';
     if(projetosView) projetosView.style.display='none';
     const cv=document.getElementById('calendarioView');
     if(cv) cv.style.display='none';
@@ -1653,6 +1837,7 @@ function render() {
   }
   if (painelSelecionado === '__calendario__') {
     if(tarefasView) tarefasView.style.display='none';
+    if(nfsView) nfsView.style.display='none';
     if(projetosView) projetosView.style.display='none';
     const rv=document.getElementById('reunioesView');
     if(rv) rv.style.display='none';
@@ -1661,6 +1846,7 @@ function render() {
   }
   if(tarefasView) tarefasView.style.display='block';
   if(projetosView) projetosView.style.display='none';
+  if(nfsView) nfsView.style.display='none';
   const reunioesViewEl=document.getElementById('reunioesView');
   if(reunioesViewEl) reunioesViewEl.style.display='none';
   const calendarioViewEl=document.getElementById('calendarioView');
@@ -2133,6 +2319,7 @@ document.getElementById('ovProjetoAcao').addEventListener('click',e=>{if(e.targe
 document.getElementById('ovCalEvento').addEventListener('click',e=>{if(e.target===e.currentTarget)fecharDetalheCalendario();});
 document.getElementById('ovReuniao').addEventListener('click',e=>{if(e.target===e.currentTarget)fecharModalReuniao();});
 document.getElementById('ovReuniaoAcao').addEventListener('click',e=>{if(e.target===e.currentTarget)fecharModalReuniaoAcao();});
+document.getElementById('ovNF').addEventListener('click',e=>{if(e.target===e.currentTarget)fecharModalNF();});
 
 carregarDados().then(() => { render(); iniciarSincronizacaoTempoReal(); });
 

@@ -473,7 +473,26 @@ tr.tarefa-row:hover>td{background:#F7FBFD;}
 .gs-day-date{font-size:10px;color:#7A8D99;margin-top:3px;}
 .gs-day-count{font-size:10px;color:#7A8D99;margin-top:6px;}
 .gs-day-entries{padding:9px;display:flex;flex-direction:column;gap:8px;flex:1;}
-.gs-entry{border:1px solid #E6EDF1;border-left:3px solid var(--brand);border-radius:8px;padding:9px;background:#fff;}
+.gs-entry{display:grid;grid-template-columns:21px minmax(0,1fr) auto;gap:8px;align-items:start;border:1px solid #E6EDF1;border-left:3px solid var(--brand);border-radius:8px;padding:9px;background:#fff;}
+.gs-entry-check{width:20px;height:20px;border-radius:6px;border:1.7px solid #B4C4CE;background:#fff;color:#fff;display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer;margin-top:1px;}
+.gs-entry-check:hover{border-color:var(--brand);}
+.gs-entry-check.checked{background:#22A06B;border-color:#22A06B;}
+.gs-entry-check i{font-size:13px;}
+.gs-entry-main{min-width:0;}
+.gs-entry-title.done{text-decoration:line-through;color:#92A1AA;}
+.gs-entry-tools{display:flex;gap:0;flex:0 0 auto;margin-top:-5px;margin-right:-5px;}
+.gs-entry-tools .btn-icon{width:24px;height:24px;}
+.gs-entry-status{grid-column:2/4;justify-self:start;margin-top:2px;}
+.gs-quick-add{display:flex;gap:6px;margin:0 9px 10px;}
+.gs-quick-add input{flex:1;min-width:0;height:35px;border:1px solid #DCE5EA;border-radius:8px;padding:0 9px;font:12px inherit;color:var(--text);outline:none;}
+.gs-quick-add input:focus{border-color:#8EBBD0;box-shadow:0 0 0 2px rgba(15,76,110,.08);}
+.gs-quick-add button{width:35px;height:35px;flex:0 0 35px;border:0;border-radius:8px;background:var(--brand);color:#fff;cursor:pointer;}
+.gs-quick-add button:hover{background:var(--brand-dark);}
+.gs-optional-details{margin:8px 0 0;border:1px solid #E6EDF1;border-radius:8px;padding:8px 10px;}
+.gs-optional-details summary{cursor:pointer;font-size:11px;color:var(--brand);font-weight:650;}
+.gs-optional-details[open] summary{margin-bottom:10px;}
+.gs-quick-hint{font-size:10px;color:#7A8D99;margin:0 9px 9px;}
+
 .gs-entry.status-done{border-left-color:#22A06B;}
 .gs-entry.status-progress{border-left-color:#2F80ED;}
 .gs-entry.status-pending{border-left-color:#D99A21;}
@@ -865,21 +884,26 @@ tr.tarefa-row:hover>td{background:#F7FBFD;}
 
 <!-- modal gestão semanal -->
 <div class="modal-overlay" id="ovGestaoSemanal">
-  <div class="modal" style="width:680px">
+  <div class="modal" style="width:620px;max-width:94vw">
     <h2 id="gsModalTitulo">Registrar atividade</h2>
     <div class="mgrid">
-      <div class="field"><label>Data <span style="color:#c0392b">*</span></label><input type="date" id="gsData"></div>
-      <div class="field"><label>Módulo / área</label><input type="text" id="gsModulo" list="gsModulos" placeholder="Ex.: Qualidade, SGI, Auditoria"><datalist id="gsModulos"><option value="Qualidade"><option value="SGI"><option value="Documentos"><option value="Auditoria"><option value="Controle de NCs"><option value="Controle de NFs"><option value="Projetos"><option value="Reuniões"><option value="Indicadores"><option value="Administrativo"><option value="Outro"></datalist></div>
-      <div class="field full"><label>O que você fez? <span style="color:#c0392b">*</span></label><textarea id="gsAtividade" placeholder="Descreva a atividade realizada. Ex.: Revisão do procedimento de gestão de documentos."></textarea><div class="err" id="errGS">Informe a atividade realizada.</div></div>
-      <div class="field full"><label>Resultado / entrega</label><textarea id="gsResultado" placeholder="O que foi entregue, concluído, atualizado ou encaminhado?"></textarea></div>
-      <div class="field"><label>Horas dedicadas</label><input type="number" id="gsHorasInput" min="0" max="24" step="0.25" placeholder="Ex.: 1,5"></div>
-      <div class="field"><label>Status</label><select id="gsStatus"><option>Concluído</option><option>Em andamento</option><option>Pendente</option></select></div>
-      <div class="field full"><label>Observações / próximos passos</label><textarea id="gsObservacoes" placeholder="Pendências, dependências ou o que precisa ser retomado."></textarea></div>
+      <div class="field"><label>Data</label><input type="date" id="gsData"></div>
+      <div class="field full"><label>Atividade <span style="color:#c0392b">*</span></label><input type="text" id="gsAtividade" placeholder="O que você fez ou precisa fazer?" autocomplete="off"><div class="err" id="errGS">Informe a atividade.</div></div>
+      <div class="field full"><label>Status</label><select id="gsStatus"><option>Pendente</option><option>Em andamento</option><option>Concluído</option></select></div>
     </div>
-    <div class="gs-modal-help">O registro ficará vinculado à semana da data selecionada.</div>
+    <details class="gs-optional-details">
+      <summary>Detalhes opcionais (área, entrega, horas e observações)</summary>
+      <div class="mgrid" style="margin-top:10px">
+        <div class="field full"><label>Módulo / área</label><input type="text" id="gsModulo" list="gsModulos" placeholder="Ex.: Qualidade, SGI, Auditoria"><datalist id="gsModulos"><option value="Qualidade"><option value="SGI"><option value="Documentos"><option value="Auditoria"><option value="Controle de NCs"><option value="Controle de NFs"><option value="Projetos"><option value="Reuniões"><option value="Indicadores"><option value="Administrativo"><option value="Outro"></datalist></div>
+        <div class="field full"><label>Resultado / entrega</label><textarea id="gsResultado" placeholder="Opcional"></textarea></div>
+        <div class="field"><label>Horas dedicadas</label><input type="number" id="gsHorasInput" min="0" max="24" step="0.25" placeholder="Opcional"></div>
+        <div class="field full"><label>Observações / próximos passos</label><textarea id="gsObservacoes" placeholder="Opcional"></textarea></div>
+      </div>
+    </details>
+    <div class="gs-modal-help" style="margin-top:10px">Dica: para registrar rapidamente, basta preencher a atividade e salvar.</div>
     <div class="mactions">
       <button class="btn-cancel" onclick="fecharModalGestaoSemanal()">Cancelar</button>
-      <button class="btn-save" onclick="salvarGestaoSemanal()">Salvar registro</button>
+      <button class="btn-save" onclick="salvarGestaoSemanal()">Salvar</button>
     </div>
   </div>
 </div>
@@ -1585,46 +1609,90 @@ function renderGestaoSemanal(){
   const concluidas=lista.filter(g=>g.status==='Concluído').length;
   const pendentes=lista.filter(g=>g.status!=='Concluído').length;
   const horas=lista.reduce((s,g)=>s+(Number(g.horas)||0),0);
-  const txtHoras=horas.toLocaleString('pt-BR',{maximumFractionDigits:2});
   document.getElementById('gsTotal').textContent=lista.length;
   document.getElementById('gsConcluidas').textContent=concluidas;
   document.getElementById('gsPendentes').textContent=pendentes;
-  document.getElementById('gsHoras').textContent=txtHoras+' h';
+  document.getElementById('gsHoras').textContent=horas.toLocaleString('pt-BR',{maximumFractionDigits:2})+' h';
   const count=document.getElementById('count-gestao-semanal');if(count)count.textContent=gestaoSemanal.length;
   const nomes=['Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira'];
   area.innerHTML=dias.map((d,i)=>{
     const entries=lista.filter(g=>g.data===d.data).sort((a,b)=>Number(a.id)-Number(b.id));
     const totalHoras=entries.reduce((s,g)=>s+(Number(g.horas)||0),0);
     const conteudo=entries.length?entries.map(g=>{
-      return '<article class="gs-entry status-'+(g.status==='Concluído'?'done':g.status==='Em andamento'?'progress':'pending')+'">'
-        +'<div class="gs-entry-top"><div class="gs-entry-title">'+escHtml(g.atividade)+'</div><div class="gs-entry-tools"><button class="btn-icon" onclick="abrirModalGestaoSemanal('+g.id+')" title="Editar registro"><i class="ti ti-pencil"></i></button><button class="btn-icon" onclick="excluirGestaoSemanal('+g.id+')" title="Excluir registro"><i class="ti ti-trash"></i></button></div></div>'
+      const feito=g.status==='Concluído';
+      const statusClass=gsStatusClass(g.status);
+      return '<article class="gs-entry status-'+statusClass+'">'
+        +'<button type="button" class="gs-entry-check '+(feito?'checked':'')+'" onclick="alternarGestaoSemanal('+g.id+')" title="'+(feito?'Marcar como pendente':'Marcar como concluída')+'" aria-label="'+(feito?'Marcar como pendente':'Marcar como concluída')+'">'+(feito?'<i class="ti ti-check"></i>':'')+'</button>'
+        +'<div class="gs-entry-main"><div class="gs-entry-title '+(feito?'done':'')+'">'+escHtml(g.atividade)+'</div>'
         +(g.modulo?'<span class="gs-entry-module">'+escHtml(g.modulo)+'</span>':'')
-        +(g.resultado?'<div class="gs-entry-result"><strong>Entrega:</strong> '+escHtml(g.resultado)+'</div>':'')
-        +(g.observacoes?'<div class="gs-entry-result"><strong>Observações:</strong> '+escHtml(g.observacoes)+'</div>':'')
-        +'<div class="gs-entry-footer"><span class="gs-entry-hours">'+(Number(g.horas)>0?Number(g.horas).toLocaleString('pt-BR',{maximumFractionDigits:2})+' h':'Sem horas')+'</span><span class="gs-entry-status '+gsStatusClass(g.status)+'">'+escHtml(g.status||'Concluído')+'</span></div>'
+        +'</div><div class="gs-entry-tools"><button class="btn-icon" onclick="abrirModalGestaoSemanal('+g.id+')" title="Editar atividade"><i class="ti ti-pencil"></i></button><button class="btn-icon" onclick="excluirGestaoSemanal('+g.id+')" title="Excluir atividade"><i class="ti ti-trash"></i></button></div>'
+        +'<span class="gs-entry-status '+statusClass+'">'+escHtml(g.status||'Pendente')+'</span>'
         +'</article>';
-    }).join(''):'<div class="gs-day-empty">Nenhuma atividade registrada</div>';
-    return '<section class="gs-day-card"><header class="gs-day-head"><div class="gs-day-name">'+nomes[i]+'</div><div class="gs-day-date">'+gsDataBonita(d.data)+'</div><div class="gs-day-count">'+entries.length+' '+(entries.length===1?'registro':'registros')+' • '+totalHoras.toLocaleString('pt-BR',{maximumFractionDigits:2})+' h</div></header><div class="gs-day-entries">'+conteudo+'</div><button class="gs-add-day" onclick="abrirModalGestaoSemanal(null,\''+d.data+'\')"><i class="ti ti-plus"></i> Registrar atividade</button></section>';
+    }).join(''):'<div class="gs-day-empty">Nenhuma atividade</div>';
+    return '<section class="gs-day-card"><header class="gs-day-head"><div class="gs-day-name">'+nomes[i]+'</div><div class="gs-day-date">'+gsDataBonita(d.data)+'</div><div class="gs-day-count">'+entries.length+' '+(entries.length===1?'atividade':'atividades')+(totalHoras?' • '+totalHoras.toLocaleString('pt-BR',{maximumFractionDigits:2})+' h':'')+'</div></header>'
+      +'<div class="gs-day-entries">'+conteudo+'</div>'
+      +'<div class="gs-quick-add"><input type="text" id="gsQuick-'+d.data+'" placeholder="Adicionar atividade..." aria-label="Adicionar atividade para '+nomes[i]+'" onkeydown="if(event.key===\'Enter\'){event.preventDefault();adicionarGestaoSemanalRapido(\''+d.data+'\')}" /><button type="button" onclick="adicionarGestaoSemanalRapido(\''+d.data+'\')" title="Adicionar atividade"><i class="ti ti-plus"></i></button></div>'
+      +'</section>';
   }).join('');
 }
 function abrirModalGestaoSemanal(id=null,dataPadrao=null){
   gsEditando=id!==null?Number(id):null;
   const g=gsEditando!==null?gestaoSemanal.find(x=>Number(x.id)===gsEditando):null;
-  document.getElementById('gsModalTitulo').textContent=g?'Editar registro':'Registrar atividade';
+  document.getElementById('gsModalTitulo').textContent=g?'Editar atividade':'Registrar atividade';
   document.getElementById('gsData').value=g?.data||dataPadrao||gsDataReferencia||gsIso(gsInicioSemana(new Date()));
   document.getElementById('gsModulo').value=g?.modulo||'';
   document.getElementById('gsAtividade').value=g?.atividade||'';
   document.getElementById('gsResultado').value=g?.resultado||'';
   document.getElementById('gsHorasInput').value=g?.horas??'';
-  document.getElementById('gsStatus').value=g?.status||'Concluído';
+  document.getElementById('gsStatus').value=g?.status||'Pendente';
   document.getElementById('gsObservacoes').value=g?.observacoes||'';
   document.getElementById('errGS').style.display='none';
+  const opt=document.querySelector('#ovGestaoSemanal .gs-optional-details');
+  if(opt)opt.open=!!(g&&(g.modulo||g.resultado||g.horas||g.observacoes));
   document.getElementById('ovGestaoSemanal').classList.add('open');
 }
 function fecharModalGestaoSemanal(){
   document.getElementById('ovGestaoSemanal').classList.remove('open');
   gsEditando=null;
 }
+async function adicionarGestaoSemanalRapido(data){
+  const input=document.getElementById('gsQuick-'+data);
+  const atividade=(input?.value||'').trim();
+  if(!atividade){if(input)input.focus();return;}
+  const weekday=gsParseIso(data).getDay();
+  if(weekday===0||weekday===6){alert('Selecione um dia útil, de segunda a sexta-feira.');return;}
+  const dados={data,modulo:'',atividade,resultado:'',horas:'',status:'Pendente',observacoes:''};
+  try{
+    if(sb){
+      const {data:novo,error}=await sb.from('gestao_semanal').insert({...dados,horas:null}).select('id').single();
+      if(error)throw error;
+      gestaoSemanal.push({id:Number(novo.id),...dados});
+      nextGestaoSemanalId=Math.max(nextGestaoSemanalId,Number(novo.id)+1);
+    }else{
+      gestaoSemanal.push({id:nextGestaoSemanalId++,...dados});
+    }
+    salvarGestaoSemanalLocal();
+    gsDataReferencia=gsIso(gsInicioSemana(gsParseIso(data)));
+    render();
+    const novoInput=document.getElementById('gsQuick-'+data);
+    if(novoInput)novoInput.focus();
+  }catch(e){alert('Não foi possível adicionar a atividade.\\n\\nDetalhes: '+(e.message||'erro desconhecido'));}
+}
+async function alternarGestaoSemanal(id){
+  const g=gestaoSemanal.find(x=>Number(x.id)===Number(id));if(!g)return;
+  const statusAnterior=g.status||'Pendente';
+  const novoStatus=statusAnterior==='Concluído'?'Pendente':'Concluído';
+  try{
+    if(sb){
+      const {error}=await sb.from('gestao_semanal').update({status:novoStatus,updated_at:new Date().toISOString()}).eq('id',Number(g.id));
+      if(error)throw error;
+    }
+    g.status=novoStatus;
+    salvarGestaoSemanalLocal();
+    render();
+  }catch(e){alert('Não foi possível atualizar a atividade.\\n\\nDetalhes: '+(e.message||'erro desconhecido'));}
+}
+
 async function salvarGestaoSemanal(){
   const data=document.getElementById('gsData').value;
   const atividade=document.getElementById('gsAtividade').value.trim();

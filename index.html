@@ -459,7 +459,7 @@ tr.tarefa-row:hover>td{background:#F7FBFD;}
 .gs-title{font-size:22px;font-weight:700;letter-spacing:-.02em;color:var(--brand-dark);}
 .gs-subtitle{font-size:13px;color:var(--muted);margin-top:4px;line-height:1.45;}
 .gs-week-controls{display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
-.gs-week-controls input{height:36px;padding:0 10px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--text);font:12px inherit;}
+.gs-week-controls input{height:36px;padding:0 10px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--text);font-family:inherit;font-size:12px;}
 .gs-nav{height:36px;min-width:36px;padding:0 10px;border:1px solid var(--line);background:#fff;border-radius:9px;color:#536B7A;cursor:pointer;}
 .gs-range-label{font-size:11px;color:#6E8390;white-space:nowrap;}
 .gs-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px;}
@@ -490,7 +490,7 @@ tr.tarefa-row:hover>td{background:#F7FBFD;}
 .gs-entry-status.progress{background:#E8F2FF;color:#1E64B4;}
 .gs-entry-status.pending{background:#FFF4DA;color:#986300;}
 .gs-day-empty{font-size:10px;color:#A0ADB5;text-align:center;padding:24px 7px;}
-.gs-add-day{margin:0 9px 10px;width:calc(100% - 18px);height:34px;display:flex;justify-content:center;align-items:center;gap:5px;border:1px dashed #BFD0DA;background:#fff;color:var(--brand);border-radius:8px;font:600 11px inherit;cursor:pointer;}
+.gs-add-day{margin:0 9px 10px;width:calc(100% - 18px);height:34px;display:flex;justify-content:center;align-items:center;gap:5px;border:1px dashed #BFD0DA;background:#fff;color:var(--brand);border-radius:8px;font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;}
 .gs-add-day:hover{background:var(--brand-soft);}
 .gs-modal-help{font-size:11px;color:#7A8D99;margin-top:-3px;}
 @media(max-width:850px){.gs-summary{grid-template-columns:repeat(2,minmax(0,1fr));}.gs-toolbar{align-items:flex-start;}.gs-week-grid{grid-template-columns:repeat(5,minmax(190px,1fr));}}
@@ -1630,6 +1630,12 @@ async function salvarGestaoSemanal(){
   const atividade=document.getElementById('gsAtividade').value.trim();
   if(!data||!atividade){
     document.getElementById('errGS').textContent=!data?'Informe a data.':'Informe a atividade realizada.';
+    document.getElementById('errGS').style.display='block';
+    return;
+  }
+  const diaSelecionado=gsParseIso(data).getDay();
+  if(diaSelecionado===0||diaSelecionado===6){
+    document.getElementById('errGS').textContent='Selecione um dia útil, de segunda a sexta-feira.';
     document.getElementById('errGS').style.display='block';
     return;
   }

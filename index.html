@@ -1534,7 +1534,7 @@ function gsDataBonita(iso){
   return iso?gsParseIso(iso).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'}):'—';
 }
 function gsObterSemana(){
-  const val=document.getElementById('gsSemana')?.value||gsDataReferencia;
+  const val=gsDataReferencia||document.getElementById('gsSemana')?.value||'';
   const base=val?gsParseIso(val):new Date();
   return gsInicioSemana(base);
 }

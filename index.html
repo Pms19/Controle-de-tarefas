@@ -659,6 +659,77 @@ tr.tarefa-row:hover>td{background:#F7FBFD;}
 @media(max-width:900px){.meeting-info-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.meeting-action-row,.meeting-action-head{grid-template-columns:auto minmax(160px,1.4fr) 120px 100px auto;}.meeting-action-obs{grid-column:2/-1;}}
 @media(max-width:700px){.meeting-toolbar{flex-direction:column;align-items:stretch;gap:10px;}.meeting-info-grid{grid-template-columns:1fr 1fr;padding-left:12px;padding-right:12px;}.meeting-card-head{padding:12px;}.meeting-checklist{padding-left:12px;padding-right:12px;overflow-x:auto;}.meeting-action-wrap{min-width:620px;}.meeting-add-action{padding-left:12px;padding-right:12px;}.meeting-filters{width:100%;}.meeting-filters>*{flex:1;min-width:0;}}
 .sidebar-group-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#8A9AA5;padding:12px 10px 5px;}
+
+/* ===== VISÃO CONSOLIDADA DA GESTÃO ===== */
+.management-dashboard{display:none;min-width:0;color:var(--text);}
+.mg-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin:2px 0 16px;}
+.mg-eyebrow{font-size:10px;font-weight:800;letter-spacing:.12em;color:var(--brand);margin-bottom:6px;}
+.mg-head h2{font-size:23px;line-height:1.2;color:var(--brand-dark);margin-bottom:6px;font-weight:750;}
+.mg-head p,.mg-panel-head p{font-size:12px;line-height:1.5;color:var(--muted);}
+.mg-new-full{flex:0 0 auto;}
+.mg-quick-add{padding:14px 16px;background:#fff;border:1px solid var(--line);border-radius:13px;margin-bottom:13px;}
+.mg-quick-copy{display:flex;gap:8px;flex-wrap:wrap;align-items:baseline;margin-bottom:10px;}
+.mg-quick-copy strong{font-size:13px;color:var(--brand-dark);}
+.mg-quick-copy span{font-size:11px;color:var(--muted);}
+.mg-quick-controls{display:grid;grid-template-columns:minmax(0,1fr) 210px auto;gap:8px;}
+.mg-quick-controls input,.mg-quick-controls select{min-width:0;width:100%;height:39px;padding:0 11px;border:1px solid var(--line);border-radius:9px;background:#fff;font:inherit;font-size:12px;color:var(--text);}
+.mg-quick-controls button{height:39px;padding:0 14px;border:0;border-radius:9px;background:var(--brand);color:#fff;font:inherit;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;}
+.mg-kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:14px;}
+.mg-kpi{min-width:0;padding:14px;border:1px solid var(--line);border-radius:12px;background:#fff;position:relative;overflow:hidden;}
+.mg-kpi:after{content:"";position:absolute;left:0;bottom:0;width:100%;height:3px;background:var(--brand-mid);}
+.mg-kpi-label{font-size:10px;color:var(--muted);display:block;line-height:1.4;margin-bottom:7px;}
+.mg-kpi strong{font-size:25px;line-height:1;font-weight:750;color:var(--brand-dark);display:block;}
+.mg-kpi small{display:block;font-size:10px;color:var(--muted);margin-top:7px;}
+.mg-kpi.urgent strong{color:var(--red)}.mg-kpi.urgent:after{background:#F3A8B0}.mg-kpi.success strong{color:var(--green)}.mg-kpi.success:after{background:#8DDEB8}
+.mg-main-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(290px,1fr);gap:12px;align-items:start;}
+.mg-panel{background:#fff;border:1px solid var(--line);border-radius:13px;padding:15px;margin-bottom:12px;min-width:0;}
+.mg-panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:13px;}
+.mg-panel-head h3{font-size:14px;color:var(--brand-dark);font-weight:750;margin-bottom:4px;}
+.mg-panel-hint{font-size:10px;color:var(--muted);white-space:nowrap;padding-top:3px;}
+.mg-theme-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
+.mg-theme-card{width:100%;padding:12px;text-align:left;border:1px solid #e4ebef;border-radius:10px;background:#fbfdfe;cursor:pointer;min-width:0;color:var(--text);font:inherit;}
+.mg-theme-card:hover{background:#f2f8fb;border-color:#bcd8e5;}
+.mg-theme-top{display:flex;justify-content:space-between;gap:7px;align-items:flex-start;margin-bottom:7px;}
+.mg-theme-name{font-size:12px;font-weight:750;line-height:1.35;color:var(--brand-dark);overflow-wrap:anywhere;}
+.mg-theme-percent{font-size:13px;font-weight:800;color:var(--brand);white-space:nowrap;}
+.mg-theme-track{height:6px;background:#e7eef2;border-radius:99px;overflow:hidden;margin:8px 0;}
+.mg-theme-fill{height:100%;background:var(--green);border-radius:99px;}
+.mg-theme-meta{display:flex;gap:6px;flex-wrap:wrap;font-size:10px;color:var(--muted);line-height:1.4;}
+.mg-theme-meta strong{color:var(--text);}
+.mg-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 7px;border-radius:99px;font-size:10px;font-weight:700;background:#f2f5f7;color:#597080;white-space:nowrap;}
+.mg-chip.red{background:#FDEBED;color:#B93042}.mg-chip.green{background:#E7F7EF;color:#19754D}
+.mg-deadline-list{display:flex;flex-direction:column;gap:7px;}
+.mg-deadline-item{display:grid;grid-template-columns:48px minmax(0,1fr);gap:9px;padding:9px;border:1px solid #e9eef1;border-radius:9px;background:#fff;}
+.mg-deadline-date{font-size:10px;font-weight:800;color:var(--brand);padding-top:2px;line-height:1.4;}
+.mg-deadline-date.late{color:var(--red);}
+.mg-deadline-title{font-size:11px;font-weight:700;color:var(--text);line-height:1.45;overflow-wrap:anywhere;}
+.mg-deadline-meta{font-size:10px;color:var(--muted);margin-top:3px;line-height:1.45;}
+.mg-project-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;}
+.mg-project-card{padding:12px;border:1px solid #e4ebef;border-radius:10px;background:#fbfdfe;min-width:0;}
+.mg-project-name{font-size:12px;font-weight:750;color:var(--brand-dark);line-height:1.4;overflow-wrap:anywhere;margin-bottom:6px;}
+.mg-project-meta{display:flex;justify-content:space-between;gap:5px;flex-wrap:wrap;font-size:10px;color:var(--muted);margin:5px 0 8px;}
+.mg-project-status{font-size:10px;display:inline-flex;padding:3px 7px;background:#edf3f6;color:#516c7a;border-radius:99px;font-weight:700;}
+.mg-link-btn{border:0;background:none;color:var(--brand);font:inherit;font-size:11px;font-weight:750;cursor:pointer;white-space:nowrap;padding:2px 0;}
+.mg-delivery-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;}
+.mg-delivery-item{display:grid;grid-template-columns:24px minmax(0,1fr) auto;gap:8px;align-items:start;padding:9px 10px;border:1px solid #e4eee8;border-radius:9px;background:#fbfefc;}
+.mg-delivery-icon{width:23px;height:23px;border-radius:7px;background:#e4f6eb;color:#23875a;display:flex;align-items:center;justify-content:center;font-size:13px;}
+.mg-delivery-title{font-size:11px;font-weight:700;color:var(--text);line-height:1.45;overflow-wrap:anywhere;}
+.mg-delivery-meta{font-size:10px;color:var(--muted);margin-top:3px;}
+.mg-empty{padding:17px 10px;text-align:center;font-size:11px;color:var(--muted);background:#fbfdfe;border:1px dashed #dce5ea;border-radius:9px;line-height:1.5;}
+.mg-open-link{font:inherit;border:0;background:none;cursor:pointer;color:inherit;text-align:left;}
+.gs-auto-wrap{margin:4px 0 12px;padding:9px;background:#f5fbf8;border:1px solid #dcefe4;border-radius:9px;}
+.gs-auto-title,.gs-manual-title{font-size:10px;font-weight:800;color:#2b7654;letter-spacing:.04em;text-transform:uppercase;margin:0 0 7px;}
+.gs-manual-title{color:var(--muted);margin-top:11px;}
+.gs-auto-list{display:flex;flex-direction:column;gap:5px;}
+.gs-auto-item{display:grid;grid-template-columns:20px minmax(0,1fr) auto;gap:7px;align-items:start;padding:7px 8px;background:#fff;border-radius:7px;border:1px solid #e3f0e8;}
+.gs-auto-icon{color:var(--green);font-size:14px;padding-top:1px;}
+.gs-auto-name{font-size:11px;font-weight:650;color:var(--text);line-height:1.4;overflow-wrap:anywhere;}
+.gs-auto-module{font-size:9px;color:#527e69;background:#e9f6ee;border-radius:99px;padding:3px 6px;white-space:nowrap;}
+.task-deadline{margin-top:5px;font-size:10px;color:var(--muted);display:flex;gap:4px;align-items:center;}
+.task-deadline.late{color:var(--red);font-weight:750;}
+@media(max-width:1050px){.mg-kpis{grid-template-columns:repeat(3,minmax(0,1fr));}.mg-main-grid{grid-template-columns:1fr;}.mg-project-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media(max-width:700px){.mg-head{flex-direction:column;}.mg-new-full{width:100%;}.mg-quick-controls{grid-template-columns:1fr;}.mg-quick-controls button{width:100%;}.mg-kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;}.mg-kpi{padding:11px}.mg-kpi strong{font-size:22px}.mg-theme-grid,.mg-project-grid,.mg-delivery-list{grid-template-columns:1fr;}.mg-panel{padding:11px}.mg-panel-hint{display:none}}
+
 </style>
 </head>
 <body>
@@ -724,7 +795,8 @@ tr.tarefa-row:hover>td{background:#F7FBFD;}
   <div class="app-layout">
     <aside class="sidebar">
       <div class="sidebar-title">Gestão</div>
-      <button class="sidebar-btn active" data-painel="todos" onclick="selecionarPainel('todos')"><i class="ti ti-layout-dashboard"></i> Todas as atividades <span class="sidebar-count" id="count-todos">0</span></button>
+      <button class="sidebar-btn active" data-painel="__dashboard__" onclick="selecionarPainel('__dashboard__')"><i class="ti ti-chart-dots-3"></i> Visão da gestão</button>
+      <button class="sidebar-btn" data-painel="todos" onclick="selecionarPainel('todos')"><i class="ti ti-list-check"></i> Todas as atividades <span class="sidebar-count" id="count-todos">0</span></button>
       <button class="sidebar-btn" data-painel="__calendario__" onclick="selecionarPainel('__calendario__')"><i class="ti ti-calendar-event"></i> Calendário <span class="sidebar-count" id="count-calendario">0</span></button>
       <button class="sidebar-btn" data-painel="__projetos__" onclick="selecionarPainel('__projetos__')"><i class="ti ti-briefcase-2"></i> Projetos <span class="sidebar-count" id="count-projetos">0</span></button>
       <button class="sidebar-btn" data-painel="__reunioes__" onclick="selecionarPainel('__reunioes__')"><i class="ti ti-users-group"></i> Reuniões <span class="sidebar-count" id="count-reunioes">0</span></button>
@@ -740,6 +812,28 @@ tr.tarefa-row:hover>td{background:#F7FBFD;}
       <button class="sidebar-btn" data-painel="Outras atividades" onclick="selecionarPainel('Outras atividades')"><i class="ti ti-dots"></i> Outras atividades <span class="sidebar-count" id="count-Outras-atividades">0</span></button>
     </aside>
     <main class="main-panel">
+            <div id="dashboardGestaoView" class="management-dashboard">
+        <div class="mg-head">
+          <div><div class="mg-eyebrow">PAINEL DE ACOMPANHAMENTO</div><h2>Visão da gestão</h2><p>Veja o que está em andamento, os prazos críticos e o progresso de cada tema em um único lugar.</p></div>
+          <button type="button" class="btn-primary mg-new-full" onclick="abrirModalTarefa()"><i class="ti ti-plus"></i> Nova atividade completa</button>
+        </div>
+        <div class="mg-quick-add">
+          <div class="mg-quick-copy"><strong>Registro rápido</strong><span>Adicione uma atividade em poucos segundos e complete os detalhes quando necessário.</span></div>
+          <div class="mg-quick-controls">
+            <input id="mgQuickAtividade" type="text" placeholder="O que você precisa acompanhar?" aria-label="Nome da atividade" onkeydown="if(event.key==='Enter'){event.preventDefault();adicionarAtividadeRapida()}">
+            <select id="mgQuickTema" aria-label="Tema da atividade"><option value="Documentos">Documentos</option><option value="Auditoria">Auditoria</option><option value="Questionários">Questionários</option><option value="Mapeamento de processos">Mapeamento de processos</option><option value="Outras atividades" selected>Outras atividades</option></select>
+            <button type="button" onclick="adicionarAtividadeRapida()"><i class="ti ti-plus"></i> Registrar</button>
+          </div>
+        </div>
+        <div id="mgKpis" class="mg-kpis"></div>
+        <div class="mg-main-grid">
+          <section class="mg-panel"><div class="mg-panel-head"><div><h3>Progresso por tema</h3><p>Percentual concluído, volume de itens e pendências em cada frente de trabalho.</p></div><span class="mg-panel-hint">Atualizado automaticamente</span></div><div id="mgTemas" class="mg-theme-grid"></div></section>
+          <section class="mg-panel mg-deadline-panel"><div class="mg-panel-head"><div><h3>Prazos que merecem atenção</h3><p>Itens vencidos e compromissos dos próximos 30 dias.</p></div></div><div id="mgPrazos" class="mg-deadline-list"></div></section>
+        </div>
+        <section class="mg-panel"><div class="mg-panel-head"><div><h3>Projetos e iniciativas</h3><p>Progresso calculado a partir das mini ações cadastradas.</p></div><button type="button" class="mg-link-btn" onclick="selecionarPainel('__projetos__')">Abrir projetos <i class="ti ti-arrow-up-right"></i></button></div><div id="mgProjetos" class="mg-project-grid"></div></section>
+        <section class="mg-panel"><div class="mg-panel-head"><div><h3>Entregas e registros deste mês</h3><p>Histórico automático a partir dos dados de conclusão, reuniões realizadas e lançamentos registrados.</p></div><button type="button" class="mg-link-btn" onclick="selecionarPainel('__gestao_semanal__')">Ver revisão semanal <i class="ti ti-arrow-up-right"></i></button></div><div id="mgEntregas" class="mg-delivery-list"></div></section>
+      </div>
+
       <div id="tarefasView">
         <div class="toolbar">
           <input type="text" id="busca" placeholder="Buscar por atividade, descrição, responsável ou solicitante…" oninput="window.filtroSomenteAtrasadas=false; render()">
@@ -799,7 +893,7 @@ tr.tarefa-row:hover>td{background:#F7FBFD;}
         <div class="gs-toolbar">
           <div>
             <div class="gs-title">Gestão Semanal</div>
-            <div class="gs-subtitle">Registre suas atividades e entregas nos cinco dias úteis para manter um histórico do que foi realizado.</div>
+            <div class="gs-subtitle">As entregas concluídas nos outros módulos aparecem automaticamente. Use o registro manual apenas para atividades fora desses módulos.</div>
           </div>
           <div class="gs-week-controls">
             <button class="gs-nav" type="button" onclick="navegarSemanaGestao(-1)" title="Semana anterior"><i class="ti ti-chevron-left"></i></button>
@@ -1029,6 +1123,7 @@ tr.tarefa-row:hover>td{background:#F7FBFD;}
       <div class="field"><label>Onde parou / Observações</label><textarea id="fOnde" placeholder="Ponto de parada ou observações"></textarea></div>
       <div class="field"><label>Responsável</label><input type="text" id="fResp" placeholder="Nome"></div>
       <div class="field"><label>Prioridade</label><select id="fPrio"><option value="">—</option><option value="Alta">Alta</option><option value="Média">Média</option><option value="Baixa">Baixa</option></select></div>
+      <div class="field"><label>Prazo</label><input type="date" id="fPrazo"></div>
       <div class="field"><label>Status</label>
         <select id="fStatus"><option value="">—</option><option value="Pendente">Pendente</option><option value="Aguardando">Aguardando</option><option value="Concluído">Concluído</option></select>
       </div>
@@ -1134,6 +1229,8 @@ function mesLabel(ym) {
   return MESES[parseInt(m)-1] + ' ' + y;
 }
 const hoje = new Date();
+function ctHojeISO(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function ctDataBR(v){return v?new Date(v+'T00:00:00').toLocaleDateString('pt-BR'):'—';}
 const mesAtual = `${hoje.getFullYear()}-${String(hoje.getMonth()+1).padStart(2,'0')}`;
 
 window.filtroSomenteAtrasadas = false;
@@ -1157,7 +1254,7 @@ let reunioes=[], nextReuniaoId=3000, nextReuniaoAcaoId=4000, reuniaoEditando=nul
 let nfs=[], nextNfId=5000, nfEditando=null;
 let ncs=[], nextNcId=6000, ncEditando=null;
 let gestaoSemanal=[], nextGestaoSemanalId=7000, gsEditando=null, gsDataReferencia='';
-let collapsedMes = {}, expandedTarefa = {}, microAlvo = null, mesesSelecionados = new Set(), painelSelecionado = 'todos', projetoExpandido = {};
+let collapsedMes = {}, expandedTarefa = {}, microAlvo = null, mesesSelecionados = new Set(), painelSelecionado = '__dashboard__', projetoExpandido = {};
 
 function bc(s){ return s==='Pendente'?'b-p':s==='Aguardando'?'b-a':s==='Concluído'?'b-c':'b-s'; }
 function mbc(s){ return s==='Pendente'?'mb-p':s==='Aguardando'?'mb-a':s==='Concluído'?'mb-c':'mb-s'; }
@@ -1192,7 +1289,7 @@ async function sincronizarTudo() {
   try {
     const rows = tarefas.map(t => ({
       id: String(t.id), mes:t.mes||null, assunto:t.assunto||'', atividade:t.atividade, descricao:t.descricao||'',
-      solicitante:t.solicitante||'', onde:t.onde||'', responsavel:t.responsavel||'', prioridade:t.prioridade||'', status:t.status||'', periodicidade:t.periodicidade||'Pontual', recorrencia_grupo:t.recorrencia_grupo||null, data_ocorrencia:t.data_ocorrencia||null,
+      solicitante:t.solicitante||'', onde:t.onde||'', responsavel:t.responsavel||'', prioridade:t.prioridade||'', status:t.status||'', prazo:t.prazo||null, data_conclusao:t.data_conclusao||null, periodicidade:t.periodicidade||'Pontual', recorrencia_grupo:t.recorrencia_grupo||null, data_ocorrencia:t.data_ocorrencia||null,
       updated_at:new Date().toISOString()
     }));
     const { error: taskErr } = await sb.from('tarefas').upsert(rows, { onConflict:'id' });
@@ -1202,7 +1299,7 @@ async function sincronizarTudo() {
     tarefas.forEach(t => (t.micros||[]).forEach(m => micros.push({
       id:String(m.id), tarefa_id:String(t.id), descricao:m.desc, responsavel:m.responsavel||'',
       prazo:m.prazo||null, status:m.status||'', prio:m.prio||'',
-      updated_at:new Date().toISOString()
+      data_conclusao:m.data_conclusao||null, updated_at:new Date().toISOString()
     })));
     if (micros.length) {
       const { error: microErr } = await sb.from('micro_acoes').upsert(micros, { onConflict:'id' });
@@ -1257,7 +1354,7 @@ async function carregarDados() {
     if (cloudProjetos && cloudProjetos.length) {
       projetos = cloudProjetos.map(p => ({
         id:Number(p.id), nome:p.nome||'', descricao:p.descricao||'', responsavel:p.responsavel||'',
-        prazo:p.prazo||'', status:p.status||'Em andamento', acoes:[]
+        prazo:p.prazo||'', status:p.status||'Em andamento', data_conclusao:p.data_conclusao||'', acoes:[]
       }));
       (cloudProjetoAcoes||[]).forEach(a => {
         const p=projetos.find(x=>Number(x.id)===Number(a.projeto_id));
@@ -1291,7 +1388,7 @@ async function carregarDados() {
     }
 
     if (cloudNCs && cloudNCs.length) {
-      ncs=cloudNCs.map(n=>({id:Number(n.id),numero_nc:n.numero_nc||'',origem:n.origem||'',acao:n.acao||'',observacoes:n.observacoes||'',responsavel:n.responsavel||'',data_solicitacao:n.data_solicitacao||'',prazo:n.prazo||'',status:n.status||'Aberta'}));
+      ncs=cloudNCs.map(n=>({id:Number(n.id),numero_nc:n.numero_nc||'',origem:n.origem||'',acao:n.acao||'',observacoes:n.observacoes||'',responsavel:n.responsavel||'',data_solicitacao:n.data_solicitacao||'',prazo:n.prazo||'',status:n.status||'Aberta',data_conclusao:n.data_conclusao||''}));
       nextNcId=Math.max(6000,...ncs.map(n=>Number(n.id)||0))+1;
       salvarNCsLocal();
     } else if (ncs.length) {
@@ -1306,8 +1403,8 @@ async function carregarDados() {
     }
 
     if (cloudTasks && cloudTasks.length) {
-      tarefas = cloudTasks.map(t => ({ id:Number(t.id), mes:t.mes||'', assunto:t.assunto||'', atividade:t.atividade||'', descricao:t.descricao||'', solicitante:t.solicitante||'', responsavel:t.responsavel||'', onde:t.onde||'', prioridade:t.prioridade||'', status:t.status||'', periodicidade:t.periodicidade||'Pontual', recorrencia_grupo:t.recorrencia_grupo||null, data_ocorrencia:t.data_ocorrencia||null, micros:[] }));
-      (cloudMicros||[]).forEach(m => { const t=tarefas.find(x=>String(x.id)===String(m.tarefa_id)); if(t) t.micros.push({ id:Number(m.id), desc:m.descricao||'', responsavel:m.responsavel||'', prazo:m.prazo||'', status:m.status||'', prio:m.prio||'' }); });
+      tarefas = cloudTasks.map(t => ({ id:Number(t.id), mes:t.mes||'', assunto:t.assunto||'', atividade:t.atividade||'', descricao:t.descricao||'', solicitante:t.solicitante||'', responsavel:t.responsavel||'', onde:t.onde||'', prioridade:t.prioridade||'', status:t.status||'', prazo:t.prazo||'', data_conclusao:t.data_conclusao||'', periodicidade:t.periodicidade||'Pontual', recorrencia_grupo:t.recorrencia_grupo||null, data_ocorrencia:t.data_ocorrencia||null, micros:[] }));
+      (cloudMicros||[]).forEach(m => { const t=tarefas.find(x=>String(x.id)===String(m.tarefa_id)); if(t) t.micros.push({ id:Number(m.id), desc:m.descricao||'', responsavel:m.responsavel||'', prazo:m.prazo||'', status:m.status||'', prio:m.prio||'', data_conclusao:m.data_conclusao||'' }); });
       nextId = Math.max(100, ...tarefas.map(t=>Number(t.id)||0)+1);
       nextMicroId = Math.max(200, ...tarefas.flatMap(t=>t.micros).map(m=>Number(m.id)||0), 199)+1;
       localStorage.setItem('tarefas', JSON.stringify(tarefas));
@@ -1323,7 +1420,7 @@ async function sincronizarProjetos() {
   if (!sb) return;
   const projectRows = projetos.map(p => ({
     id:Number(p.id), nome:p.nome||'', descricao:p.descricao||'', responsavel:p.responsavel||'',
-    prazo:p.prazo||null, status:p.status||'Em andamento', updated_at:new Date().toISOString()
+    prazo:p.prazo||null, status:p.status||'Em andamento', data_conclusao:p.data_conclusao||null, updated_at:new Date().toISOString()
   }));
   if (projectRows.length) {
     const {error} = await sb.from('projetos').upsert(projectRows,{onConflict:'id'});
@@ -1601,15 +1698,14 @@ function renderGestaoSemanal(){
   const inicio=gsObterSemana(),dias=gsIntervaloSemana(),isoInicio=gsIso(inicio);
   gsDataReferencia=isoInicio;
   const input=document.getElementById('gsSemana');if(input&&input.value!==isoInicio)input.value=isoInicio;
-  const fim=new Date(inicio);fim.setDate(inicio.getDate()+4);
-  const range=document.getElementById('gsRangeLabel');
-  if(range)range.textContent=gsDataBonita(isoInicio)+' – '+gsDataBonita(gsIso(fim));
-  const semanaSet=new Set(dias.map(d=>d.data));
-  const lista=gestaoSemanal.filter(g=>semanaSet.has(g.data));
-  const concluidas=lista.filter(g=>g.status==='Concluído').length;
+  const fim=new Date(inicio);fim.setDate(inicio.getDate()+4);const isoFim=gsIso(fim);
+  const range=document.getElementById('gsRangeLabel');if(range)range.textContent=gsDataBonita(isoInicio)+' – '+gsDataBonita(isoFim);
+  const semanaSet=new Set(dias.map(d=>d.data)),lista=gestaoSemanal.filter(g=>semanaSet.has(g.data));
+  const automaticas=obterEntregasConcluidas(isoInicio,isoFim);
+  const concluidas=lista.filter(g=>g.status==='Concluído').length+automaticas.length;
   const pendentes=lista.filter(g=>g.status!=='Concluído').length;
   const horas=lista.reduce((s,g)=>s+(Number(g.horas)||0),0);
-  document.getElementById('gsTotal').textContent=lista.length;
+  document.getElementById('gsTotal').textContent=lista.length+automaticas.length;
   document.getElementById('gsConcluidas').textContent=concluidas;
   document.getElementById('gsPendentes').textContent=pendentes;
   document.getElementById('gsHoras').textContent=horas.toLocaleString('pt-BR',{maximumFractionDigits:2})+' h';
@@ -1617,22 +1713,22 @@ function renderGestaoSemanal(){
   const nomes=['Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira'];
   area.innerHTML=dias.map((d,i)=>{
     const entries=lista.filter(g=>g.data===d.data).sort((a,b)=>Number(a.id)-Number(b.id));
+    const auto=automaticas.filter(g=>g.data===d.data);
     const totalHoras=entries.reduce((s,g)=>s+(Number(g.horas)||0),0);
-    const conteudo=entries.length?entries.map(g=>{
-      const feito=g.status==='Concluído';
-      const statusClass=gsStatusClass(g.status);
+    const manual=entries.length?entries.map(g=>{
+      const feito=g.status==='Concluído',statusClass=gsStatusClass(g.status);
       return '<article class="gs-entry status-'+statusClass+'">'
-        +'<button type="button" class="gs-entry-check '+(feito?'checked':'')+'" onclick="alternarGestaoSemanal('+g.id+')" title="'+(feito?'Marcar como pendente':'Marcar como concluída')+'" aria-label="'+(feito?'Marcar como pendente':'Marcar como concluída')+'">'+(feito?'<i class="ti ti-check"></i>':'')+'</button>'
+        +'<button type="button" class="gs-entry-check '+(feito?'checked':'')+'" onclick="alternarGestaoSemanal('+g.id+')" title="'+(feito?'Marcar como pendente':'Marcar como concluída')+'">'+(feito?'<i class="ti ti-check"></i>':'')+'</button>'
         +'<div class="gs-entry-main"><div class="gs-entry-title '+(feito?'done':'')+'">'+escHtml(g.atividade)+'</div>'
         +(g.modulo?'<span class="gs-entry-module">'+escHtml(g.modulo)+'</span>':'')
-        +'</div><div class="gs-entry-tools"><button class="btn-icon" onclick="abrirModalGestaoSemanal('+g.id+')" title="Editar atividade"><i class="ti ti-pencil"></i></button><button class="btn-icon" onclick="excluirGestaoSemanal('+g.id+')" title="Excluir atividade"><i class="ti ti-trash"></i></button></div>'
-        +'<span class="gs-entry-status '+statusClass+'">'+escHtml(g.status||'Pendente')+'</span>'
-        +'</article>';
-    }).join(''):'<div class="gs-day-empty">Nenhuma atividade</div>';
-    return '<section class="gs-day-card"><header class="gs-day-head"><div class="gs-day-name">'+nomes[i]+'</div><div class="gs-day-date">'+gsDataBonita(d.data)+'</div><div class="gs-day-count">'+entries.length+' '+(entries.length===1?'atividade':'atividades')+(totalHoras?' • '+totalHoras.toLocaleString('pt-BR',{maximumFractionDigits:2})+' h':'')+'</div></header>'
-      +'<div class="gs-day-entries">'+conteudo+'</div>'
-      +'<div class="gs-quick-add"><input type="text" id="gsQuick-'+d.data+'" placeholder="Adicionar atividade..." aria-label="Adicionar atividade para '+nomes[i]+'" onkeydown="if(event.key===\'Enter\'){event.preventDefault();adicionarGestaoSemanalRapido(\''+d.data+'\')}" /><button type="button" onclick="adicionarGestaoSemanalRapido(\''+d.data+'\')" title="Adicionar atividade"><i class="ti ti-plus"></i></button></div>'
-      +'</section>';
+        +'</div><div class="gs-entry-tools"><button class="btn-icon" onclick="abrirModalGestaoSemanal('+g.id+')" title="Editar registro"><i class="ti ti-pencil"></i></button><button class="btn-icon" onclick="excluirGestaoSemanal('+g.id+')" title="Excluir registro"><i class="ti ti-trash"></i></button></div>'
+        +'<span class="gs-entry-status '+statusClass+'">'+escHtml(g.status||'Pendente')+'</span></article>';
+    }).join(''):'<div class="gs-day-empty">Nenhum registro complementar</div>';
+    const autoHTML=auto.length?auto.map(g=>'<article class="gs-auto-item"><span class="gs-auto-icon"><i class="ti ti-circle-check"></i></span><div><div class="gs-auto-name">'+escHtml(g.titulo)+'</div>'+(g.detalhe?'<div class="mg-delivery-meta">'+escHtml(g.detalhe)+'</div>':'')+'</div><span class="gs-auto-module">'+escHtml(g.modulo)+'</span></article>').join(''):'<div class="gs-day-empty">Nenhuma entrega automática identificada</div>';
+    return '<section class="gs-day-card"><header class="gs-day-head"><div class="gs-day-name">'+nomes[i]+'</div><div class="gs-day-date">'+gsDataBonita(d.data)+'</div><div class="gs-day-count">'+(entries.length+auto.length)+' '+(entries.length+auto.length===1?'atividade':'atividades')+(totalHoras?' • '+totalHoras.toLocaleString('pt-BR',{maximumFractionDigits:2})+' h':'')+'</div></header>'
+      +'<div class="gs-auto-wrap"><div class="gs-auto-title">Entregas e registros automáticos · '+auto.length+'</div><div class="gs-auto-list">'+autoHTML+'</div></div>'
+      +'<div class="gs-manual-title">Registro complementar · atividades que não estão em outro módulo</div><div class="gs-day-entries">'+manual+'</div>'
+      +'<div class="gs-quick-add"><input type="text" id="gsQuick-'+d.data+'" placeholder="Atividade complementar..." aria-label="Adicionar atividade complementar para '+nomes[i]+'" onkeydown="if(event.key===\'Enter\'){event.preventDefault();adicionarGestaoSemanalRapido(\''+d.data+'\')}" /><button type="button" onclick="adicionarGestaoSemanalRapido(\''+d.data+'\')" title="Adicionar atividade complementar"><i class="ti ti-plus"></i></button></div></section>';
   }).join('');
 }
 function abrirModalGestaoSemanal(id=null,dataPadrao=null){
@@ -1752,7 +1848,7 @@ function salvarNCsLocal(){
 }
 async function sincronizarNCs(){
   if(!sb||!ncs.length)return;
-  const rows=ncs.map(n=>({id:Number(n.id),numero_nc:n.numero_nc,origem:n.origem||'',acao:n.acao||'',observacoes:n.observacoes||'',responsavel:n.responsavel||'',data_solicitacao:n.data_solicitacao||null,prazo:n.prazo||null,status:n.status||'Aberta',updated_at:new Date().toISOString()}));
+  const rows=ncs.map(n=>({id:Number(n.id),numero_nc:n.numero_nc,origem:n.origem||'',acao:n.acao||'',observacoes:n.observacoes||'',responsavel:n.responsavel||'',data_solicitacao:n.data_solicitacao||null,prazo:n.prazo||null,status:n.status||'Aberta',data_conclusao:n.data_conclusao||null,updated_at:new Date().toISOString()}));
   const {error}=await sb.from('controle_ncs').upsert(rows,{onConflict:'id'});
   if(error)throw error;
 }
@@ -1807,15 +1903,18 @@ function fecharModalNC(){document.getElementById('ovNC').classList.remove('open'
 async function salvarNC(){
   const numero_nc=document.getElementById('ncNumero').value.trim();
   if(!numero_nc){document.getElementById('errNC').textContent='Informe o número da NC';document.getElementById('errNC').style.display='block';document.getElementById('ncNumero').focus();return;}
-  const dados={numero_nc,origem:document.getElementById('ncOrigem').value.trim(),acao:document.getElementById('ncAcao').value.trim(),responsavel:document.getElementById('ncResponsavel').value.trim(),status:document.getElementById('ncStatus').value,data_solicitacao:document.getElementById('ncDataSolicitacao').value,prazo:document.getElementById('ncPrazo').value,observacoes:document.getElementById('ncObservacoes').value.trim()};
+  const statusNovo=document.getElementById('ncStatus').value;
+  const existenteNC=ncEditando!==null?ncs.find(x=>Number(x.id)===Number(ncEditando)):null;
+  const data_conclusao=statusNovo==='Encerrada'?(existenteNC&&existenteNC.status==='Encerrada'?(existenteNC.data_conclusao||ctHojeISO()):ctHojeISO()):'';
+  const dados={numero_nc,origem:document.getElementById('ncOrigem').value.trim(),acao:document.getElementById('ncAcao').value.trim(),responsavel:document.getElementById('ncResponsavel').value.trim(),status:statusNovo,data_solicitacao:document.getElementById('ncDataSolicitacao').value,prazo:document.getElementById('ncPrazo').value,observacoes:document.getElementById('ncObservacoes').value.trim(),data_conclusao};
   try{
     if(ncEditando!==null){
       const n=ncs.find(x=>Number(x.id)===Number(ncEditando));if(!n)return;
-      if(sb){const {error}=await sb.from('controle_ncs').update({...dados,data_solicitacao:dados.data_solicitacao||null,prazo:dados.prazo||null,updated_at:new Date().toISOString()}).eq('id',Number(n.id));if(error)throw error;}
+      if(sb){const {error}=await sb.from('controle_ncs').update({...dados,data_solicitacao:dados.data_solicitacao||null,prazo:dados.prazo||null,data_conclusao:dados.data_conclusao||null,updated_at:new Date().toISOString()}).eq('id',Number(n.id));if(error)throw error;}
       Object.assign(n,dados);
     }else{
       if(ncs.some(n=>n.numero_nc.toLowerCase()===numero_nc.toLowerCase())){document.getElementById('errNC').textContent='Já existe uma NC com esse número.';document.getElementById('errNC').style.display='block';return;}
-      if(sb){const {data,error}=await sb.from('controle_ncs').insert({...dados,data_solicitacao:dados.data_solicitacao||null,prazo:dados.prazo||null}).select('id').single();if(error)throw error;ncs.push({id:Number(data.id),...dados});nextNcId=Math.max(nextNcId,Number(data.id)+1);}
+      if(sb){const {data,error}=await sb.from('controle_ncs').insert({...dados,data_solicitacao:dados.data_solicitacao||null,prazo:dados.prazo||null,data_conclusao:dados.data_conclusao||null}).select('id').single();if(error)throw error;ncs.push({id:Number(data.id),...dados});nextNcId=Math.max(nextNcId,Number(data.id)+1);}
       else ncs.push({id:nextNcId++,...dados});
     }
     salvarNCsLocal();fecharModalNC();render();
@@ -1933,10 +2032,10 @@ async function receberNuvem() {
     const { data: cloudNCs } = await sb.from('controle_ncs').select('*').order('numero_nc');
     const { data: cloudGestaoSemanal } = await sb.from('gestao_semanal').select('*').order('data',{ascending:false}).order('id',{ascending:false});
     if (!cloudTasks) return;
-    tarefas = cloudTasks.map(t => ({ id:Number(t.id), mes:t.mes||'', assunto:t.assunto||'', atividade:t.atividade||'', descricao:t.descricao||'', solicitante:t.solicitante||'', responsavel:t.responsavel||'', onde:t.onde||'', prioridade:t.prioridade||'', status:t.status||'', micros:[] }));
-    (cloudMicros||[]).forEach(m => { const t=tarefas.find(x=>String(x.id)===String(m.tarefa_id)); if(t) t.micros.push({id:Number(m.id),desc:m.descricao||'',responsavel:m.responsavel||'',prazo:m.prazo||'',status:m.status||'',prio:m.prio||''}); });
+    tarefas = cloudTasks.map(t => ({ id:Number(t.id), mes:t.mes||'', assunto:t.assunto||'', atividade:t.atividade||'', descricao:t.descricao||'', solicitante:t.solicitante||'', responsavel:t.responsavel||'', onde:t.onde||'', prioridade:t.prioridade||'', status:t.status||'', prazo:t.prazo||'', data_conclusao:t.data_conclusao||'', micros:[] }));
+    (cloudMicros||[]).forEach(m => { const t=tarefas.find(x=>String(x.id)===String(m.tarefa_id)); if(t) t.micros.push({id:Number(m.id),desc:m.descricao||'',responsavel:m.responsavel||'',prazo:m.prazo||'',status:m.status||'',prio:m.prio||'',data_conclusao:m.data_conclusao||''}); });
     if (cloudProjetos) {
-      projetos = cloudProjetos.map(p=>({id:Number(p.id),nome:p.nome||'',descricao:p.descricao||'',responsavel:p.responsavel||'',prazo:p.prazo||'',status:p.status||'Em andamento',acoes:[]}));
+      projetos = cloudProjetos.map(p=>({id:Number(p.id),nome:p.nome||'',descricao:p.descricao||'',responsavel:p.responsavel||'',prazo:p.prazo||'',status:p.status||'Em andamento',data_conclusao:p.data_conclusao||'',acoes:[]}));
       (cloudProjetoAcoes||[]).forEach(a=>{ const p=projetos.find(x=>Number(x.id)===Number(a.projeto_id)); if(p) p.acoes.push({id:Number(a.id),descricao:a.descricao||'',responsavel:a.responsavel||'',prazo:a.prazo||'',data_conclusao:a.data_conclusao||'',observacoes:a.observacoes||'',concluida:!!a.concluida}); });
       nextProjetoId=Math.max(1000,...projetos.map(p=>Number(p.id)||0)+1);
       nextProjetoAcaoId=Math.max(2000,...projetos.flatMap(p=>p.acoes).map(a=>Number(a.id)||0)+1);
@@ -1955,7 +2054,7 @@ async function receberNuvem() {
       salvarNFsLocal();
     }
     if (cloudNCs) {
-      ncs=cloudNCs.map(n=>({id:Number(n.id),numero_nc:n.numero_nc||'',origem:n.origem||'',acao:n.acao||'',observacoes:n.observacoes||'',responsavel:n.responsavel||'',data_solicitacao:n.data_solicitacao||'',prazo:n.prazo||'',status:n.status||'Aberta'}));
+      ncs=cloudNCs.map(n=>({id:Number(n.id),numero_nc:n.numero_nc||'',origem:n.origem||'',acao:n.acao||'',observacoes:n.observacoes||'',responsavel:n.responsavel||'',data_solicitacao:n.data_solicitacao||'',prazo:n.prazo||'',status:n.status||'Aberta',data_conclusao:n.data_conclusao||''}));
       nextNcId=Math.max(6000,...ncs.map(n=>Number(n.id)||0))+1;
       salvarNCsLocal();
     }
@@ -1985,8 +2084,9 @@ function obterEventosCalendario(){
   const add=(data,tipo,titulo,subtitulo,meta,ref,concluida)=>{if(!data)return;eventos.push({id:tipo+'-'+ref+'-'+data,data,tipo,titulo,subtitulo,meta,ref,concluida:!!concluida});};
   tarefas.forEach(t=>{
     // Ocorrências recorrentes entram pela data da ocorrência.
-    if(t.data_ocorrencia){
-      add(t.data_ocorrencia,'tarefa',t.atividade,t.assunto||'Tarefa',t.responsavel||'',t.id,t.status==='Concluído');
+    const dataEvento=t.prazo||t.data_ocorrencia;
+    if(dataEvento){
+      add(dataEvento,'tarefa',t.atividade,t.assunto||'Tarefa',t.responsavel||'',t.id,t.status==='Concluído');
     }
     // Atividades antigas sem data de ocorrência usam o mês apenas como referência;
     // sem um dia definido, elas não são posicionadas em uma célula do calendário.
@@ -2176,8 +2276,135 @@ function abrirEventoCalendario(tipo,ref){
   }
 }
 
+
+function mgConcluido(item){
+  const s=String(item.status||'');
+  return item.concluida===true||['Concluído','Encerrada','Realizada','Aprovada','Paga','Rejeitada','Cancelada'].includes(s);
+}
+function mgNomeTema(tema){
+  const s=String(tema||'').trim();
+  if(!s)return 'Outras atividades';
+  if(s.toLowerCase()==='documento'||s.toLowerCase()==='documentos')return 'Documentos';
+  if(s.toLowerCase()==='nc'||s.toLowerCase()==='não conformidade')return 'Não conformidades';
+  if(s.toLowerCase()==='gm'||s.toLowerCase()==='gerenciamento de mudanças')return 'Outras atividades';
+  return s;
+}
+function mgItem(titulo,tema,status,prazo,conclusao,origem,painel,detalhe,extra){
+  return {titulo,tema:mgNomeTema(tema),rawTema:String(tema||''),status:status||'Pendente',prazo:prazo||'',data_conclusao:conclusao||'',origem:origem||'Atividades',painel:painel||'todos',detalhe:detalhe||'',...(extra||{})};
+}
+function coletarItensGestao(){
+  const itens=[];
+  tarefas.forEach(t=>{
+    itens.push(mgItem(t.atividade,t.assunto,t.status,t.prazo||t.data_ocorrencia,t.data_conclusao,'Atividades',t.assunto||'todos',t.responsavel,{concluida:t.status==='Concluído',tipo:'tarefa',id:t.id}));
+    (t.micros||[]).forEach(m=>itens.push(mgItem(m.desc,t.assunto,m.status,m.prazo,m.data_conclusao,'Atividades',t.assunto||'todos',t.atividade,{concluida:m.status==='Concluído',tipo:'micro',id:m.id,parentId:t.id})));
+  });
+  projetos.forEach(p=>{
+    if((p.acoes||[]).length)(p.acoes||[]).forEach(a=>itens.push(mgItem(a.descricao,'Projetos',a.concluida?'Concluído':'Pendente',a.prazo,a.data_conclusao,'Projetos','__projetos__',p.nome,{concluida:!!a.concluida,tipo:'projeto-acao',id:a.id,parentId:p.id})));
+    else itens.push(mgItem(p.nome,'Projetos',p.status,p.prazo,p.data_conclusao,'Projetos','__projetos__',p.responsavel,{concluida:p.status==='Concluído',tipo:'projeto',id:p.id}));
+  });
+  ncs.forEach(n=>itens.push(mgItem('NC '+n.numero_nc+(n.acao?' — '+n.acao:''),'Não conformidades',n.status,n.prazo,n.data_conclusao,'Controle de NCs','__ncs__',n.responsavel,{concluida:n.status==='Encerrada',tipo:'nc',id:n.id})));
+  reunioes.forEach(r=>(r.acoes||[]).forEach(a=>itens.push(mgItem(a.descricao,'Ações de reuniões',a.concluida?'Concluído':'Pendente',a.prazo,a.data_conclusao,'Reuniões','__reunioes__',r.assunto,{concluida:!!a.concluida,tipo:'reuniao-acao',id:a.id,parentId:r.id}))));
+  nfs.forEach(n=>itens.push(mgItem('NF '+n.numero_nf,'Controle de NFs',n.status,'','', 'Controle de NFs','__nfs__',n.fornecedor,{concluida:['Aprovada','Paga','Rejeitada','Cancelada'].includes(n.status),tipo:'nf',id:n.id})));
+  return itens;
+}
+function obterEntregasConcluidas(inicio,fim){
+  const entregas=[];
+  const dentro=d=>!!d&&d>=inicio&&d<=fim;
+  const add=(data,titulo,modulo,detalhe,id)=>{if(dentro(data))entregas.push({data,titulo,modulo:modulo||'Atividades',detalhe:detalhe||'',id:String(id||titulo)});};
+  tarefas.forEach(t=>{
+    const ms=t.micros||[];
+    if(ms.length)ms.forEach(m=>{if(m.status==='Concluído')add(m.data_conclusao,m.desc,'Microação · '+(t.assunto||'Atividades'),t.atividade,m.id);});
+    else if(t.status==='Concluído')add(t.data_conclusao,t.atividade,t.assunto||'Atividades',t.responsavel,t.id);
+  });
+  projetos.forEach(p=>{
+    const as=p.acoes||[];
+    if(as.length)as.forEach(a=>{if(a.concluida)add(a.data_conclusao,a.descricao,'Projeto · '+p.nome,a.responsavel,a.id);});
+    else if(p.status==='Concluído')add(p.data_conclusao,p.nome,'Projeto',p.responsavel,p.id);
+  });
+  reunioes.forEach(r=>{
+    if(r.status==='Realizada')add(r.data,'Reunião: '+r.assunto,r.modulo||r.tipo||'Reuniões',r.organizador,r.id);
+    (r.acoes||[]).forEach(a=>{if(a.concluida)add(a.data_conclusao,a.descricao,'Ação de reunião · '+r.assunto,a.responsavel,a.id);});
+  });
+  ncs.forEach(n=>{if(n.status==='Encerrada')add(n.data_conclusao,'NC '+n.numero_nc+(n.acao?' — '+n.acao:''),'Controle de NCs',n.responsavel,n.id);});
+  nfs.forEach(n=>{if(n.data_lancamento)add(n.data_lancamento,'Lançamento de NF '+n.numero_nf,'Controle de NFs',n.fornecedor,n.id);});
+  return entregas.sort((a,b)=>b.data.localeCompare(a.data)||a.titulo.localeCompare(b.titulo,'pt-BR'));
+}
+function coletarPrazosGestao(){
+  const lista=[];
+  const add=(data,titulo,modulo,status,done,painel,detail,id)=>{if(data&&!done)lista.push({data,titulo,modulo,status:status||'Pendente',painel:painel||'todos',detail:detail||'',id});};
+  tarefas.forEach(t=>{
+    add(t.prazo||t.data_ocorrencia,t.atividade,t.assunto||'Atividade',t.status,t.status==='Concluído',t.assunto||'todos',t.responsavel,t.id);
+    (t.micros||[]).forEach(m=>add(m.prazo,m.desc,'Microação',m.status,m.status==='Concluído',t.assunto||'todos',t.atividade,m.id));
+  });
+  projetos.forEach(p=>{add(p.prazo,p.nome,'Projeto',p.status,p.status==='Concluído','__projetos__',p.responsavel,p.id);(p.acoes||[]).forEach(a=>add(a.prazo,a.descricao,'Mini ação de projeto',a.concluida?'Concluído':'Pendente',!!a.concluida,'__projetos__',p.nome,a.id));});
+  ncs.forEach(n=>add(n.prazo,'NC '+n.numero_nc+(n.acao?' — '+n.acao:''),'Não conformidade',n.status,n.status==='Encerrada','__ncs__',n.responsavel,n.id));
+  reunioes.forEach(r=>(r.acoes||[]).forEach(a=>add(a.prazo,a.descricao,'Ação de reunião',a.concluida?'Concluído':'Pendente',!!a.concluida,'__reunioes__',r.assunto,a.id)));
+  const hoje=ctHojeISO(),limite=new Date(hoje+'T00:00:00');limite.setDate(limite.getDate()+30);
+  const max=limite.getFullYear()+'-'+String(limite.getMonth()+1).padStart(2,'0')+'-'+String(limite.getDate()).padStart(2,'0');
+  return lista.filter(x=>x.data<=max).sort((a,b)=>a.data.localeCompare(b.data)||a.titulo.localeCompare(b.titulo,'pt-BR'));
+}
+function mgAbrirTema(tema){
+  let temas=[String(tema||'')];
+  if(tema==='Documentos')temas=['Documentos','Documento'];
+  if(tema==='Outras atividades')temas=['Outras atividades','GM',''];
+  if(tema==='Não conformidades')temas=['Não conformidades','NC','Não conformidade'];
+  window.mgFiltroTema=temas;
+  painelSelecionado='todos';
+  window.filtroSomenteAtrasadas=false;
+  document.querySelectorAll('.sidebar-btn').forEach(b=>b.classList.toggle('active',b.dataset.painel==='todos'));
+  render();
+}
+function mgResumoTema(titulo,itens){
+  const total=itens.length,feitos=itens.filter(mgConcluido).length,pct=total?Math.round(feitos/total*100):0;
+  const hoje=ctHojeISO(),atrasados=itens.filter(x=>x.prazo&&x.prazo<hoje&&!mgConcluido(x)).length;
+  return '<button type="button" class="mg-theme-card" data-tema="'+escHtml(titulo)+'" onclick="mgAbrirTema(this.dataset.tema)">'
+   +'<div class="mg-theme-top"><span class="mg-theme-name">'+escHtml(titulo)+'</span><span class="mg-theme-percent">'+pct+'%</span></div>'
+   +'<div class="mg-theme-track"><div class="mg-theme-fill" style="width:'+pct+'%"></div></div>'
+   +'<div class="mg-theme-meta"><span><strong>'+feitos+'/'+total+'</strong> concluídos</span><span>·</span><span>'+Math.max(0,total-feitos)+' em aberto</span>'
+   +(atrasados?'<span class="mg-chip red">'+atrasados+' vencido(s)</span>':'')
+   +(total===0?'<span>Sem itens cadastrados</span>':'')+'</div></button>';
+}
+function renderDashboardGestao(){
+  if(!document.getElementById('dashboardGestaoView'))return;
+  const itens=coletarItensGestao(),hoje=ctHojeISO(),feitos=itens.filter(mgConcluido).length,abertos=itens.length-feitos;
+  const atrasos=itens.filter(x=>x.prazo&&x.prazo<hoje&&!mgConcluido(x)).length;
+  const inicioMes=hoje.slice(0,7)+'-01',entregas=obterEntregasConcluidas(inicioMes,hoje),progresso=itens.length?Math.round(feitos/itens.length*100):0;
+  document.getElementById('mgKpis').innerHTML=
+    '<div class="mg-kpi"><span class="mg-kpi-label">Itens acompanhados</span><strong>'+itens.length+'</strong><small>Atividades, ações, NCs e NFs</small></div>'+
+    '<div class="mg-kpi"><span class="mg-kpi-label">Em aberto</span><strong>'+abertos+'</strong><small>Demandas ainda não concluídas</small></div>'+
+    '<div class="mg-kpi urgent"><span class="mg-kpi-label">Prazos vencidos</span><strong>'+atrasos+'</strong><small>Itens em aberto com prazo passado</small></div>'+
+    '<div class="mg-kpi success"><span class="mg-kpi-label">Entregas no mês</span><strong>'+entregas.length+'</strong><small>Conclusões e registros identificados</small></div>'+
+    '<div class="mg-kpi"><span class="mg-kpi-label">Progresso global</span><strong>'+progresso+'%</strong><small>'+feitos+' de '+itens.length+' itens concluídos</small></div>';
+  const temas=['Documentos','Auditoria','Questionários','Mapeamento de processos','Outras atividades','Não conformidades','Projetos','Ações de reuniões','Controle de NFs'];
+  itens.forEach(x=>{if(!temas.includes(x.tema))temas.push(x.tema);});
+  const temaHTML=temas.map(cat=>mgResumoTema(cat,itens.filter(x=>x.tema===cat))).join('');
+  document.getElementById('mgTemas').innerHTML=temaHTML;
+  const prazos=coletarPrazosGestao().slice(0,8);
+  document.getElementById('mgPrazos').innerHTML=prazos.length?prazos.map(x=>{
+    const atraso=x.data<hoje,diff=Math.round((new Date(x.data+'T00:00:00')-new Date(hoje+'T00:00:00'))/86400000);
+    const rotulo=atraso?'Vencido':diff===0?'Hoje':diff===1?'Amanhã':'Em '+diff+' dias';
+    return '<div class="mg-deadline-item"><div class="mg-deadline-date '+(atraso?'late':'')+'">'+ctDataBR(x.data)+'</div><div><button class="mg-open-link mg-deadline-title" onclick="selecionarPainel(\''+String(x.painel).replace(/'/g,"\\'")+'\')">'+escHtml(x.titulo)+'</button><div class="mg-deadline-meta">'+escHtml(x.modulo)+' · '+escHtml(rotulo)+(x.detail?' · '+escHtml(x.detail):'')+'</div></div></div>';
+  }).join(''):'<div class="mg-empty">Nenhum prazo vencido ou próximo para exibir. Cadastre prazos nas atividades, ações e projetos.</div>';
+  document.getElementById('mgProjetos').innerHTML=projetos.length?projetos.slice().sort((a,b)=>(a.prazo||'9999-12-31').localeCompare(b.prazo||'9999-12-31')).map(p=>{
+    const as=p.acoes||[],total=as.length,feitas=as.filter(a=>a.concluida).length,pct=total?Math.round(feitas/total*100):(p.status==='Concluído'?100:0);
+    return '<div class="mg-project-card"><div class="mg-project-name">'+escHtml(p.nome)+'</div><span class="mg-project-status">'+escHtml(p.status||'Em andamento')+'</span><div class="mg-project-meta"><span>'+feitas+'/'+total+' ações concluídas</span><span>'+(p.prazo?'Prazo '+ctDataBR(p.prazo):'Sem prazo')+'</span></div><div class="mg-theme-track"><div class="mg-theme-fill" style="width:'+pct+'%"></div></div></div>';
+  }).join(''):'<div class="mg-empty">Nenhum projeto cadastrado. Cadastre iniciativas com etapas, prazos e responsáveis.</div>';
+  document.getElementById('mgEntregas').innerHTML=entregas.length?entregas.slice(0,8).map(x=>'<div class="mg-delivery-item"><span class="mg-delivery-icon"><i class="ti ti-check"></i></span><div><div class="mg-delivery-title">'+escHtml(x.titulo)+'</div><div class="mg-delivery-meta">'+escHtml(x.modulo)+(x.detalhe?' · '+escHtml(x.detalhe):'')+'</div></div><span class="mg-chip green">'+ctDataBR(x.data)+'</span></div>').join(''):'<div class="mg-empty">As entregas aparecerão aqui quando as atividades forem concluídas. Reuniões e lançamentos de NFs são considerados a partir da data registrada.</div>';
+}
+async function adicionarAtividadeRapida(){
+  const input=document.getElementById('mgQuickAtividade'),atividade=(input?.value||'').trim();
+  if(!atividade){if(input)input.focus();return;}
+  document.getElementById('fMes').value=mesAtual;
+  document.getElementById('fAssunto').value=document.getElementById('mgQuickTema').value||'Outras atividades';
+  document.getElementById('fAtividade').value=atividade;
+  document.getElementById('fDescricao').value='';document.getElementById('fSolicitante').value='';document.getElementById('fOnde').value='';document.getElementById('fResp').value='';
+  document.getElementById('fPrio').value='';document.getElementById('fPrazo').value='';document.getElementById('fStatus').value='Pendente';document.getElementById('fPeriodicidade').value='Pontual';
+  await salvarTarefa();
+}
+
 function selecionarPainel(painel) {
   window.filtroSomenteAtrasadas = false;
+  window.mgFiltroTema = null;
   painelSelecionado = painel;
   document.querySelectorAll('.sidebar-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.painel === painel));
   render();
@@ -2344,6 +2571,14 @@ function render() {
   const nfsView=document.getElementById('nfsView');
   const ncsView=document.getElementById('ncsView');
   const gsView=document.getElementById('gestaoSemanalView');
+  const dashboardView=document.getElementById('dashboardGestaoView');
+  if(painelSelecionado==='__dashboard__'){
+    ['tarefasView','projetosView','nfsView','ncsView','calendarioView','reunioesView','gestaoSemanalView'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
+    if(dashboardView)dashboardView.style.display='block';
+    renderDashboardGestao();
+    return;
+  }
+  if(dashboardView)dashboardView.style.display='none';
   if (painelSelecionado === '__gestao_semanal__') {
     if(tarefasView) tarefasView.style.display='none';
     if(projetosView) projetosView.style.display='none';
@@ -2422,6 +2657,7 @@ function render() {
   const filtroStatus = document.getElementById('filtroStatus')?.value || '';
   let lista = tarefas;
   if (painelSelecionado !== 'todos') lista = lista.filter(t => (t.assunto||'') === painelSelecionado);
+  if (painelSelecionado === 'todos' && Array.isArray(window.mgFiltroTema)) lista = lista.filter(t => window.mgFiltroTema.includes(t.assunto||''));
   if (busca) lista = lista.filter(t => t.atividade.toLowerCase().includes(busca) || (t.descricao||'').toLowerCase().includes(busca) || t.solicitante.toLowerCase().includes(busca) || t.responsavel.toLowerCase().includes(busca) || t.micros.some(m => m.desc.toLowerCase().includes(busca) || m.responsavel.toLowerCase().includes(busca)));
   if (filtroStatus) lista = lista.filter(t => filtroStatus === '__sem_status__' ? !t.status : t.status === filtroStatus);
 
@@ -2467,7 +2703,7 @@ function render() {
       const tarefaRow = `<tr class="tarefa-row" data-id="${t.id}">
         <td><div class="td-inner"><button class="btn-expand ${exp?'open':''}" onclick="toggleTarefa(${t.id})" aria-label="Expandir micro ações"><i class="ti ti-chevron-right"></i></button></div></td>
         <td><div class="td-inner"><span class="tag">${t.assunto||'—'}</span></div></td>
-        <td><div class="td-inner"><div>${t.atividade}${mc?` <span style="font-size:11px;color:#aaa;margin-left:4px">(${mc} micro${mc>1?'ações':'ação'})</span>`:''}</div>${t.descricao?`<div class="demanda-desc">${t.descricao}</div>`:''}</div></td>
+        <td><div class="td-inner"><div>${t.atividade}${mc?` <span style="font-size:11px;color:#aaa;margin-left:4px">(${mc} micro${mc>1?'ações':'ação'})</span>`:''}</div>${t.descricao?`<div class="demanda-desc">${t.descricao}</div>`:''}${t.prazo?`<div class="task-deadline ${t.prazo<ctHojeISO()&&t.status!=='Concluído'?'late':''}"><i class="ti ti-calendar"></i> Prazo: ${new Date(t.prazo+'T00:00:00').toLocaleDateString('pt-BR')}${t.prazo<ctHojeISO()&&t.status!=='Concluído'?' • vencido':''}</div>`:''}</div></td>
         <td><div class="td-inner">${t.solicitante||'—'}</div></td>
         <td><div class="td-inner obs">${t.onde||'—'}</div></td>
         <td><div class="td-inner">${t.responsavel||'—'}</div></td>
@@ -2542,19 +2778,22 @@ function fecharModalProjeto(){ document.getElementById('ovProjeto').classList.re
 async function salvarProjeto(){
   const nome=document.getElementById('pNome').value.trim();
   if(!nome){document.getElementById('errProjeto').style.display='block';document.getElementById('pNome').focus();return;}
-  const dados={nome,descricao:document.getElementById('pDescricao').value.trim(),responsavel:document.getElementById('pResponsavel').value.trim(),prazo:document.getElementById('pPrazo').value,status:document.getElementById('pStatus').value};
+  const existente=projetoEditando!==null?projetos.find(x=>Number(x.id)===Number(projetoEditando)):null;
+  const status=document.getElementById('pStatus').value;
+  const data_conclusao=status==='Concluído'?(existente&&existente.status==='Concluído'?(existente.data_conclusao||ctHojeISO()):ctHojeISO()):'';
+  const dados={nome,descricao:document.getElementById('pDescricao').value.trim(),responsavel:document.getElementById('pResponsavel').value.trim(),prazo:document.getElementById('pPrazo').value,status,data_conclusao};
   const editando=projetoEditando!==null;
   try{
     if(editando){
       const p=projetos.find(x=>Number(x.id)===Number(projetoEditando)); if(!p) return;
       if(sb){
-        const {error}=await sb.from('projetos').update({...dados,prazo:dados.prazo||null,updated_at:new Date().toISOString()}).eq('id',Number(p.id));
+        const {error}=await sb.from('projetos').update({...dados,prazo:dados.prazo||null,data_conclusao:dados.data_conclusao||null,updated_at:new Date().toISOString()}).eq('id',Number(p.id));
         if(error) throw error;
       }
       Object.assign(p,dados);
     }else{
       if(sb){
-        const {data,error}=await sb.from('projetos').insert({...dados,prazo:dados.prazo||null}).select('id').single();
+        const {data,error}=await sb.from('projetos').insert({...dados,prazo:dados.prazo||null,data_conclusao:dados.data_conclusao||null}).select('id').single();
         if(error) throw error;
         projetos.push({id:Number(data.id),...dados,acoes:[]});
         nextProjetoId=Math.max(nextProjetoId,Number(data.id)+1);
@@ -2674,10 +2913,12 @@ async function alternarMicroConclusao(tid,mid){
   const statusAnterior=m.status||'';
   try{
     if(sb){
-      const {error}=await sb.from('micro_acoes').update({status:novo?'Concluído':'Pendente',updated_at:new Date().toISOString()}).eq('id',Number(m.id));
+      const data_conclusao=novo?ctHojeISO():null;
+      const {error}=await sb.from('micro_acoes').update({status:novo?'Concluído':'Pendente',data_conclusao,updated_at:new Date().toISOString()}).eq('id',Number(m.id));
       if(error)throw error;
     }
     m.status=novo?'Concluído':'Pendente';
+    m.data_conclusao=novo?ctHojeISO():'';
     localStorage.setItem('tarefas',JSON.stringify(tarefas));
     render();
   }catch(e){
@@ -2696,8 +2937,8 @@ async function excluirMicro(tid,mid){
   } catch(e) { t.micros=antiga; alert('Não foi possível excluir a micro ação do banco.\n\nErro: '+(e.message||'erro desconhecido')); }
 }
 
-function abrirModalTarefa(){ document.getElementById('fMes').value=mesAtual; document.getElementById('ovTarefa').classList.add('open'); }
-function fecharModalTarefa(){ document.getElementById('ovTarefa').classList.remove('open'); ['fAssunto','fAtividade','fDescricao','fSolicitante','fResp','fOnde'].forEach(id=>document.getElementById(id).value=''); document.getElementById('fStatus').value=''; document.getElementById('fPrio').value=''; document.getElementById('fPeriodicidade').value='Pontual'; document.getElementById('errAt').style.display='none'; }
+function abrirModalTarefa(){ document.getElementById('fMes').value=mesAtual; document.getElementById('fPrazo').value=''; document.getElementById('ovTarefa').classList.add('open'); }
+function fecharModalTarefa(){ document.getElementById('ovTarefa').classList.remove('open'); ['fAssunto','fAtividade','fDescricao','fSolicitante','fResp','fOnde','fPrazo'].forEach(id=>document.getElementById(id).value=''); document.getElementById('fStatus').value=''; document.getElementById('fPrio').value=''; document.getElementById('fPeriodicidade').value='Pontual'; document.getElementById('errAt').style.display='none'; }
 function gerarOcorrencias(periodicidade, mesInicial) {
   const out = [];
   const base = new Date();
@@ -2741,12 +2982,14 @@ async function salvarTarefa(){
     onde:document.getElementById('fOnde').value.trim(),
     prioridade:document.getElementById('fPrio').value,
     status:document.getElementById('fStatus').value,
+    prazo:document.getElementById('fPrazo').value,
+    data_conclusao:document.getElementById('fStatus').value==='Concluído'?ctHojeISO():'',
     periodicidade
   };
 
   if (sb) {
     try {
-      const rows = ocorrencias.map(o => ({...base, mes:o.mes, recorrencia_grupo:o.grupoRef, data_ocorrencia:o.data}));
+      const rows = ocorrencias.map(o => ({...base, prazo:base.prazo||o.data||null, data_conclusao:base.data_conclusao||null, mes:o.mes, recorrencia_grupo:o.grupoRef, data_ocorrencia:o.data}));
       const { data, error } = await sb.from('tarefas').insert(rows).select();
       if (error) throw error;
       (data||[]).forEach(d => tarefas.push({
@@ -2802,6 +3045,7 @@ async function salvarMicro(){
   };
   const editando = microEditando !== null;
   const original = editando ? t.micros.find(x=>Number(x.id)===microEditando) : null;
+  dados.data_conclusao = dados.status==='Concluído' ? (original&&original.status==='Concluído'?(original.data_conclusao||ctHojeISO()):ctHojeISO()) : '';
   const originalCopia = original ? {...original} : null;
 
   try {
@@ -2821,6 +3065,8 @@ async function salvarMicro(){
         periodicidade:t.periodicidade || 'Pontual',
         recorrencia_grupo:t.recorrencia_grupo || null,
         data_ocorrencia:t.data_ocorrencia || null,
+        prazo:t.prazo || null,
+        data_conclusao:t.data_conclusao || null,
         updated_at:new Date().toISOString()
       };
       const { error:tarefaErr } = await sb.from('tarefas')
@@ -2836,6 +3082,7 @@ async function salvarMicro(){
             prazo:dados.prazo || null,
             status:dados.status || '',
             prio:dados.prio || '',
+            data_conclusao:dados.data_conclusao || null,
             updated_at:new Date().toISOString()
           })
           .eq('id', Number(microEditando));
@@ -2850,7 +3097,8 @@ async function salvarMicro(){
             responsavel:dados.responsavel || '',
             prazo:dados.prazo || null,
             status:dados.status || '',
-            prio:dados.prio || ''
+            prio:dados.prio || '',
+            data_conclusao:dados.data_conclusao || null
           })
           .select('id')
           .single();
@@ -2900,6 +3148,7 @@ function abrirModalEditarTarefa(id) {
   tarefaEditando = Number(id);
   document.querySelector('#ovTarefa h2').textContent = 'Editar tarefa';
   document.getElementById('fMes').value = t.mes || '';
+  document.getElementById('fPrazo').value = t.prazo || '';
   document.getElementById('fPeriodicidade').value = t.periodicidade || 'Pontual';
   document.getElementById('fAssunto').value = t.assunto || '';
   document.getElementById('fAtividade').value = t.atividade || '';
@@ -2925,7 +3174,9 @@ salvarTarefa = async function() {
     if (!atividade) { document.getElementById('errAt').style.display = 'block'; return; }
     const t = tarefas.find(x => Number(x.id) === Number(tarefaEditando));
     if (!t) return;
+    const statusAnterior = t.status || '';
     t.mes = document.getElementById('fMes').value;
+    t.prazo = document.getElementById('fPrazo').value;
     t.assunto = document.getElementById('fAssunto').value.trim();
     t.atividade = atividade;
     t.descricao = document.getElementById('fDescricao').value.trim();
@@ -2933,6 +3184,7 @@ salvarTarefa = async function() {
     t.prioridade = document.getElementById('fPrio').value;
     t.responsavel = document.getElementById('fResp').value.trim();
     t.status = document.getElementById('fStatus').value;
+    t.data_conclusao = t.status === 'Concluído' ? (statusAnterior === 'Concluído' ? (t.data_conclusao || ctHojeISO()) : ctHojeISO()) : '';
     t.onde = document.getElementById('fOnde').value.trim();
     t.periodicidade = document.getElementById('fPeriodicidade').value || 'Pontual';
     // Salva primeiro localmente para que a alteração nunca seja perdida.
@@ -2954,6 +3206,8 @@ salvarTarefa = async function() {
           onde: t.onde || '',
           prioridade: t.prioridade || '',
           status: t.status || '',
+          prazo: t.prazo || null,
+          data_conclusao: t.data_conclusao || null,
           periodicidade: t.periodicidade || 'Pontual',
           updated_at: new Date().toISOString()
         };

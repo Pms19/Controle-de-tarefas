@@ -802,7 +802,7 @@ tr.tarefa-row:hover>td{background:#F7FBFD;}
       <button class="sidebar-btn" data-painel="__reunioes__" onclick="selecionarPainel('__reunioes__')"><i class="ti ti-users-group"></i> Reuniões <span class="sidebar-count" id="count-reunioes">0</span></button>
       <button class="sidebar-btn" data-painel="__nfs__" onclick="selecionarPainel('__nfs__')"><i class="ti ti-receipt"></i> Controle de NFs <span class="sidebar-count" id="count-nfs">0</span></button>
       <button class="sidebar-btn" data-painel="__ncs__" onclick="selecionarPainel('__ncs__')"><i class="ti ti-alert-triangle"></i> Controle de NCs <span class="sidebar-count" id="count-ncs">0</span></button>
-      <button class="sidebar-btn" data-painel="__gestao_semanal__" onclick="selecionarPainel('__gestao_semanal__')"><i class="ti ti-calendar-week"></i> Gestão Semanal <span class="sidebar-count" id="count-gestao-semanal">0</span></button>
+      <button class="sidebar-btn" data-painel="__gestao_semanal__" onclick="selecionarPainel('__gestao_semanal__')"><i class="ti ti-calendar-week"></i> Revisão semanal <span class="sidebar-count" id="count-gestao-semanal">0</span></button>
       <div class="sidebar-group-label">Qualidade</div>
       <button class="sidebar-btn" data-painel="Documentos" onclick="selecionarPainel('Documentos')"><i class="ti ti-file-text"></i> Documentos <span class="sidebar-count" id="count-Documentos">0</span></button>
       <button class="sidebar-btn" data-painel="Auditoria" onclick="selecionarPainel('Auditoria')"><i class="ti ti-clipboard-check"></i> Auditoria <span class="sidebar-count" id="count-Auditoria">0</span></button>
@@ -2344,6 +2344,10 @@ function coletarPrazosGestao(){
   return lista.filter(x=>x.data<=max).sort((a,b)=>a.data.localeCompare(b.data)||a.titulo.localeCompare(b.titulo,'pt-BR'));
 }
 function mgAbrirTema(tema){
+  if(tema==='Projetos'){selecionarPainel('__projetos__');return;}
+  if(tema==='Não conformidades'){selecionarPainel('__ncs__');return;}
+  if(tema==='Ações de reuniões'){selecionarPainel('__reunioes__');return;}
+  if(tema==='Controle de NFs'){selecionarPainel('__nfs__');return;}
   let temas=[String(tema||'')];
   if(tema==='Documentos')temas=['Documentos','Documento'];
   if(tema==='Outras atividades')temas=['Outras atividades','GM',''];

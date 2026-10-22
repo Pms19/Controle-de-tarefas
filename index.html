@@ -814,6 +814,37 @@ body.theme-dark .visual-choice select,body.theme-dark .visual-color-choice input
 body.theme-dark .visual-reset{background:#151C23;color:var(--text);border-color:var(--line);}
 @media(max-width:700px){.visual-preferences{justify-content:flex-start;flex-wrap:wrap;margin-top:10px}.header-date{text-align:left;min-width:0;margin-top:12px}.header-top{gap:8px}.visual-choice select{min-width:82px}}
 
+
+/* ===== ACOMPANHAMENTO MENSAL: OBJETIVOS E CLIMOO ===== */
+.monthly-tracking-view{min-width:0;}
+.tracking-page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin:4px 0 18px;}
+.tracking-year-filter{display:flex;align-items:center;gap:8px;padding-top:2px;color:var(--muted);font-size:12px;font-weight:600;white-space:nowrap;}
+.tracking-year-filter select{height:38px;min-width:105px;padding:0 10px;border:1px solid var(--line);border-radius:9px;background:var(--surface);color:var(--text);font:inherit;font-size:13px;}
+.tracking-summary{margin:-4px 0 14px;color:var(--muted);font-size:12px;}
+.tracking-summary strong{color:var(--brand-dark);}
+.tracking-table-wrap{width:100%;overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:11px;}
+.tracking-table{width:100%;min-width:800px;border-collapse:separate;border-spacing:0;table-layout:auto;}
+.tracking-table thead th{padding:11px 12px;background:var(--brand-soft);border-bottom:1px solid var(--line);color:var(--muted);font-size:10px;font-weight:700;text-align:left;text-transform:uppercase;letter-spacing:.035em;white-space:nowrap;}
+.tracking-table tbody td{padding:8px 10px;border-bottom:1px solid var(--line);color:var(--text);font-size:12px;vertical-align:middle;}
+.tracking-table tbody tr:last-child td{border-bottom:0;}
+.tracking-table tbody tr:hover td{background:color-mix(in srgb,var(--brand-soft) 35%,var(--surface));}
+.tracking-month{font-weight:700;color:var(--brand-dark);white-space:nowrap;}
+.tracking-check{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;color:var(--muted);font-size:11px;cursor:pointer;}
+.tracking-check input{width:16px;height:16px;accent-color:var(--brand);cursor:pointer;}
+.tracking-observations{width:100%;min-width:190px;min-height:36px;resize:vertical;padding:8px 9px;border:1px solid var(--line);border-radius:7px;background:var(--surface);color:var(--text);font:inherit;font-size:11px;line-height:1.4;}
+.tracking-status{min-width:125px;height:36px;padding:0 8px;border:1px solid var(--line);border-radius:7px;background:var(--surface);color:var(--text);font:inherit;font-size:11px;}
+.tracking-last-saved{min-width:105px;color:var(--muted);font-size:10px;line-height:1.4;}
+.tracking-save{height:34px;padding:0 11px;border:0;border-radius:7px;background:var(--brand);color:#fff;font:inherit;font-size:11px;font-weight:650;cursor:pointer;white-space:nowrap;}
+.tracking-save:hover{filter:brightness(.94);}
+.tracking-help{margin-top:10px;color:var(--muted);font-size:11px;}
+.tracking-status-dot{display:inline-flex;align-items:center;gap:5px;font-size:10px;color:var(--muted);}
+.tracking-status-dot:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--muted);display:inline-block;}
+.tracking-status-dot.done:before{background:var(--green);}
+.tracking-status-dot.late:before{background:var(--red);}
+.tracking-status-dot.waiting:before{background:var(--amber);}
+body.theme-dark .tracking-table thead th{background:#222D37;}
+body.theme-dark .tracking-table tbody tr:hover td{background:#222D37;}
+@media(max-width:700px){.tracking-page-header{flex-direction:column;gap:10px}.tracking-year-filter{padding:0}.tracking-table-wrap{border-radius:8px}}
 </style>
 </head>
 <body>
@@ -899,6 +930,8 @@ body.theme-dark .visual-reset{background:#151C23;color:var(--text);border-color:
       <div class="sidebar-group-label">Qualidade</div>
       <button class="sidebar-btn" data-painel="Documentos" onclick="selecionarPainel('Documentos')"><i class="ti ti-file-text"></i> Documentos <span class="sidebar-count" id="count-Documentos">0</span></button>
       <button class="sidebar-btn" data-painel="Auditoria" onclick="selecionarPainel('Auditoria')"><i class="ti ti-clipboard-check"></i> Auditoria <span class="sidebar-count" id="count-Auditoria">0</span></button>
+      <button class="sidebar-btn" data-painel="__objetivos_metas__" onclick="selecionarPainel('__objetivos_metas__')"><i class="ti ti-target-arrow"></i> Objetivos e Metas <span class="sidebar-count" id="count-objetivos-metas">0</span></button>
+      <button class="sidebar-btn" data-painel="__climoo__" onclick="selecionarPainel('__climoo__')"><i class="ti ti-leaf"></i> Climoo <span class="sidebar-count" id="count-climoo">0</span></button>
       <div class="sidebar-group-label">Outros</div>
       <button class="sidebar-btn" data-painel="Assuntos pendentes" onclick="selecionarPainel('Assuntos pendentes')"><i class="ti ti-inbox"></i> Assuntos pendentes <span class="sidebar-count" id="count-Assuntos-pendentes">0</span></button>
     </aside>
@@ -1062,6 +1095,27 @@ body.theme-dark .visual-reset{background:#151C23;color:var(--text);border-color:
           <button class="btn-primary" onclick="abrirModalProjeto()"><i class="ti ti-plus"></i> Novo projeto</button>
         </div>
         <div id="projetosConteudo"></div>
+      </div>
+
+      <div id="monthlyTrackingView" class="monthly-tracking-view" style="display:none">
+        <div class="tracking-page-header">
+          <div>
+            <div id="monthlyTrackingTitle" class="project-page-title">Objetivos e Metas</div>
+            <div id="monthlyTrackingSubtitle" class="project-page-subtitle">Acompanhamento mensal dos lançamentos.</div>
+          </div>
+          <div class="tracking-year-filter">
+            <label for="anoAcompanhamento">Ano</label>
+            <select id="anoAcompanhamento" onchange="alterarAnoAcompanhamento(this.value)" aria-label="Filtrar por ano"></select>
+          </div>
+        </div>
+        <div id="monthlyTrackingSummary" class="tracking-summary"></div>
+        <div class="tracking-table-wrap">
+          <table class="tracking-table">
+            <thead><tr><th>Mês</th><th>Feito?</th><th>Observações</th><th>Status</th><th>Última atualização</th><th>Ação</th></tr></thead>
+            <tbody id="monthlyTrackingRows"></tbody>
+          </table>
+        </div>
+        <p class="tracking-help">Preencha o acompanhamento de cada mês e clique em <strong>Salvar</strong> na respectiva linha.</p>
       </div>
     </main>
   </div>
@@ -1342,6 +1396,7 @@ let reunioes=[], nextReuniaoId=3000, nextReuniaoAcaoId=4000, reuniaoEditando=nul
 let nfs=[], nextNfId=5000, nfEditando=null;
 let ncs=[], nextNcId=6000, ncEditando=null;
 let gestaoSemanal=[], nextGestaoSemanalId=7000, gsEditando=null, gsDataReferencia='';
+let acompanhamentosMensais=[], anoAcompanhamentoAtual=new Date().getFullYear();
 let collapsedMes = {}, expandedTarefa = {}, microAlvo = null, mesesSelecionados = new Set(), painelSelecionado = '__dashboard__', projetoExpandido = {};
 
 function bc(s){ return s==='Pendente'?'b-p':s==='Aguardando'?'b-a':s==='Concluído'?'b-c':'b-s'; }
@@ -1416,6 +1471,8 @@ async function carregarDados() {
     if (ncLocal) { ncs = JSON.parse(ncLocal); nextNcId = parseInt(localStorage.getItem('ct_nextNcId')||6000); }
     const gsLocal = localStorage.getItem('gestao_semanal');
     if (gsLocal) { gestaoSemanal = JSON.parse(gsLocal); nextGestaoSemanalId = parseInt(localStorage.getItem('ct_nextGestaoSemanalId')||7000); }
+    const mensalLocal=localStorage.getItem('ct_acompanhamentos_mensais');
+    if(mensalLocal) acompanhamentosMensais=JSON.parse(mensalLocal);
   } catch(e) {}
 
   if (!SYNC_ENABLED || !sb) return;
@@ -1500,6 +1557,30 @@ async function carregarDados() {
     } else if (tarefas.length) {
       await sincronizarTudo();
     }
+
+    try {
+      const {data:cloudMensais,error:mensaisErr}=await sb.from('acompanhamentos_mensais').select('*').order('ano').order('mes');
+      if(mensaisErr) throw mensaisErr;
+      const locais=[...acompanhamentosMensais];
+      const chave=r=>String(r.tipo)+'|'+Number(r.ano)+'|'+Number(r.mes);
+      const cloudMap=new Map((cloudMensais||[]).map(r=>[chave(r),{
+        tipo:r.tipo,ano:Number(r.ano),mes:Number(r.mes),feito:!!r.feito,
+        observacoes:r.observacoes||'',status:r.status||'Pendente',updated_at:r.updated_at||''
+      }]));
+      const uniao=new Map(cloudMap);
+      locais.forEach(r=>{
+        const k=chave(r),atual=uniao.get(k);
+        if(!atual || String(r.updated_at||'')>String(atual.updated_at||'')) uniao.set(k,r);
+      });
+      acompanhamentosMensais=[...uniao.values()];
+      localStorage.setItem('ct_acompanhamentos_mensais',JSON.stringify(acompanhamentosMensais));
+      const cloudKeys=new Set((cloudMensais||[]).map(chave));
+      const faltantes=acompanhamentosMensais.filter(r=>!cloudKeys.has(chave(r)) || (cloudMap.has(chave(r)) && String(r.updated_at||'')>String(cloudMap.get(chave(r)).updated_at||'')));
+      if(faltantes.length){
+        const {error:syncAMErr}=await sb.from('acompanhamentos_mensais').upsert(faltantes,{onConflict:'tipo,ano,mes'});
+        if(syncAMErr) console.warn('Não foi possível sincronizar alguns registros mensais:',syncAMErr.message||syncAMErr);
+      }
+    } catch(e) { console.warn('Não foi possível carregar os acompanhamentos mensais da nuvem:',e.message||e); }
   } catch(e) { console.warn('Banco indisponível; usando cópia local:', e.message || e); }
 }
 
@@ -2102,6 +2183,7 @@ function iniciarSincronizacaoTempoReal() {
     .on('postgres_changes', { event:'*', schema:'public', table:'controle_nfs' }, () => receberNuvem())
     .on('postgres_changes', { event:'*', schema:'public', table:'controle_ncs' }, () => receberNuvem())
     .on('postgres_changes', { event:'*', schema:'public', table:'gestao_semanal' }, () => receberNuvem())
+    .on('postgres_changes', { event:'*', schema:'public', table:'acompanhamentos_mensais' }, () => receberNuvem())
     .subscribe();
 }
 
@@ -2119,6 +2201,7 @@ async function receberNuvem() {
     const { data: cloudNFs } = await sb.from('controle_nfs').select('*').order('data_lancamento',{ascending:false}).order('id',{ascending:false});
     const { data: cloudNCs } = await sb.from('controle_ncs').select('*').order('numero_nc');
     const { data: cloudGestaoSemanal } = await sb.from('gestao_semanal').select('*').order('data',{ascending:false}).order('id',{ascending:false});
+    const { data: cloudAcompanhamentosMensais } = await sb.from('acompanhamentos_mensais').select('*').order('ano').order('mes');
     if (!cloudTasks) return;
     tarefas = cloudTasks.map(t => ({ id:Number(t.id), mes:t.mes||'', assunto:t.assunto||'', atividade:t.atividade||'', descricao:t.descricao||'', solicitante:t.solicitante||'', responsavel:t.responsavel||'', onde:t.onde||'', prioridade:t.prioridade||'', status:t.status||'', prazo:t.prazo||'', data_conclusao:t.data_conclusao||'', micros:[] }));
     (cloudMicros||[]).forEach(m => { const t=tarefas.find(x=>String(x.id)===String(m.tarefa_id)); if(t) t.micros.push({id:Number(m.id),desc:m.descricao||'',responsavel:m.responsavel||'',prazo:m.prazo||'',status:m.status||'',prio:m.prio||'',data_conclusao:m.data_conclusao||''}); });
@@ -2150,6 +2233,10 @@ async function receberNuvem() {
       gestaoSemanal=cloudGestaoSemanal.map(g=>({id:Number(g.id),data:g.data||'',modulo:g.modulo||'',atividade:g.atividade||'',resultado:g.resultado||'',horas:g.horas===null||g.horas===undefined?'':String(g.horas),status:g.status||'Concluído',observacoes:g.observacoes||''}));
       nextGestaoSemanalId=Math.max(7000,...gestaoSemanal.map(g=>Number(g.id)||0))+1;
       salvarGestaoSemanalLocal();
+    }
+    if(cloudAcompanhamentosMensais){
+      acompanhamentosMensais=cloudAcompanhamentosMensais.map(r=>({tipo:r.tipo,ano:Number(r.ano),mes:Number(r.mes),feito:!!r.feito,observacoes:r.observacoes||'',status:r.status||'Pendente',updated_at:r.updated_at||''}));
+      localStorage.setItem('ct_acompanhamentos_mensais',JSON.stringify(acompanhamentosMensais));
     }
     localStorage.setItem('tarefas', JSON.stringify(tarefas));
     render();
@@ -2514,6 +2601,11 @@ function atualizarContadoresPainel() {
     const el=document.getElementById(ids[a]);
     if(el) el.textContent=tarefas.filter(t=>ctAssuntoTarefa(t.assunto)===a).length;
   });
+  const year=Number(anoAcompanhamentoAtual||new Date().getFullYear());
+  const objetivos=document.getElementById('count-objetivos-metas');
+  if(objetivos) objetivos.textContent=acompanhamentosMensais.filter(r=>r.tipo==='objetivos_metas'&&Number(r.ano)===year).length;
+  const climoo=document.getElementById('count-climoo');
+  if(climoo) climoo.textContent=acompanhamentosMensais.filter(r=>r.tipo==='climoo'&&Number(r.ano)===year).length;
 }
 
 function fecharDropdownMeses(event){
@@ -2525,6 +2617,99 @@ document.addEventListener('click',fecharDropdownMeses);
 function alternarDropdownMeses(){
   const dropdown=document.getElementById('mesDropdown');
   if(dropdown) dropdown.classList.toggle('open');
+}
+
+const MESES_ACOMPANHAMENTO=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const STATUS_ACOMPANHAMENTO=['Atrasado','Aguardando','Pendente','Concluído'];
+function salvarAcompanhamentosMensaisLocal(){
+  try{localStorage.setItem('ct_acompanhamentos_mensais',JSON.stringify(acompanhamentosMensais));}catch(e){}
+}
+function alterarAnoAcompanhamento(ano){
+  anoAcompanhamentoAtual=Number(ano)||new Date().getFullYear();
+  renderAcompanhamentoMensal(painelSelecionado==='__climoo__'?'climoo':'objetivos_metas');
+  atualizarContadoresPainel();
+}
+function dataHoraAcompanhamento(v){
+  if(!v)return 'Ainda não salvo';
+  const d=new Date(v);
+  if(Number.isNaN(d.getTime()))return 'Já registrado';
+  return d.toLocaleDateString('pt-BR')+' '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+}
+function classeStatusAcompanhamento(status){
+  return status==='Concluído'?'done':status==='Atrasado'?'late':status==='Aguardando'?'waiting':'';
+}
+function renderAcompanhamentoMensal(tipo){
+  const title=document.getElementById('monthlyTrackingTitle');
+  const subtitle=document.getElementById('monthlyTrackingSubtitle');
+  const yearSelect=document.getElementById('anoAcompanhamento');
+  const tbody=document.getElementById('monthlyTrackingRows');
+  if(!title||!subtitle||!yearSelect||!tbody)return;
+  const ano=Number(yearSelect.value||anoAcompanhamentoAtual||new Date().getFullYear());
+  anoAcompanhamentoAtual=ano;
+  title.textContent=tipo==='climoo'?'Climoo':'Objetivos e Metas';
+  subtitle.textContent=tipo==='climoo'
+    ?'Acompanhamento mensal dos lançamentos de emissões atmosféricas.'
+    :'Acompanhamento mensal do lançamento dos objetivos e metas.';
+  const anos=new Set();
+  const atual=new Date().getFullYear();
+  for(let y=atual-5;y<=atual+3;y++)anos.add(y);
+  acompanhamentosMensais.forEach(r=>{if(Number.isInteger(Number(r.ano)))anos.add(Number(r.ano));});
+  anos.add(ano);
+  yearSelect.innerHTML=[...anos].sort((a,b)=>b-a).map(y=>'<option value="'+y+'">'+y+'</option>').join('');
+  yearSelect.value=String(ano);
+  const rows=MESES_ACOMPANHAMENTO.map((nome,idx)=>{
+    const mes=idx+1;
+    const registro=acompanhamentosMensais.find(r=>r.tipo===tipo&&Number(r.ano)===ano&&Number(r.mes)===mes)||{feito:false,observacoes:'',status:'Pendente',updated_at:''};
+    const status=STATUS_ACOMPANHAMENTO.includes(registro.status)?registro.status:'Pendente';
+    const inputId=tipo==='climoo'?'cl':'om';
+    const obsId='am-obs-'+inputId+'-'+mes;
+    return '<tr>'+
+      '<td><span class="tracking-month">'+nome+'</span></td>'+
+      '<td><label class="tracking-check"><input type="checkbox" id="am-feito-'+inputId+'-'+mes+'" '+(registro.feito?'checked':'')+'><span>Feito</span></label></td>'+
+      '<td><textarea rows="1" class="tracking-observations" id="'+obsId+'" aria-label="Observações de '+nome+'" placeholder="Observações do mês...">'+escHtml(registro.observacoes||'')+'</textarea></td>'+
+      '<td><select class="tracking-status" id="am-status-'+inputId+'-'+mes+'" aria-label="Status de '+nome+'">'+STATUS_ACOMPANHAMENTO.map(x=>'<option value="'+x+'" '+(status===x?'selected':'')+'>'+x+'</option>').join('')+'</select></td>'+
+      '<td><div class="tracking-last-saved">'+escHtml(dataHoraAcompanhamento(registro.updated_at))+'</div></td>'+
+      '<td><button type="button" class="tracking-save" onclick="salvarAcompanhamentoMensal(\''+tipo+'\','+ano+','+mes+')" aria-label="Salvar '+nome+'">Salvar</button></td>'+
+      '</tr>';
+  }).join('');
+  tbody.innerHTML=rows;
+  const registrosAno=acompanhamentosMensais.filter(r=>r.tipo===tipo&&Number(r.ano)===ano);
+  const concluidos=MESES_ACOMPANHAMENTO.filter((_,idx)=>{
+    const r=registrosAno.find(x=>Number(x.mes)===idx+1);
+    return r&&r.status==='Concluído';
+  }).length;
+  const feitos=MESES_ACOMPANHAMENTO.filter((_,idx)=>{
+    const r=registrosAno.find(x=>Number(x.mes)===idx+1);
+    return r&&r.feito;
+  }).length;
+  const summary=document.getElementById('monthlyTrackingSummary');
+  if(summary)summary.innerHTML='<strong>'+feitos+' de 12 meses</strong> marcados como feitos · <strong>'+concluidos+' de 12</strong> com status Concluído';
+}
+async function salvarAcompanhamentoMensal(tipo,ano,mes){
+  const inputId=tipo==='climoo'?'cl':'om';
+  const feito=!!document.getElementById('am-feito-'+inputId+'-'+mes)?.checked;
+  const observacoes=document.getElementById('am-obs-'+inputId+'-'+mes)?.value||'';
+  const status=document.getElementById('am-status-'+inputId+'-'+mes)?.value||'Pendente';
+  const registro={tipo,ano:Number(ano),mes:Number(mes),feito,observacoes,status,updated_at:new Date().toISOString()};
+  const key=r=>r.tipo+'|'+Number(r.ano)+'|'+Number(r.mes);
+  const existente=acompanhamentosMensais.findIndex(r=>key(r)===key(registro));
+  if(existente>=0)acompanhamentosMensais[existente]=registro;else acompanhamentosMensais.push(registro);
+  salvarAcompanhamentosMensaisLocal();
+  let erroNuvem=null;
+  if(sb){
+    try{
+      const {data,error}=await sb.from('acompanhamentos_mensais').upsert(registro,{onConflict:'tipo,ano,mes'}).select().single();
+      if(error)throw error;
+      if(data){
+        const idx=acompanhamentosMensais.findIndex(r=>key(r)===key(registro));
+        if(idx>=0)acompanhamentosMensais[idx]={tipo:data.tipo,ano:Number(data.ano),mes:Number(data.mes),feito:!!data.feito,observacoes:data.observacoes||'',status:data.status||'Pendente',updated_at:data.updated_at||registro.updated_at};
+        salvarAcompanhamentosMensaisLocal();
+      }
+    }catch(e){erroNuvem=e;}
+  }
+  renderAcompanhamentoMensal(tipo);
+  atualizarContadoresPainel();
+  if(erroNuvem)alert('O registro foi mantido neste navegador, mas não foi possível sincronizar com a nuvem. Verifique sua conexão e tente salvar novamente.\\n\\nDetalhes: '+(erroNuvem.message||'erro desconhecido'));
 }
 
 function renderAbasMes(lista) {
@@ -2658,6 +2843,8 @@ function render() {
   const ncsView=document.getElementById('ncsView');
   const gsView=document.getElementById('gestaoSemanalView');
   const dashboardView=document.getElementById('dashboardGestaoView');
+  const monthlyTrackingView=document.getElementById('monthlyTrackingView');
+  if(monthlyTrackingView) monthlyTrackingView.style.display='none';
   if(painelSelecionado==='__dashboard__'){
     ['tarefasView','projetosView','nfsView','ncsView','calendarioView','reunioesView','gestaoSemanalView'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
     if(dashboardView)dashboardView.style.display='block';
@@ -2665,6 +2852,12 @@ function render() {
     return;
   }
   if(dashboardView)dashboardView.style.display='none';
+  if (['__objetivos_metas__','__climoo__'].includes(painelSelecionado)) {
+    ['tarefasView','projetosView','nfsView','ncsView','calendarioView','reunioesView','gestaoSemanalView'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
+    if(monthlyTrackingView) monthlyTrackingView.style.display='block';
+    renderAcompanhamentoMensal(painelSelecionado==='__climoo__'?'climoo':'objetivos_metas');
+    return;
+  }
   if (painelSelecionado === '__gestao_semanal__') {
     if(tarefasView) tarefasView.style.display='none';
     if(projetosView) projetosView.style.display='none';

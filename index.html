@@ -892,20 +892,15 @@ body.theme-dark .visual-reset{background:#151C23;color:var(--text);border-color:
     <aside class="sidebar">
       <div class="sidebar-title">Gestão</div>
       <button class="sidebar-btn active" data-painel="__dashboard__" onclick="selecionarPainel('__dashboard__')"><i class="ti ti-chart-dots-3"></i> Visão da gestão</button>
-      <button class="sidebar-btn" data-painel="todos" onclick="selecionarPainel('todos')"><i class="ti ti-list-check"></i> Todas as atividades <span class="sidebar-count" id="count-todos">0</span></button>
       <button class="sidebar-btn" data-painel="__calendario__" onclick="selecionarPainel('__calendario__')"><i class="ti ti-calendar-event"></i> Calendário <span class="sidebar-count" id="count-calendario">0</span></button>
       <button class="sidebar-btn" data-painel="__projetos__" onclick="selecionarPainel('__projetos__')"><i class="ti ti-briefcase-2"></i> Projetos <span class="sidebar-count" id="count-projetos">0</span></button>
-      <button class="sidebar-btn" data-painel="__reunioes__" onclick="selecionarPainel('__reunioes__')"><i class="ti ti-users-group"></i> Reuniões <span class="sidebar-count" id="count-reunioes">0</span></button>
       <button class="sidebar-btn" data-painel="__nfs__" onclick="selecionarPainel('__nfs__')"><i class="ti ti-receipt"></i> Controle de NFs <span class="sidebar-count" id="count-nfs">0</span></button>
       <button class="sidebar-btn" data-painel="__ncs__" onclick="selecionarPainel('__ncs__')"><i class="ti ti-alert-triangle"></i> Controle de NCs <span class="sidebar-count" id="count-ncs">0</span></button>
-      <button class="sidebar-btn" data-painel="__gestao_semanal__" onclick="selecionarPainel('__gestao_semanal__')"><i class="ti ti-calendar-week"></i> Revisão semanal <span class="sidebar-count" id="count-gestao-semanal">0</span></button>
       <div class="sidebar-group-label">Qualidade</div>
       <button class="sidebar-btn" data-painel="Documentos" onclick="selecionarPainel('Documentos')"><i class="ti ti-file-text"></i> Documentos <span class="sidebar-count" id="count-Documentos">0</span></button>
       <button class="sidebar-btn" data-painel="Auditoria" onclick="selecionarPainel('Auditoria')"><i class="ti ti-clipboard-check"></i> Auditoria <span class="sidebar-count" id="count-Auditoria">0</span></button>
-      <button class="sidebar-btn" data-painel="Questionários" onclick="selecionarPainel('Questionários')"><i class="ti ti-list-check"></i> Questionários <span class="sidebar-count" id="count-Questionários">0</span></button>
-      <button class="sidebar-btn" data-painel="Mapeamento de processos" onclick="selecionarPainel('Mapeamento de processos')"><i class="ti ti-sitemap"></i> Mapeamento de processos <span class="sidebar-count" id="count-Mapeamento-de-processos">0</span></button>
       <div class="sidebar-group-label">Outros</div>
-      <button class="sidebar-btn" data-painel="Outras atividades" onclick="selecionarPainel('Outras atividades')"><i class="ti ti-dots"></i> Outras atividades <span class="sidebar-count" id="count-Outras-atividades">0</span></button>
+      <button class="sidebar-btn" data-painel="Assuntos pendentes" onclick="selecionarPainel('Assuntos pendentes')"><i class="ti ti-inbox"></i> Assuntos pendentes <span class="sidebar-count" id="count-Assuntos-pendentes">0</span></button>
     </aside>
     <main class="main-panel">
             <div id="dashboardGestaoView" class="management-dashboard">
@@ -917,7 +912,7 @@ body.theme-dark .visual-reset{background:#151C23;color:var(--text);border-color:
           <div class="mg-quick-copy"><strong>Adicionar atividade</strong></div>
           <div class="mg-quick-controls">
             <input id="mgQuickAtividade" type="text" placeholder="O que você precisa acompanhar?" aria-label="Nome da atividade" onkeydown="if(event.key==='Enter'){event.preventDefault();adicionarAtividadeRapida()}">
-            <select id="mgQuickTema" aria-label="Tema da atividade"><option value="Documentos">Documentos</option><option value="Auditoria">Auditoria</option><option value="Questionários">Questionários</option><option value="Mapeamento de processos">Mapeamento de processos</option><option value="Outras atividades" selected>Outras atividades</option></select>
+            <select id="mgQuickTema" aria-label="Tema da atividade"><option value="Assuntos pendentes" selected>Assuntos pendentes</option><option value="Documentos">Documentos</option><option value="Auditoria">Auditoria</option></select>
             <button type="button" onclick="adicionarAtividadeRapida()"><i class="ti ti-plus"></i> Registrar</button>
           </div>
         </div>
@@ -927,7 +922,7 @@ body.theme-dark .visual-reset{background:#151C23;color:var(--text);border-color:
           <section class="mg-panel mg-deadline-panel"><div class="mg-panel-head"><div><h3>Prazos</h3></div></div><div id="mgPrazos" class="mg-deadline-list"></div></section>
         </div>
         <section class="mg-panel"><div class="mg-panel-head"><div><h3>Projetos</h3></div><button type="button" class="mg-link-btn" onclick="selecionarPainel('__projetos__')">Ver todos <i class="ti ti-arrow-up-right"></i></button></div><div id="mgProjetos" class="mg-project-grid"></div></section>
-        <section class="mg-panel"><div class="mg-panel-head"><div><h3>Entregas do mês</h3></div><button type="button" class="mg-link-btn" onclick="selecionarPainel('__gestao_semanal__')">Revisão semanal <i class="ti ti-arrow-up-right"></i></button></div><div id="mgEntregas" class="mg-delivery-list"></div></section>
+        <section class="mg-panel"><div class="mg-panel-head"><div><h3>Entregas do mês</h3></div></div><div id="mgEntregas" class="mg-delivery-list"></div></section>
       </div>
 
       <div id="tarefasView">
@@ -1206,12 +1201,9 @@ body.theme-dark .visual-reset{background:#151C23;color:var(--text);border-color:
       </div>
       <div class="field"><label>Assunto</label>
 <select id="fAssunto">
-  <option value="">Selecione</option>
+  <option value="Assuntos pendentes" selected>Assuntos pendentes</option>
   <option value="Documentos">Documentos</option>
   <option value="Auditoria">Auditoria</option>
-  <option value="Outras atividades">Outras atividades</option>
-  <option value="Questionários">Questionários</option>
-  <option value="Mapeamento de processos">Mapeamento de processos</option>
 </select></div>
       <div class="field full"><label>Atividade <span style="color:#c0392b">*</span></label><input type="text" id="fAtividade" placeholder="Título/resumo da atividade"><div class="err" id="errAt">Informe a atividade</div></div>
       <div class="field full"><label>Descrição da demanda</label><textarea id="fDescricao" placeholder="Descreva o contexto, objetivo, solicitação ou detalhes necessários para executar a atividade."></textarea></div>
@@ -2338,9 +2330,8 @@ function navegarParaEventoCalendario(tipo,ref){
   if(emTarefas){
     const tid=tipo==='tarefa'?Number(ref):Number(String(ref).split('-')[0]);
     const t=tarefas.find(x=>Number(x.id)===tid);
-    const cats=['Documentos','Auditoria','Questionários','Mapeamento de processos','Outras atividades'];
     if(tipo==='micro')expandedTarefa[tid]=true;
-    selecionarPainel(t && cats.includes(t.assunto)?t.assunto:'todos');
+    selecionarPainel(t ? ctAssuntoTarefa(t.assunto) : 'Assuntos pendentes');
   }else if(emNC){selecionarPainel('__ncs__');}
   else{
     projetoExpandido[Number(String(ref).split('-')[0])]=true;
@@ -2377,12 +2368,22 @@ function mgConcluido(item){
   const s=String(item.status||'');
   return item.concluida===true||['Concluído','Encerrada','Realizada','Aprovada','Paga','Rejeitada','Cancelada'].includes(s);
 }
+function ctAssuntoTarefa(assunto){
+  const s=String(assunto||'').trim().toLocaleLowerCase('pt-BR');
+  if(s==='documento'||s==='documentos') return 'Documentos';
+  if(s==='auditoria') return 'Auditoria';
+  // Categorias removidas e assuntos sem classificação passam para a nova área,
+  // sem apagar os registros já salvos.
+  return 'Assuntos pendentes';
+}
 function mgNomeTema(tema){
   const s=String(tema||'').trim();
-  if(!s)return 'Outras atividades';
-  if(s.toLowerCase()==='documento'||s.toLowerCase()==='documentos')return 'Documentos';
-  if(s.toLowerCase()==='nc'||s.toLowerCase()==='não conformidade')return 'Não conformidades';
-  if(s.toLowerCase()==='gm'||s.toLowerCase()==='gerenciamento de mudanças')return 'Outras atividades';
+  const l=s.toLocaleLowerCase('pt-BR');
+  if(!s)return 'Assuntos pendentes';
+  if(l==='documento'||l==='documentos')return 'Documentos';
+  if(l==='auditoria')return 'Auditoria';
+  if(l==='nc'||l==='não conformidade'||l==='não conformidades')return 'Não conformidades';
+  if(['questionários','questionário','mapeamento de processos','mapeamento de processo','outras atividades','gm','gerenciamento de mudanças','assuntos pendentes'].includes(l))return 'Assuntos pendentes';
   return s;
 }
 function mgItem(titulo,tema,status,prazo,conclusao,origem,painel,detalhe,extra){
@@ -2391,15 +2392,15 @@ function mgItem(titulo,tema,status,prazo,conclusao,origem,painel,detalhe,extra){
 function coletarItensGestao(){
   const itens=[];
   tarefas.forEach(t=>{
-    itens.push(mgItem(t.atividade,t.assunto,t.status,t.prazo||t.data_ocorrencia,t.data_conclusao,'Atividades',t.assunto||'todos',t.responsavel,{concluida:t.status==='Concluído',tipo:'tarefa',id:t.id}));
-    (t.micros||[]).forEach(m=>itens.push(mgItem(m.desc,t.assunto,m.status,m.prazo,m.data_conclusao,'Atividades',t.assunto||'todos',t.atividade,{concluida:m.status==='Concluído',tipo:'micro',id:m.id,parentId:t.id})));
+    const tema=ctAssuntoTarefa(t.assunto);
+    itens.push(mgItem(t.atividade,tema,t.status,t.prazo||t.data_ocorrencia,t.data_conclusao,'Atividades',tema,t.responsavel,{concluida:t.status==='Concluído',tipo:'tarefa',id:t.id}));
+    (t.micros||[]).forEach(m=>itens.push(mgItem(m.desc,tema,m.status,m.prazo,m.data_conclusao,'Atividades',tema,t.atividade,{concluida:m.status==='Concluído',tipo:'micro',id:m.id,parentId:t.id})));
   });
   projetos.forEach(p=>{
     if((p.acoes||[]).length)(p.acoes||[]).forEach(a=>itens.push(mgItem(a.descricao,'Projetos',a.concluida?'Concluído':'Pendente',a.prazo,a.data_conclusao,'Projetos','__projetos__',p.nome,{concluida:!!a.concluida,tipo:'projeto-acao',id:a.id,parentId:p.id})));
     else itens.push(mgItem(p.nome,'Projetos',p.status,p.prazo,p.data_conclusao,'Projetos','__projetos__',p.responsavel,{concluida:p.status==='Concluído',tipo:'projeto',id:p.id}));
   });
   ncs.forEach(n=>itens.push(mgItem('NC '+n.numero_nc+(n.acao?' — '+n.acao:''),'Não conformidades',n.status,n.prazo,n.data_conclusao,'Controle de NCs','__ncs__',n.responsavel,{concluida:n.status==='Encerrada',tipo:'nc',id:n.id})));
-  reunioes.forEach(r=>(r.acoes||[]).forEach(a=>itens.push(mgItem(a.descricao,'Ações de reuniões',a.concluida?'Concluído':'Pendente',a.prazo,a.data_conclusao,'Reuniões','__reunioes__',r.assunto,{concluida:!!a.concluida,tipo:'reuniao-acao',id:a.id,parentId:r.id}))));
   nfs.forEach(n=>itens.push(mgItem('NF '+n.numero_nf,'Controle de NFs',n.status,'','', 'Controle de NFs','__nfs__',n.fornecedor,{concluida:['Aprovada','Paga','Rejeitada','Cancelada'].includes(n.status),tipo:'nf',id:n.id})));
   return itens;
 }
@@ -2410,16 +2411,12 @@ function obterEntregasConcluidas(inicio,fim){
   tarefas.forEach(t=>{
     const ms=t.micros||[];
     if(ms.length)ms.forEach(m=>{if(m.status==='Concluído')add(m.data_conclusao,m.desc,'Microação · '+(t.assunto||'Atividades'),t.atividade,m.id);});
-    else if(t.status==='Concluído')add(t.data_conclusao,t.atividade,t.assunto||'Atividades',t.responsavel,t.id);
+    else if(t.status==='Concluído')add(t.data_conclusao,t.atividade,ctAssuntoTarefa(t.assunto),t.responsavel,t.id);
   });
   projetos.forEach(p=>{
     const as=p.acoes||[];
     if(as.length)as.forEach(a=>{if(a.concluida)add(a.data_conclusao,a.descricao,'Projeto · '+p.nome,a.responsavel,a.id);});
     else if(p.status==='Concluído')add(p.data_conclusao,p.nome,'Projeto',p.responsavel,p.id);
-  });
-  reunioes.forEach(r=>{
-    if(r.status==='Realizada')add(r.data,'Reunião: '+r.assunto,r.modulo||r.tipo||'Reuniões',r.organizador,r.id);
-    (r.acoes||[]).forEach(a=>{if(a.concluida)add(a.data_conclusao,a.descricao,'Ação de reunião · '+r.assunto,a.responsavel,a.id);});
   });
   ncs.forEach(n=>{if(n.status==='Encerrada')add(n.data_conclusao,'NC '+n.numero_nc+(n.acao?' — '+n.acao:''),'Controle de NCs',n.responsavel,n.id);});
   nfs.forEach(n=>{if(n.data_lancamento)add(n.data_lancamento,'Lançamento de NF '+n.numero_nf,'Controle de NFs',n.fornecedor,n.id);});
@@ -2429,8 +2426,9 @@ function coletarPrazosGestao(){
   const lista=[];
   const add=(data,titulo,modulo,status,done,painel,detail,id)=>{if(data&&!done)lista.push({data,titulo,modulo,status:status||'Pendente',painel:painel||'todos',detail:detail||'',id});};
   tarefas.forEach(t=>{
-    add(t.prazo||t.data_ocorrencia,t.atividade,t.assunto||'Atividade',t.status,t.status==='Concluído',t.assunto||'todos',t.responsavel,t.id);
-    (t.micros||[]).forEach(m=>add(m.prazo,m.desc,'Microação',m.status,m.status==='Concluído',t.assunto||'todos',t.atividade,m.id));
+    const tema=ctAssuntoTarefa(t.assunto);
+    add(t.prazo||t.data_ocorrencia,t.atividade,tema,t.status,t.status==='Concluído',tema,t.responsavel,t.id);
+    (t.micros||[]).forEach(m=>add(m.prazo,m.desc,'Microação',m.status,m.status==='Concluído',tema,t.atividade,m.id));
   });
   projetos.forEach(p=>{add(p.prazo,p.nome,'Projeto',p.status,p.status==='Concluído','__projetos__',p.responsavel,p.id);(p.acoes||[]).forEach(a=>add(a.prazo,a.descricao,'Mini ação de projeto',a.concluida?'Concluído':'Pendente',!!a.concluida,'__projetos__',p.nome,a.id));});
   ncs.forEach(n=>add(n.prazo,'NC '+n.numero_nc+(n.acao?' — '+n.acao:''),'Não conformidade',n.status,n.status==='Encerrada','__ncs__',n.responsavel,n.id));
@@ -2442,17 +2440,8 @@ function coletarPrazosGestao(){
 function mgAbrirTema(tema){
   if(tema==='Projetos'){selecionarPainel('__projetos__');return;}
   if(tema==='Não conformidades'){selecionarPainel('__ncs__');return;}
-  if(tema==='Ações de reuniões'){selecionarPainel('__reunioes__');return;}
   if(tema==='Controle de NFs'){selecionarPainel('__nfs__');return;}
-  let temas=[String(tema||'')];
-  if(tema==='Documentos')temas=['Documentos','Documento'];
-  if(tema==='Outras atividades')temas=['Outras atividades','GM',''];
-  if(tema==='Não conformidades')temas=['Não conformidades','NC','Não conformidade'];
-  window.mgFiltroTema=temas;
-  painelSelecionado='todos';
-  window.filtroSomenteAtrasadas=false;
-  document.querySelectorAll('.sidebar-btn').forEach(b=>b.classList.toggle('active',b.dataset.painel==='todos'));
-  render();
+  selecionarPainel(ctAssuntoTarefa(tema));
 }
 function mgResumoTema(titulo,itens){
   const total=itens.length,feitos=itens.filter(mgConcluido).length,pct=total?Math.round(feitos/total*100):0;
@@ -2475,7 +2464,7 @@ function renderDashboardGestao(){
     '<div class="mg-kpi urgent"><span class="mg-kpi-label">Prazos vencidos</span><strong>'+atrasos+'</strong><small>Itens em aberto com prazo passado</small></div>'+
     '<div class="mg-kpi success"><span class="mg-kpi-label">Entregas no mês</span><strong>'+entregas.length+'</strong><small>Conclusões e registros identificados</small></div>'+
     '<div class="mg-kpi"><span class="mg-kpi-label">Progresso global</span><strong>'+progresso+'%</strong><small>'+feitos+' de '+itens.length+' itens concluídos</small></div>';
-  const temas=['Documentos','Auditoria','Questionários','Mapeamento de processos','Outras atividades','Não conformidades','Projetos','Ações de reuniões','Controle de NFs'];
+  const temas=['Documentos','Auditoria','Assuntos pendentes','Não conformidades','Projetos','Controle de NFs'];
   itens.forEach(x=>{if(!temas.includes(x.tema))temas.push(x.tema);});
   const temaHTML=temas.map(cat=>mgResumoTema(cat,itens.filter(x=>x.tema===cat))).join('');
   document.getElementById('mgTemas').innerHTML=temaHTML;
@@ -2495,7 +2484,7 @@ async function adicionarAtividadeRapida(){
   const input=document.getElementById('mgQuickAtividade'),atividade=(input?.value||'').trim();
   if(!atividade){if(input)input.focus();return;}
   document.getElementById('fMes').value=mesAtual;
-  document.getElementById('fAssunto').value=document.getElementById('mgQuickTema').value||'Outras atividades';
+  document.getElementById('fAssunto').value=document.getElementById('mgQuickTema').value||'Assuntos pendentes';
   document.getElementById('fAtividade').value=atividade;
   document.getElementById('fDescricao').value='';document.getElementById('fSolicitante').value='';document.getElementById('fOnde').value='';document.getElementById('fResp').value='';
   document.getElementById('fPrio').value='';document.getElementById('fPrazo').value='';document.getElementById('fStatus').value='Pendente';document.getElementById('fPeriodicidade').value='Pontual';
@@ -2511,23 +2500,20 @@ function selecionarPainel(painel) {
 }
 
 function atualizarContadoresPainel() {
-  const categorias = ['Documentos','Gerenciamento de Mudanças','Não conformidades','Auditoria','Questionários','Mapeamento de processos','Outras atividades'];
-  const ids = {'Documentos':'count-Documentos','Gerenciamento de Mudanças':'count-Gerenciamento-de-Mudanças','Não conformidades':'count-Não-conformidades','Auditoria':'count-Auditoria','Questionários':'count-Questionários','Mapeamento de processos':'count-Mapeamento-de-processos','Outras atividades':'count-Outras-atividades'};
-  const elTodos=document.getElementById('count-todos');
-  if(elTodos) elTodos.textContent=tarefas.length;
   const elProjetos=document.getElementById('count-projetos');
   if(elProjetos) elProjetos.textContent=projetos.length;
   const elCalendario=document.getElementById('count-calendario');
   if(elCalendario) elCalendario.textContent=obterEventosCalendario().length;
-  const elReunioes=document.getElementById('count-reunioes');
-  if(elReunioes) elReunioes.textContent=reunioes.length;
   const elNFs=document.getElementById('count-nfs');
   if(elNFs) elNFs.textContent=nfs.length;
   const elNCs=document.getElementById('count-ncs');
   if(elNCs) elNCs.textContent=ncs.length;
-  const elGS=document.getElementById('count-gestao-semanal');
-  if(elGS) elGS.textContent=gestaoSemanal.length;
-  categorias.forEach(a => { const el=document.getElementById(ids[a]); if(el) el.textContent=tarefas.filter(t => (t.assunto||'')===a).length; });
+  const categorias=['Documentos','Auditoria','Assuntos pendentes'];
+  const ids={'Documentos':'count-Documentos','Auditoria':'count-Auditoria','Assuntos pendentes':'count-Assuntos-pendentes'};
+  categorias.forEach(a=>{
+    const el=document.getElementById(ids[a]);
+    if(el) el.textContent=tarefas.filter(t=>ctAssuntoTarefa(t.assunto)===a).length;
+  });
 }
 
 function fecharDropdownMeses(event){
@@ -2756,7 +2742,7 @@ function render() {
   const busca = document.getElementById('busca').value.toLowerCase();
   const filtroStatus = document.getElementById('filtroStatus')?.value || '';
   let lista = tarefas;
-  if (painelSelecionado !== 'todos') lista = lista.filter(t => (t.assunto||'') === painelSelecionado);
+  if (painelSelecionado !== 'todos') lista = lista.filter(t => ctAssuntoTarefa(t.assunto) === painelSelecionado);
   if (painelSelecionado === 'todos' && Array.isArray(window.mgFiltroTema)) lista = lista.filter(t => window.mgFiltroTema.includes(t.assunto||''));
   if (busca) lista = lista.filter(t => t.atividade.toLowerCase().includes(busca) || (t.descricao||'').toLowerCase().includes(busca) || t.solicitante.toLowerCase().includes(busca) || t.responsavel.toLowerCase().includes(busca) || t.micros.some(m => m.desc.toLowerCase().includes(busca) || m.responsavel.toLowerCase().includes(busca)));
   if (filtroStatus) lista = lista.filter(t => filtroStatus === '__sem_status__' ? !t.status : t.status === filtroStatus);
@@ -2802,7 +2788,7 @@ function render() {
       const mc = t.micros.length;
       const tarefaRow = `<tr class="tarefa-row" data-id="${t.id}">
         <td><div class="td-inner"><button class="btn-expand ${exp?'open':''}" onclick="toggleTarefa(${t.id})" aria-label="Expandir micro ações"><i class="ti ti-chevron-right"></i></button></div></td>
-        <td><div class="td-inner"><span class="tag">${t.assunto||'—'}</span></div></td>
+        <td><div class="td-inner"><span class="tag">${ctAssuntoTarefa(t.assunto)}</span></div></td>
         <td><div class="td-inner"><div>${t.atividade}${mc?` <span style="font-size:11px;color:#aaa;margin-left:4px">(${mc} micro${mc>1?'ações':'ação'})</span>`:''}</div>${t.descricao?`<div class="demanda-desc">${t.descricao}</div>`:''}${t.prazo?`<div class="task-deadline ${t.prazo<ctHojeISO()&&t.status!=='Concluído'?'late':''}"><i class="ti ti-calendar"></i> Prazo: ${new Date(t.prazo+'T00:00:00').toLocaleDateString('pt-BR')}${t.prazo<ctHojeISO()&&t.status!=='Concluído'?' • vencido':''}</div>`:''}</div></td>
         <td><div class="td-inner">${t.solicitante||'—'}</div></td>
         <td><div class="td-inner obs">${t.onde||'—'}</div></td>
@@ -3037,7 +3023,13 @@ async function excluirMicro(tid,mid){
   } catch(e) { t.micros=antiga; alert('Não foi possível excluir a micro ação do banco.\n\nErro: '+(e.message||'erro desconhecido')); }
 }
 
-function abrirModalTarefa(){ document.getElementById('fMes').value=mesAtual; document.getElementById('fPrazo').value=''; document.getElementById('ovTarefa').classList.add('open'); }
+function abrirModalTarefa(){
+  document.getElementById('fMes').value=mesAtual;
+  document.getElementById('fPrazo').value='';
+  const categoriaAtual=['Documentos','Auditoria','Assuntos pendentes'].includes(painelSelecionado)?painelSelecionado:'Assuntos pendentes';
+  document.getElementById('fAssunto').value=categoriaAtual;
+  document.getElementById('ovTarefa').classList.add('open');
+}
 function fecharModalTarefa(){ document.getElementById('ovTarefa').classList.remove('open'); ['fAssunto','fAtividade','fDescricao','fSolicitante','fResp','fOnde','fPrazo'].forEach(id=>document.getElementById(id).value=''); document.getElementById('fStatus').value=''; document.getElementById('fPrio').value=''; document.getElementById('fPeriodicidade').value='Pontual'; document.getElementById('errAt').style.display='none'; }
 function gerarOcorrencias(periodicidade, mesInicial) {
   const out = [];
@@ -3291,7 +3283,7 @@ function abrirModalEditarTarefa(id) {
   document.getElementById('fMes').value = t.mes || '';
   document.getElementById('fPrazo').value = t.prazo || '';
   document.getElementById('fPeriodicidade').value = t.periodicidade || 'Pontual';
-  document.getElementById('fAssunto').value = t.assunto || '';
+  document.getElementById('fAssunto').value = ctAssuntoTarefa(t.assunto);
   document.getElementById('fAtividade').value = t.atividade || '';
   document.getElementById('fDescricao').value = t.descricao || '';
   document.getElementById('fSolicitante').value = t.solicitante || '';

@@ -854,13 +854,16 @@ body.theme-dark .tracking-table tbody tr:hover td{background:#222D37;}
 .climoo-filters select,.climoo-filters input{width:100%;min-width:0;height:35px;padding:0 9px;border:1px solid var(--line);border-radius:7px;background:var(--surface);color:var(--text);font:inherit;font-size:11px;font-weight:400;}
 .climoo-close-note{margin-bottom:12px;padding:10px 12px;border-left:3px solid var(--brand);background:var(--brand-soft);border-radius:5px;color:var(--text);font-size:11px;line-height:1.5;}
 .climoo-close-note.late{border-left-color:var(--red);}
-.climoo-kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin-bottom:19px;}
+.climoo-kpis{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;margin-bottom:12px;}
 .climoo-kpi{min-width:0;padding:12px;border:1px solid var(--line);border-radius:9px;background:var(--surface);}
 .climoo-kpi span{display:block;color:var(--muted);font-size:10px;line-height:1.4;margin-bottom:7px;}
 .climoo-kpi strong{display:block;color:var(--brand-dark);font-size:22px;line-height:1.1;overflow-wrap:anywhere;}
 .climoo-kpi.warn strong{color:var(--amber);}
 .climoo-kpi.danger strong{color:var(--red);}
 .climoo-kpi.good strong{color:var(--green);}
+.climoo-blockers{margin:0 0 18px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);font-size:11px;color:var(--muted);line-height:1.55;}
+.climoo-blockers.has-blockers{border-color:#E8B6BC;background:#FFF7F7;color:#A12F3B;}
+.climoo-blocker-item{display:block;margin-top:3px;font-size:10px;}
 .climoo-work-overview{margin-bottom:18px;}
 .climoo-section-title{font-size:13px;font-weight:700;color:var(--brand-dark);margin-bottom:9px;}
 .climoo-work-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;}
@@ -910,6 +913,7 @@ body.theme-dark .climoo-badge.started{background:#1B344A;color:#A6D2F5;}
 body.theme-dark .climoo-badge.pending{background:#47371E;color:#F0CA79;}
 body.theme-dark .climoo-badge.late{background:#48242B;color:#F3A2AB;}
 body.theme-dark .climoo-badge.neutral{background:#2A333C;color:#C0CBD4;}
+body.theme-dark .climoo-blockers.has-blockers{background:#352227;border-color:#6C3941;color:#F1B5BC;}
 @media(max-width:1000px){.climoo-filters{grid-template-columns:repeat(3,minmax(120px,1fr));}.climoo-kpis{grid-template-columns:repeat(3,minmax(0,1fr));}.climoo-work-cards{grid-template-columns:repeat(2,minmax(0,1fr));}}
 @media(max-width:650px){.climoo-page-head{flex-direction:column;}.climoo-page-head .btn-primary{width:100%;justify-content:center;}.climoo-filters{grid-template-columns:repeat(2,minmax(0,1fr));padding:9px;gap:8px;}.climoo-kpis{grid-template-columns:repeat(2,minmax(0,1fr));}.climoo-work-cards,.climoo-config-grid{grid-template-columns:1fr;}.climoo-checklist-row{grid-template-columns:minmax(0,1fr) 125px;}}
 
@@ -1213,10 +1217,12 @@ body.theme-dark .climoo-badge.neutral{background:#2A333C;color:#C0CBD4;}
           <label>Status da análise<select id="climooFiltroAnalise" onchange="renderClimooView()">
             <option value="todos">Todos</option><option>Aguardando análise</option><option>Em análise</option><option>Aprovado</option><option>Pendente de correção</option><option>Pendente de esclarecimento</option><option>Reprovado</option>
           </select></label>
+          <label>Impede fechamento?<select id="climooFiltroBloqueio" onchange="renderClimooView()"><option value="todos">Todos</option><option value="sim">Sim</option><option value="nao">Não</option></select></label>
         </div>
 
         <div id="climooFechamento" class="climoo-close-note"></div>
         <div id="climooKpis" class="climoo-kpis"></div>
+        <div id="climooBloqueios" class="climoo-blockers"></div>
         <section class="climoo-work-overview">
           <div class="climoo-section-title">Resumo das obras</div>
           <div id="climooObrasResumo" class="climoo-work-cards"></div>
@@ -1226,7 +1232,7 @@ body.theme-dark .climoo-badge.neutral{background:#2A333C;color:#C0CBD4;}
           <table class="climoo-table">
             <thead><tr>
               <th>Obra</th><th>Item do inventário</th><th>Mês</th><th>Colaborador</th><th>Quantidade / unidade</th>
-              <th>Status do lançamento</th><th>Status da análise</th><th>Prazo da pendência</th><th>Evidência</th><th>Ação</th>
+              <th>Status do lançamento</th><th>Status da análise</th><th>Prazo da pendência</th><th>Fechamento</th><th>Evidência</th><th>Ação</th>
             </tr></thead>
             <tbody id="climooLinhas"></tbody>
           </table>
@@ -1262,9 +1268,12 @@ body.theme-dark .climoo-badge.neutral{background:#2A333C;color:#C0CBD4;}
       <div class="field full"><label>Justificativa da aprovação ou reprovação</label><textarea id="clJustificativa" placeholder="Registre os motivos reais da decisão, sem preenchimento automático."></textarea></div>
       <div class="field full"><label>Divergências identificadas</label><textarea id="clDivergencias" placeholder="Descreva diferenças, ausência de dados ou dúvidas encontradas."></textarea></div>
       <div class="field full"><label>Providência necessária</label><textarea id="clProvidencia" placeholder="O que deve ser corrigido, comprovado ou esclarecido?"></textarea></div>
+      <div class="field"><label>Colaborador acionado</label><input id="clColaboradorAcionado" type="text" placeholder="Quem foi contatado"></div>
+      <div class="field"><label>Data do acionamento</label><input id="clDataAcionamento" type="date"></div>
       <div class="field"><label>Responsável pela resolução</label><input id="clResponsavelResolucao" type="text" placeholder="Colaborador / setor"></div>
       <div class="field"><label>Prazo para regularização</label><input id="clPrazoRegularizacao" type="date"></div>
       <div class="field"><label>Data da conclusão</label><input id="clDataConclusao" type="date"></div>
+      <div class="field"><label>Impede o fechamento mensal?</label><select id="clImpedeFechamento"><option value="false">Não</option><option value="true">Sim</option></select></div>
       <div class="field full"><label>Evidências e prints (um link por linha)</label><textarea id="clEvidencias" placeholder="Cole links para capturas de tela ou documentos armazenados em pasta corporativa."></textarea><small class="climoo-field-help">Use um link com acesso corporativo controlado (por exemplo, SharePoint ou Box). Esta versão guarda os links, não envia arquivos diretamente.</small></div>
       <div class="field full"><label>Observações adicionais</label><textarea id="clObservacoes" placeholder="Informações complementares para o histórico mensal."></textarea></div>
     </div>
@@ -2923,7 +2932,8 @@ function climooNormalizarRegistro(r){
     unidade_medida:String(r.unidade_medida||''),
     status_lancamento:CLIMOO_STATUS_LANCAMENTO.includes(r.status_lancamento)?r.status_lancamento:'Não iniciado',
     status_analise:CLIMOO_STATUS_ANALISE.includes(r.status_analise)?r.status_analise:'Aguardando análise',
-    aplicavel:r.aplicavel!==false,
+    aplicavel:r.aplicavel!==false,impede_fechamento:r.impede_fechamento===true,
+    colaborador_acionado:String(r.colaborador_acionado||''),data_acionamento:r.data_acionamento||'',
     escopo_verificado:String(r.escopo_verificado||''),
     checklist:r.checklist&&typeof r.checklist==='object'&&!Array.isArray(r.checklist)?r.checklist:{},
     justificativa:String(r.justificativa||''),divergencias:String(r.divergencias||''),
@@ -2950,6 +2960,7 @@ function climooPayload(r){
     valor_lancado:r.valor_lancado===''||r.valor_lancado===null||r.valor_lancado===undefined?null:Number(r.valor_lancado),
     unidade_medida:r.unidade_medida||'',status_lancamento:r.status_lancamento||'Não iniciado',
     status_analise:r.status_analise||'Aguardando análise',aplicavel:r.aplicavel!==false,
+    impede_fechamento:r.impede_fechamento===true,colaborador_acionado:r.colaborador_acionado||'',data_acionamento:r.data_acionamento||null,
     escopo_verificado:r.escopo_verificado||'',checklist:r.checklist||{},
     justificativa:r.justificativa||'',divergencias:r.divergencias||'',providencia:r.providencia||'',
     responsavel_resolucao:r.responsavel_resolucao||'',prazo_regularizacao:r.prazo_regularizacao||null,
@@ -3162,7 +3173,8 @@ function climooContarSituacao(rows){
     aprovados:aplicaveis.filter(r=>r.status_analise==='Aprovado').length,
     pendentes:aplicaveis.filter(r=>r.status_analise!=='Aprovado').length,
     naoIniciados:aplicaveis.filter(r=>r.status_lancamento==='Não iniciado').length,
-    naoAplicaveis:rows.length-aplicaveis.length
+    naoAplicaveis:rows.length-aplicaveis.length,
+    bloqueios:rows.filter(r=>r.impede_fechamento===true).length
   };
 }
 function renderClimooView(){
@@ -3194,12 +3206,14 @@ function renderClimooView(){
   const filtroObra=obraSel.value,filtroItem=itemSel.value;
   const filtroColaborador=(collabEl?.value||'').trim().toLocaleLowerCase('pt-BR');
   const filtroLanc=lancSel?.value||'todos',filtroAnalise=analiseSel?.value||'todos';
+  const filtroBloqueio=document.getElementById('climooFiltroBloqueio')?.value||'todos';
   const rows=todosDoPeriodo.filter(r=>
     (filtroObra==='todas'||r.obra_slot===Number(filtroObra))&&
     (filtroItem==='todos'||r.item_slot===Number(filtroItem))&&
     (!filtroColaborador||r.colaborador.toLocaleLowerCase('pt-BR').includes(filtroColaborador))&&
     (filtroLanc==='todos'||r.status_lancamento===filtroLanc)&&
-    (filtroAnalise==='todos'||r.status_analise===filtroAnalise)
+    (filtroAnalise==='todos'||r.status_analise===filtroAnalise)&&
+    (filtroBloqueio==='todos'||(filtroBloqueio==='sim')===!!r.impede_fechamento)
   );
   const table=document.getElementById('climooLinhas');
   const statusCells=rows.map(r=>{
@@ -3215,11 +3229,12 @@ function renderClimooView(){
       '<td>'+climooBadge(r.aplicavel===false?'Não se aplica':r.status_lancamento,false)+'</td>'+
       '<td>'+climooBadge(r.status_analise,true)+'</td>'+
       '<td>'+climooPrazoCelula(r)+'</td>'+
+      '<td>'+(r.impede_fechamento?'<span class="climoo-badge late">Bloqueio</span>':'<span class="climoo-muted">—</span>')+'</td>'+
       '<td>'+climooEvidenceCell(r.evidencias)+'</td>'+
       '<td><button type="button" class="climoo-edit-btn" onclick="abrirRegistroClimoo('+r.obra_slot+','+r.item_slot+','+r.mes+','+r.ano+')"><i class="ti ti-edit"></i> Conferir</button></td>'+
       '</tr>';
   }).join('');
-  table.innerHTML=rows.length?statusCells:'<tr><td colspan="10" class="climoo-empty">Nenhuma combinação corresponde aos filtros. Cadastre obras e itens, ou ajuste os filtros.</td></tr>';
+  table.innerHTML=rows.length?statusCells:'<tr><td colspan="11" class="climoo-empty">Nenhuma combinação corresponde aos filtros. Cadastre obras e itens, ou ajuste os filtros.</td></tr>';
   const situacao=climooContarSituacao(rows);
   const kpi=document.getElementById('climooKpis');
   kpi.innerHTML=
@@ -3228,7 +3243,8 @@ function renderClimooView(){
     '<div class="climoo-kpi"><span>Combinações no filtro</span><strong>'+situacao.total+'</strong></div>'+
     '<div class="climoo-kpi good"><span>Aprovados</span><strong>'+situacao.aprovados+'</strong></div>'+
     '<div class="climoo-kpi warn"><span>Pendências de análise</span><strong>'+situacao.pendentes+'</strong></div>'+
-    '<div class="climoo-kpi danger"><span>Lançamentos não iniciados</span><strong>'+situacao.naoIniciados+'</strong></div>';
+    '<div class="climoo-kpi danger"><span>Lançamentos não iniciados</span><strong>'+situacao.naoIniciados+'</strong></div>'+
+    '<div class="climoo-kpi '+(situacao.bloqueios?'danger':'')+'"><span>Bloqueios de fechamento</span><strong>'+situacao.bloqueios+'</strong></div>';
   const fechamento=document.getElementById('climooFechamento');
   if(mesValue==='todos'){
     fechamento.className='climoo-close-note';
@@ -3240,12 +3256,20 @@ function renderClimooView(){
     const frase=diff<0?'O prazo previsto passou há '+Math.abs(diff)+' dia(s).':diff===0?'O fechamento previsto é hoje.':'Faltam '+diff+' dia(s) para o fechamento previsto.';
     fechamento.innerHTML='<strong>Fechamento previsto: '+ctDataBR(vencimento)+'.</strong> '+frase+' Registre apenas a situação realmente conferida.';
   }
+  const bloqueios=rows.filter(r=>r.impede_fechamento===true);
+  const bloqueiosEl=document.getElementById('climooBloqueios');
+  if(bloqueiosEl){
+    bloqueiosEl.className='climoo-blockers'+(bloqueios.length?' has-blockers':'');
+    bloqueiosEl.innerHTML=bloqueios.length
+      ?'<strong>'+bloqueios.length+' item(ns) marcado(s) como impeditivo(s) do fechamento neste filtro.</strong>'+bloqueios.slice(0,5).map(r=>'<span class="climoo-blocker-item">• '+escHtml(r.obra)+' — '+escHtml(r.item)+' · '+escHtml(CLIMOO_MESES[r.mes-1])+'</span>').join('')+(bloqueios.length>5?'<span class="climoo-blocker-item">E mais '+(bloqueios.length-5)+' item(ns).</span>':'')
+      :'<strong>Nenhum item foi marcado como impeditivo do fechamento neste filtro.</strong> Pendências não marcadas como bloqueio podem continuar abertas.';
+  }
   const resumo=document.getElementById('climooObrasResumo');
   const workRows=climooObras.map((obra,i)=>{
     if(!obra.trim())return '';
     const porObra=climooLinhasBase(selecionadoAno,meses).filter(r=>r.obra_slot===i+1);
     const c=climooContarSituacao(porObra);
-    return '<div class="climoo-work-card"><div class="climoo-work-name">'+escHtml(obra)+'</div><div class="climoo-work-stats">'+c.aprovados+' aprovado(s) · '+c.pendentes+' pendência(s) de análise · '+c.naoIniciados+' não iniciado(s) · '+c.naoAplicaveis+' não aplicável(is)</div></div>';
+    return '<div class="climoo-work-card"><div class="climoo-work-name">'+escHtml(obra)+'</div><div class="climoo-work-stats">'+c.aprovados+' aprovado(s) · '+c.pendentes+' pendência(s) de análise · '+c.naoIniciados+' não iniciado(s) · '+c.bloqueios+' bloqueio(s) de fechamento · '+c.naoAplicaveis+' não aplicável(is)</div></div>';
   }).filter(Boolean).join('');
   resumo.innerHTML=workRows||'<div class="climoo-empty">Nenhuma obra cadastrada. Use “Configurar obras e itens” para incluir as obras reais.</div>';
   atualizarContadoresPainel();
@@ -3282,9 +3306,12 @@ function abrirRegistroClimoo(obraSlot,itemSlot,mes,ano){
   document.getElementById('clJustificativa').value=climooRegistroAtual.justificativa;
   document.getElementById('clDivergencias').value=climooRegistroAtual.divergencias;
   document.getElementById('clProvidencia').value=climooRegistroAtual.providencia;
+  document.getElementById('clColaboradorAcionado').value=climooRegistroAtual.colaborador_acionado;
+  document.getElementById('clDataAcionamento').value=climooRegistroAtual.data_acionamento;
   document.getElementById('clResponsavelResolucao').value=climooRegistroAtual.responsavel_resolucao;
   document.getElementById('clPrazoRegularizacao').value=climooRegistroAtual.prazo_regularizacao;
   document.getElementById('clDataConclusao').value=climooRegistroAtual.data_conclusao;
+  document.getElementById('clImpedeFechamento').value=String(climooRegistroAtual.impede_fechamento===true);
   document.getElementById('clEvidencias').value=climooRegistroAtual.evidencias;
   document.getElementById('clObservacoes').value=climooRegistroAtual.observacoes;
   renderClimooChecklist(climooRegistroAtual.checklist);
@@ -3336,8 +3363,11 @@ async function salvarRegistroClimoo(){
     checklist:Object.fromEntries(CLIMOO_CHECKLIST.map(x=>[x.key,document.getElementById('clCheck_'+x.key).value])),
     justificativa,divergencias:document.getElementById('clDivergencias').value.trim(),
     providencia:document.getElementById('clProvidencia').value.trim(),
+    colaborador_acionado:document.getElementById('clColaboradorAcionado').value.trim(),
+    data_acionamento:document.getElementById('clDataAcionamento').value,
     responsavel_resolucao:document.getElementById('clResponsavelResolucao').value.trim(),
     prazo_regularizacao:document.getElementById('clPrazoRegularizacao').value,
+    impede_fechamento:document.getElementById('clImpedeFechamento').value==='true',
     data_conclusao:document.getElementById('clDataConclusao').value,
     evidencias:linksText,observacoes:document.getElementById('clObservacoes').value.trim(),
     updated_at:new Date().toISOString()

@@ -1118,7 +1118,7 @@ body.theme-dark .tracking-table tbody tr:hover td{background:#222D37;}
         </div>
         <div id="climooObraTools" class="climoo-obra-tools" style="display:none">
           <label for="climooObraFiltro">Obra</label>
-          <select id="climooObraFiltro" onchange="renderAcompanhamentoMensal('climoo')" aria-label="Filtrar acompanhamento por obra"></select>
+          <select id="climooObraFiltro" onchange="alterarObraClimoo(this.value)" aria-label="Filtrar acompanhamento por obra"></select>
           <div class="climoo-obra-add">
             <input id="novaObraClimoo" type="text" maxlength="120" placeholder="Cadastrar nome da obra" aria-label="Nome da nova obra" onkeydown="if(event.key==='Enter'){event.preventDefault();salvarObraClimoo()}">
             <button type="button" class="tracking-save" onclick="salvarObraClimoo()">Cadastrar obra</button>
@@ -1583,7 +1583,14 @@ async function carregarDados() {
       if(mensaisErr) throw mensaisErr;
       const {data:cloudObras,error:obrasErr}=await sb.from('climoo_obras').select('*').order('nome');
       if(obrasErr) throw obrasErr;
-      obrasClimoo=Array.from(new Set([...(cloudObras||[]).map(x=>String(x.nome||'').trim()),...obrasClimoo].filter(Boolean))).sort((a,b)=>a.localeCompare(b,'pt-BR'));
+      const cloudObraNames=new Set((cloudObras||[]).map(x=>String(x.nome||'').trim()).filter(Boolean));
+      const localObraNames=obrasClimoo.slice();
+      obrasClimoo=Array.from(new Set([...cloudObraNames,...localObraNames])).filter(Boolean).sort((a,b)=>a.localeCompare(b,'pt-BR'));
+      const obrasQueFaltamNaNuvem=localObraNames.filter(nome=>!cloudObraNames.has(nome));
+      if(obrasQueFaltamNaNuvem.length){
+        const {error:obrasSyncErr}=await sb.from('climoo_obras').upsert(obrasQueFaltamNaNuvem.map(nome=>({nome,updated_at:new Date().toISOString()})),{onConflict:'nome'});
+        if(obrasSyncErr)console.warn('Não foi possível sincronizar todas as obras Climoo:',obrasSyncErr.message||obrasSyncErr);
+      }
       localStorage.setItem('ct_climoo_obras',JSON.stringify(obrasClimoo));
       const locais=[...acompanhamentosMensais].map(r=>({...r,obra:String(r.obra||'')}));
       const chave=r=>String(r.tipo)+'|'+String(r.obra||'')+'|'+Number(r.ano)+'|'+Number(r.mes);
@@ -2667,6 +2674,11 @@ function dataHoraAcompanhamento(v){
 }
 function classeStatusAcompanhamento(status){
   return status==='Concluído'?'done':status==='Atrasado'?'late':status==='Aguardando'?'waiting':'';
+}
+function alterarObraClimoo(obra){
+  obraClimooSelecionada=String(obra||'__sem_obra__');
+  try{localStorage.setItem('ct_climoo_obra_selecionada',obraClimooSelecionada);}catch(e){}
+  renderAcompanhamentoMensal('climoo');
 }
 function renderAcompanhamentoMensal(tipo){
   const title=document.getElementById('monthlyTrackingTitle');

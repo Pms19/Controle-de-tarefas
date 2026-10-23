@@ -2893,6 +2893,436 @@ async function salvarAcompanhamentoMensal(tipo,ano,mes){
   if(erroNuvem)alert('O registro foi mantido neste navegador, mas não foi possível sincronizar com a nuvem. Verifique sua conexão e tente salvar novamente.\\n\\nDetalhes: '+(erroNuvem.message||'erro desconhecido'));
 }
 
+
+const CLIMOO_CHECKLIST=[
+  {key:'obra_correta',label:'Obra correta'},
+  {key:'mes_correto',label:'Mês de referência correto'},
+  {key:'quantidade',label:'Quantidade informada conferida'},
+  {key:'unidade',label:'Unidade de medida conferida'},
+  {key:'coerencia_evidencia',label:'Coerência do dado com a evidência disponível'},
+  {key:'documento_comprobatorio',label:'Documento comprobatório, quando aplicável'},
+  {key:'divergencias',label:'Divergências identificadas e registradas'},
+  {key:'justificativa',label:'Justificativa da decisão registrada'},
+  {key:'evidencia_armazenada',label:'Evidência armazenada / link registrado'}
+];
+const CLIMOO_STATUS_LANCAMENTO=['Não iniciado','Em preenchimento','Lançado','Não se aplica','Aguardando esclarecimento'];
+const CLIMOO_STATUS_ANALISE=['Aguardando análise','Em análise','Aprovado','Pendente de correção','Pendente de esclarecimento','Reprovado'];
+const CLIMOO_MESES=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+function climooNormalizarSlots(valores,quantidade,padrao){
+  const entrada=Array.isArray(valores)?valores:padrao;
+  return Array.from({length:quantidade},(_,i)=>String(entrada[i]??'').trim());
+}
+function climooNormalizarRegistro(r){
+  return {
+    id:r.id===null||r.id===undefined?null:Number(r.id),
+    obra_slot:Number(r.obra_slot),item_slot:Number(r.item_slot),
+    ano:Number(r.ano),mes:Number(r.mes),
+    colaborador:String(r.colaborador||''),data_verificacao:r.data_verificacao||'',
+    valor_lancado:r.valor_lancado===null||r.valor_lancado===undefined||r.valor_lancado===''?'':String(r.valor_lancado),
+    unidade_medida:String(r.unidade_medida||''),
+    status_lancamento:CLIMOO_STATUS_LANCAMENTO.includes(r.status_lancamento)?r.status_lancamento:'Não iniciado',
+    status_analise:CLIMOO_STATUS_ANALISE.includes(r.status_analise)?r.status_analise:'Aguardando análise',
+    aplicavel:r.aplicavel!==false,
+    escopo_verificado:String(r.escopo_verificado||''),
+    checklist:r.checklist&&typeof r.checklist==='object'&&!Array.isArray(r.checklist)?r.checklist:{},
+    justificativa:String(r.justificativa||''),divergencias:String(r.divergencias||''),
+    providencia:String(r.providencia||''),responsavel_resolucao:String(r.responsavel_resolucao||''),
+    prazo_regularizacao:r.prazo_regularizacao||'',data_conclusao:r.data_conclusao||'',
+    evidencias:String(r.evidencias||''),observacoes:String(r.observacoes||''),
+    updated_at:r.updated_at||''
+  };
+}
+function climooChave(r){return [Number(r.obra_slot),Number(r.item_slot),Number(r.ano),Number(r.mes)].join('|');}
+function climooConfigLocal(){
+  try{const v=JSON.parse(localStorage.getItem('ct_climoo_config')||'null');return v&&typeof v==='object'?v:null;}catch(e){return null;}
+}
+function climooSalvarLocal(){
+  try{
+    localStorage.setItem('ct_climoo_config',JSON.stringify({obras:climooObras,itens:climooItens,updated_at:window.climooConfigUpdatedAt||''}));
+    localStorage.setItem('ct_climoo_conferencias',JSON.stringify(climooConferencias));
+  }catch(e){console.warn('Não foi possível guardar a cópia local do Climoo:',e);}
+}
+function climooPayload(r){
+  return {
+    obra_slot:Number(r.obra_slot),item_slot:Number(r.item_slot),ano:Number(r.ano),mes:Number(r.mes),
+    colaborador:r.colaborador||'',data_verificacao:r.data_verificacao||null,
+    valor_lancado:r.valor_lancado===''||r.valor_lancado===null||r.valor_lancado===undefined?null:Number(r.valor_lancado),
+    unidade_medida:r.unidade_medida||'',status_lancamento:r.status_lancamento||'Não iniciado',
+    status_analise:r.status_analise||'Aguardando análise',aplicavel:r.aplicavel!==false,
+    escopo_verificado:r.escopo_verificado||'',checklist:r.checklist||{},
+    justificativa:r.justificativa||'',divergencias:r.divergencias||'',providencia:r.providencia||'',
+    responsavel_resolucao:r.responsavel_resolucao||'',prazo_regularizacao:r.prazo_regularizacao||null,
+    data_conclusao:r.data_conclusao||null,evidencias:r.evidencias||'',observacoes:r.observacoes||'',
+    updated_at:r.updated_at||new Date().toISOString()
+  };
+}
+async function carregarClimooDados(){
+  const lc=climooConfigLocal();
+  if(lc){
+    climooObras=climooNormalizarSlots(lc.obras,12,CLIMOO_OBRAS_PADRAO);
+    climooItens=climooNormalizarSlots(lc.itens,7,CLIMOO_ITENS_PADRAO);
+    window.climooConfigUpdatedAt=lc.updated_at||'';
+  }
+  try{
+    const local=JSON.parse(localStorage.getItem('ct_climoo_conferencias')||'[]');
+    if(Array.isArray(local))climooConferencias=local.map(climooNormalizarRegistro);
+  }catch(e){}
+  if(!sb){climooSalvarLocal();return;}
+  try{
+    const [{data:cloudConfig,error:configErr},{data:cloudRows,error:rowsErr}]=await Promise.all([
+      sb.from('climoo_config').select('*').eq('id',1).maybeSingle(),
+      sb.from('climoo_conferencias').select('*').order('ano').order('mes')
+    ]);
+    if(configErr)throw configErr;
+    if(rowsErr)throw rowsErr;
+    let configToSave=null;
+    if(cloudConfig){
+      const localIsNewer=lc&&String(lc.updated_at||'')>String(cloudConfig.updated_at||'');
+      if(localIsNewer){
+        configToSave={id:1,obras:climooNormalizarSlots(lc.obras,12,CLIMOO_OBRAS_PADRAO),itens:climooNormalizarSlots(lc.itens,7,CLIMOO_ITENS_PADRAO),updated_at:lc.updated_at};
+      }else{
+        climooObras=climooNormalizarSlots(cloudConfig.obras,12,CLIMOO_OBRAS_PADRAO);
+        climooItens=climooNormalizarSlots(cloudConfig.itens,7,CLIMOO_ITENS_PADRAO);
+        window.climooConfigUpdatedAt=cloudConfig.updated_at||'';
+      }
+    }else{
+      configToSave={id:1,obras:climooObras,itens:climooItens,updated_at:window.climooConfigUpdatedAt||new Date().toISOString()};
+    }
+    if(configToSave){
+      const {data,error}=await sb.from('climoo_config').upsert(configToSave,{onConflict:'id'}).select().single();
+      if(error)throw error;
+      climooObras=climooNormalizarSlots(data.obras,12,CLIMOO_OBRAS_PADRAO);
+      climooItens=climooNormalizarSlots(data.itens,7,CLIMOO_ITENS_PADRAO);
+      window.climooConfigUpdatedAt=data.updated_at||configToSave.updated_at;
+    }
+    const cloud=(cloudRows||[]).map(climooNormalizarRegistro);
+    const map=new Map(cloud.map(r=>[climooChave(r),r]));
+    const localRows=climooConferencias.slice();
+    localRows.forEach(r=>{
+      const k=climooChave(r),c=map.get(k);
+      if(!c||String(r.updated_at||'')>String(c.updated_at||''))map.set(k,r);
+    });
+    climooConferencias=Array.from(map.values());
+    const cloudMap=new Map(cloud.map(r=>[climooChave(r),r]));
+    const pendentesSync=climooConferencias.filter(r=>{
+      const c=cloudMap.get(climooChave(r));
+      return !c||String(r.updated_at||'')>String(c.updated_at||'');
+    });
+    if(pendentesSync.length){
+      const {data,error}=await sb.from('climoo_conferencias').upsert(pendentesSync.map(climooPayload),{onConflict:'obra_slot,item_slot,ano,mes'}).select();
+      if(error)throw error;
+      (data||[]).forEach(d=>{
+        const nr=climooNormalizarRegistro(d),idx=climooConferencias.findIndex(x=>climooChave(x)===climooChave(nr));
+        if(idx>=0)climooConferencias[idx]=nr;
+      });
+    }
+  }catch(e){console.warn('Não foi possível sincronizar os dados Climoo com a nuvem:',e.message||e);}
+  climooSalvarLocal();
+}
+async function receberClimooNuvem(){
+  if(!sb||climooRecebendoNuvem)return;
+  climooRecebendoNuvem=true;
+  try{
+    const [{data:cfg,error:cfgErr},{data:rows,error:rowsErr}]=await Promise.all([
+      sb.from('climoo_config').select('*').eq('id',1).maybeSingle(),
+      sb.from('climoo_conferencias').select('*').order('ano').order('mes')
+    ]);
+    if(cfgErr)throw cfgErr;if(rowsErr)throw rowsErr;
+    if(cfg){
+      climooObras=climooNormalizarSlots(cfg.obras,12,CLIMOO_OBRAS_PADRAO);
+      climooItens=climooNormalizarSlots(cfg.itens,7,CLIMOO_ITENS_PADRAO);
+      window.climooConfigUpdatedAt=cfg.updated_at||'';
+    }
+    if(rows)climooConferencias=rows.map(climooNormalizarRegistro);
+    climooSalvarLocal();atualizarContadoresPainel();
+    const registroAberto=document.getElementById('ovClimooRegistro')?.classList.contains('open');
+    const configAberta=document.getElementById('ovClimooConfig')?.classList.contains('open');
+    if(painelSelecionado==='__climoo__'&&!registroAberto&&!configAberta)renderClimooView();
+  }catch(e){console.warn('Falha na atualização em tempo real do Climoo:',e.message||e);}
+  finally{climooRecebendoNuvem=false;}
+}
+function abrirConfigClimoo(){
+  const obrasDiv=document.getElementById('climooConfigObras'),itensDiv=document.getElementById('climooConfigItens');
+  obrasDiv.innerHTML=climooObras.map((nome,i)=>'<label>Obra '+(i+1)+'<input id="climooCfgObra'+(i+1)+'" maxlength="120" value="'+escHtml(nome)+'" placeholder="Nome da obra (não preenchido)"></label>').join('');
+  itensDiv.innerHTML=climooItens.map((nome,i)=>'<label>Item '+(i+1)+'<input id="climooCfgItem'+(i+1)+'" maxlength="180" value="'+escHtml(nome)+'" placeholder="Nome do item '+(i+1)+'"></label>').join('');
+  document.getElementById('ovClimooConfig').classList.add('open');
+}
+function fecharConfigClimoo(){document.getElementById('ovClimooConfig').classList.remove('open');}
+async function salvarConfigClimoo(){
+  const obras=Array.from({length:12},(_,i)=>(document.getElementById('climooCfgObra'+(i+1))?.value||'').trim());
+  const itens=Array.from({length:7},(_,i)=>(document.getElementById('climooCfgItem'+(i+1))?.value||'').trim());
+  if(!obras.some(Boolean)){alert('Cadastre ao menos uma obra antes de salvar.');return;}
+  if(!itens.some(Boolean)){alert('Cadastre ao menos um item do inventário antes de salvar.');return;}
+  const updated_at=new Date().toISOString(),payload={id:1,obras,itens,updated_at};
+  // Atualiza a cópia local primeiro; uma falha de conexão não apaga o cadastro digitado.
+  climooObras=obras;climooItens=itens;window.climooConfigUpdatedAt=updated_at;climooSalvarLocal();
+  let errNuvem=null;
+  if(sb){
+    try{
+      const {data,error}=await sb.from('climoo_config').upsert(payload,{onConflict:'id'}).select().single();
+      if(error)throw error;
+      if(data){climooObras=climooNormalizarSlots(data.obras,12,CLIMOO_OBRAS_PADRAO);climooItens=climooNormalizarSlots(data.itens,7,CLIMOO_ITENS_PADRAO);window.climooConfigUpdatedAt=data.updated_at||updated_at;}
+      climooSalvarLocal();
+    }catch(e){errNuvem=e;}
+  }else errNuvem=new Error('Banco de dados indisponível nesta sessão.');
+  fecharConfigClimoo();renderClimooView();atualizarContadoresPainel();
+  if(errNuvem)alert('O cadastro foi guardado neste navegador, mas não sincronizou com a nuvem. Verifique a conexão antes de utilizar em outro dispositivo.\n\n'+(errNuvem.message||'Erro desconhecido'));
+}
+function climooLinhasBase(ano,meses){
+  const out=[];
+  const mesesUsados=Array.isArray(meses)?meses:Array.from({length:12},(_,i)=>i+1);
+  climooObras.forEach((obra,oi)=>{
+    if(!obra.trim())return;
+    climooItens.forEach((item,ii)=>{
+      if(!item.trim())return;
+      mesesUsados.forEach(mes=>{
+        const busca={obra_slot:oi+1,item_slot:ii+1,ano:Number(ano),mes:Number(mes)};
+        const registro=climooConferencias.find(r=>climooChave(r)===climooChave(busca));
+        out.push({...climooNormalizarRegistro(registro||{...busca,feito:false,valor_lancado:'',status_lancamento:'Não iniciado',status_analise:'Aguardando análise',aplicavel:true,checklist:{}}),obra:obra.trim(),item:item.trim()});
+      });
+    });
+  });
+  return out;
+}
+function climooClasseStatus(status,analise){
+  if(analise){
+    if(status==='Aprovado')return 'done';
+    if(status==='Reprovado')return 'late';
+    if(status==='Em análise')return 'started';
+    if(status==='Pendente de correção'||status==='Pendente de esclarecimento')return 'pending';
+    return 'neutral';
+  }
+  if(status==='Lançado')return 'started';
+  if(status==='Não iniciado'||status==='Aguardando esclarecimento')return 'pending';
+  if(status==='Em preenchimento')return 'started';
+  return 'neutral';
+}
+function climooBadge(status,analise){
+  const label=String(status||'—');
+  return '<span class="climoo-badge '+climooClasseStatus(label,analise)+'">'+escHtml(label)+'</span>';
+}
+function climooLinksValidos(texto){
+  return String(texto||'').split(/\r?\n/).map(x=>x.trim()).filter(Boolean).filter(x=>{
+    try{const u=new URL(x);return u.protocol==='https:'||u.protocol==='http:';}catch(e){return false;}
+  });
+}
+function climooEvidenceCell(texto){
+  const links=climooLinksValidos(texto);
+  if(!links.length)return '<span class="climoo-muted">—</span>';
+  return '<a class="climoo-evidence-link" href="'+escHtml(links[0])+'" target="_blank" rel="noopener noreferrer"><i class="ti ti-paperclip"></i> Abrir '+links.length+'</a>';
+}
+function climooPrazoCelula(r){
+  if(!r.prazo_regularizacao)return '<span class="climoo-muted">—</span>';
+  const pendente=r.aplicavel!==false&&r.status_lancamento!=='Não se aplica'&&r.status_analise!=='Aprovado';
+  const atrasado=pendente&&r.prazo_regularizacao<ctHojeISO();
+  const proximo=pendente&&!atrasado&&Math.round((new Date(r.prazo_regularizacao+'T00:00:00')-new Date(ctHojeISO()+'T00:00:00'))/86400000)<=7;
+  return '<span class="climoo-row-deadline '+(atrasado?'late':'')+'">'+ctDataBR(r.prazo_regularizacao)+(atrasado?' · vencido':proximo?' · próximo':'')+'</span>';
+}
+function climooDataBase(ano,mes){
+  const ultimoDia=new Date(Number(ano),Number(mes),0).getDate();
+  const dia=Math.min(30,ultimoDia);
+  return String(ano)+'-'+String(mes).padStart(2,'0')+'-'+String(dia).padStart(2,'0');
+}
+function climooContarSituacao(rows){
+  const aplicaveis=rows.filter(r=>r.aplicavel!==false&&r.status_lancamento!=='Não se aplica');
+  return {
+    total:rows.length,
+    aprovados:aplicaveis.filter(r=>r.status_analise==='Aprovado').length,
+    pendentes:aplicaveis.filter(r=>r.status_analise!=='Aprovado').length,
+    naoIniciados:aplicaveis.filter(r=>r.status_lancamento==='Não iniciado').length,
+    naoAplicaveis:rows.length-aplicaveis.length
+  };
+}
+function renderClimooView(){
+  const view=document.getElementById('climooDetailedView');
+  if(!view)return;
+  const anoSel=document.getElementById('climooFiltroAno'),mesSel=document.getElementById('climooFiltroMes');
+  const obraSel=document.getElementById('climooFiltroObra'),itemSel=document.getElementById('climooFiltroItem');
+  const collabEl=document.getElementById('climooFiltroColaborador');
+  const lancSel=document.getElementById('climooFiltroLancamento'),analiseSel=document.getElementById('climooFiltroAnalise');
+  if(!anoSel||!mesSel||!obraSel||!itemSel)return;
+  const selecionadoAno=Number(anoSel.value||climooAnoAtual||new Date().getFullYear());
+  const anos=new Set();
+  const atual=new Date().getFullYear();
+  for(let y=atual-3;y<=atual+3;y++)anos.add(y);
+  climooConferencias.forEach(r=>anos.add(Number(r.ano)));
+  anos.add(selecionadoAno);
+  anoSel.innerHTML=Array.from(anos).filter(Number.isFinite).sort((a,b)=>b-a).map(y=>'<option value="'+y+'">'+y+'</option>').join('');
+  anoSel.value=String(selecionadoAno);climooAnoAtual=selecionadoAno;
+  if(mesSel.dataset.initialized!=='yes'){mesSel.value=climooMesFiltro;mesSel.dataset.initialized='yes';}
+  else climooMesFiltro=mesSel.value||climooMesFiltro;
+  const obraAtual=obraSel.value||'todas',itemAtual=itemSel.value||'todos';
+  obraSel.innerHTML='<option value="todas">Todas as obras</option>'+climooObras.map((v,i)=>v.trim()?'<option value="'+(i+1)+'">'+escHtml(v.trim())+'</option>':'').join('');
+  itemSel.innerHTML='<option value="todos">Todos os itens</option>'+climooItens.map((v,i)=>v.trim()?'<option value="'+(i+1)+'">'+escHtml(v.trim())+'</option>':'').join('');
+  obraSel.value=Array.from(obraSel.options).some(o=>o.value===obraAtual)?obraAtual:'todas';
+  itemSel.value=Array.from(itemSel.options).some(o=>o.value===itemAtual)?itemAtual:'todos';
+  const mesValue=mesSel.value||String(new Date().getMonth()+1);
+  const meses=mesValue==='todos'?Array.from({length:12},(_,i)=>i+1):[Number(mesValue)];
+  const todosDoPeriodo=climooLinhasBase(selecionadoAno,meses);
+  const filtroObra=obraSel.value,filtroItem=itemSel.value;
+  const filtroColaborador=(collabEl?.value||'').trim().toLocaleLowerCase('pt-BR');
+  const filtroLanc=lancSel?.value||'todos',filtroAnalise=analiseSel?.value||'todos';
+  const rows=todosDoPeriodo.filter(r=>
+    (filtroObra==='todas'||r.obra_slot===Number(filtroObra))&&
+    (filtroItem==='todos'||r.item_slot===Number(filtroItem))&&
+    (!filtroColaborador||r.colaborador.toLocaleLowerCase('pt-BR').includes(filtroColaborador))&&
+    (filtroLanc==='todos'||r.status_lancamento===filtroLanc)&&
+    (filtroAnalise==='todos'||r.status_analise===filtroAnalise)
+  );
+  const table=document.getElementById('climooLinhas');
+  const statusCells=rows.map(r=>{
+    const quantidade=r.aplicavel===false||r.status_lancamento==='Não se aplica'
+      ?'<span class="climoo-muted">Não aplicável</span>'
+      :r.valor_lancado===''?'<span class="climoo-muted">Sem valor informado</span>':escHtml(r.valor_lancado)+(r.unidade_medida?' '+escHtml(r.unidade_medida):'');
+    return '<tr>'+
+      '<td class="climoo-row-work">'+escHtml(r.obra)+'</td>'+
+      '<td class="climoo-row-item">'+escHtml(r.item)+'</td>'+
+      '<td>'+escHtml(CLIMOO_MESES[r.mes-1])+' '+r.ano+'</td>'+
+      '<td>'+(r.colaborador?escHtml(r.colaborador):'<span class="climoo-muted">Não informado</span>')+'</td>'+
+      '<td class="climoo-value">'+quantidade+'</td>'+
+      '<td>'+climooBadge(r.aplicavel===false?'Não se aplica':r.status_lancamento,false)+'</td>'+
+      '<td>'+climooBadge(r.status_analise,true)+'</td>'+
+      '<td>'+climooPrazoCelula(r)+'</td>'+
+      '<td>'+climooEvidenceCell(r.evidencias)+'</td>'+
+      '<td><button type="button" class="climoo-edit-btn" onclick="abrirRegistroClimoo('+r.obra_slot+','+r.item_slot+','+r.mes+','+r.ano+')"><i class="ti ti-edit"></i> Conferir</button></td>'+
+      '</tr>';
+  }).join('');
+  table.innerHTML=rows.length?statusCells:'<tr><td colspan="10" class="climoo-empty">Nenhuma combinação corresponde aos filtros. Cadastre obras e itens, ou ajuste os filtros.</td></tr>';
+  const situacao=climooContarSituacao(rows);
+  const kpi=document.getElementById('climooKpis');
+  kpi.innerHTML=
+    '<div class="climoo-kpi"><span>Obras cadastradas</span><strong>'+climooObras.filter(x=>x.trim()).length+'/12</strong></div>'+
+    '<div class="climoo-kpi"><span>Itens cadastrados</span><strong>'+climooItens.filter(x=>x.trim()).length+'/7</strong></div>'+
+    '<div class="climoo-kpi"><span>Combinações no filtro</span><strong>'+situacao.total+'</strong></div>'+
+    '<div class="climoo-kpi good"><span>Aprovados</span><strong>'+situacao.aprovados+'</strong></div>'+
+    '<div class="climoo-kpi warn"><span>Pendências de análise</span><strong>'+situacao.pendentes+'</strong></div>'+
+    '<div class="climoo-kpi danger"><span>Lançamentos não iniciados</span><strong>'+situacao.naoIniciados+'</strong></div>';
+  const fechamento=document.getElementById('climooFechamento');
+  if(mesValue==='todos'){
+    fechamento.className='climoo-close-note';
+    fechamento.innerHTML='<strong>Fechamento mensal previsto: dia 30 de cada mês.</strong> Acompanhe as combinações aplicáveis por obra, item e período. “Sem valor informado” não equivale a zero.';
+  }else{
+    const vencimento=climooDataBase(selecionadoAno,Number(mesValue));
+    const diff=Math.round((new Date(vencimento+'T00:00:00')-new Date(ctHojeISO()+'T00:00:00'))/86400000);
+    fechamento.className='climoo-close-note'+(diff<0?' late':'');
+    const frase=diff<0?'O prazo previsto passou há '+Math.abs(diff)+' dia(s).':diff===0?'O fechamento previsto é hoje.':'Faltam '+diff+' dia(s) para o fechamento previsto.';
+    fechamento.innerHTML='<strong>Fechamento previsto: '+ctDataBR(vencimento)+'.</strong> '+frase+' Registre apenas a situação realmente conferida.';
+  }
+  const resumo=document.getElementById('climooObrasResumo');
+  const workRows=climooObras.map((obra,i)=>{
+    if(!obra.trim())return '';
+    const porObra=climooLinhasBase(selecionadoAno,meses).filter(r=>r.obra_slot===i+1);
+    const c=climooContarSituacao(porObra);
+    return '<div class="climoo-work-card"><div class="climoo-work-name">'+escHtml(obra)+'</div><div class="climoo-work-stats">'+c.aprovados+' aprovado(s) · '+c.pendentes+' pendência(s) de análise · '+c.naoIniciados+' não iniciado(s) · '+c.naoAplicaveis+' não aplicável(is)</div></div>';
+  }).filter(Boolean).join('');
+  resumo.innerHTML=workRows||'<div class="climoo-empty">Nenhuma obra cadastrada. Use “Configurar obras e itens” para incluir as obras reais.</div>';
+}
+function renderClimooChecklist(checklist){
+  const c=document.getElementById('clChecklist');
+  c.innerHTML=CLIMOO_CHECKLIST.map(x=>{
+    const atual=checklist&&checklist[x.key]?checklist[x.key]:'Não verificado';
+    return '<div class="climoo-checklist-row"><span>'+escHtml(x.label)+'</span><select id="clCheck_'+x.key+'" aria-label="'+escHtml(x.label)+'">'+
+      ['Não verificado','Sim','Não','Não se aplica'].map(v=>'<option value="'+v+'" '+(v===atual?'selected':'')+'>'+v+'</option>').join('')+
+      '</select></div>';
+  }).join('');
+}
+function abrirRegistroClimoo(obraSlot,itemSlot,mes,ano){
+  const obra=climooObras[Number(obraSlot)-1]||'';
+  const item=climooItens[Number(itemSlot)-1]||'';
+  if(!obra||!item)return;
+  const chave=climooChave({obra_slot:obraSlot,item_slot:itemSlot,ano,mes});
+  const existente=climooConferencias.find(r=>climooChave(r)===chave);
+  climooRegistroAtual=climooNormalizarRegistro(existente||{obra_slot:obraSlot,item_slot:itemSlot,ano,mes,valor_lancado:'',status_lancamento:'Não iniciado',status_analise:'Aguardando análise',aplicavel:true,checklist:{}});
+  document.getElementById('climooRegistroTitulo').textContent='Conferência mensal';
+  document.getElementById('climooRegistroSubtitulo').textContent='Os dois status são independentes: o lançamento pode estar registrado e ainda aguardar sua análise.';
+  document.getElementById('clObra').value=obra;
+  document.getElementById('clItem').value=item;
+  document.getElementById('clMesAno').value=CLIMOO_MESES[Number(mes)-1]+' de '+ano;
+  document.getElementById('clAplicavel').value=String(climooRegistroAtual.aplicavel!==false);
+  document.getElementById('clColaborador').value=climooRegistroAtual.colaborador;
+  document.getElementById('clDataVerificacao').value=climooRegistroAtual.data_verificacao;
+  document.getElementById('clValor').value=climooRegistroAtual.valor_lancado;
+  document.getElementById('clUnidade').value=climooRegistroAtual.unidade_medida;
+  document.getElementById('clStatusLancamento').value=climooRegistroAtual.status_lancamento;
+  document.getElementById('clStatusAnalise').value=climooRegistroAtual.status_analise;
+  document.getElementById('clEscopoVerificado').value=climooRegistroAtual.escopo_verificado;
+  document.getElementById('clJustificativa').value=climooRegistroAtual.justificativa;
+  document.getElementById('clDivergencias').value=climooRegistroAtual.divergencias;
+  document.getElementById('clProvidencia').value=climooRegistroAtual.providencia;
+  document.getElementById('clResponsavelResolucao').value=climooRegistroAtual.responsavel_resolucao;
+  document.getElementById('clPrazoRegularizacao').value=climooRegistroAtual.prazo_regularizacao;
+  document.getElementById('clDataConclusao').value=climooRegistroAtual.data_conclusao;
+  document.getElementById('clEvidencias').value=climooRegistroAtual.evidencias;
+  document.getElementById('clObservacoes').value=climooRegistroAtual.observacoes;
+  renderClimooChecklist(climooRegistroAtual.checklist);
+  alternarAplicabilidadeClimoo(true);
+  document.getElementById('ovClimooRegistro').classList.add('open');
+}
+function alternarAplicabilidadeClimoo(naoAlterarStatus){
+  const aplicavel=document.getElementById('clAplicavel').value==='true';
+  const valor=document.getElementById('clValor'),unidade=document.getElementById('clUnidade');
+  valor.disabled=!aplicavel;unidade.disabled=!aplicavel;
+  if(!aplicavel)document.getElementById('clStatusLancamento').value='Não se aplica';
+  else if(!naoAlterarStatus&&document.getElementById('clStatusLancamento').value==='Não se aplica')document.getElementById('clStatusLancamento').value='Não iniciado';
+}
+function fecharRegistroClimoo(){
+  document.getElementById('ovClimooRegistro').classList.remove('open');
+  climooRegistroAtual=null;
+}
+async function salvarRegistroClimoo(){
+  if(!climooRegistroAtual)return;
+  const aplicavel=document.getElementById('clAplicavel').value==='true';
+  const statusLancamento=aplicavel?document.getElementById('clStatusLancamento').value:'Não se aplica';
+  const statusAnalise=document.getElementById('clStatusAnalise').value;
+  const justificativa=document.getElementById('clJustificativa').value.trim();
+  const linksText=document.getElementById('clEvidencias').value.trim();
+  const linhasLinks=linksText?linksText.split(/\r?\n/).map(x=>x.trim()).filter(Boolean):[];
+  const linksInvalidos=linhasLinks.filter(x=>!climooLinksValidos(x).length);
+  if(linksInvalidos.length){
+    alert('Algum link de evidência não é uma URL HTTP/HTTPS válida. Corrija-o ou remova a linha antes de salvar.');
+    document.getElementById('clEvidencias').focus();return;
+  }
+  if((statusAnalise==='Aprovado'||statusAnalise==='Reprovado')&&!justificativa){
+    alert('Registre a justificativa real antes de aprovar ou reprovar um lançamento.');
+    document.getElementById('clJustificativa').focus();return;
+  }
+  const r=climooNormalizarRegistro({
+    ...climooRegistroAtual,
+    colaborador:document.getElementById('clColaborador').value.trim(),
+    data_verificacao:document.getElementById('clDataVerificacao').value,
+    valor_lancado:aplicavel?document.getElementById('clValor').value:'',
+    unidade_medida:aplicavel?document.getElementById('clUnidade').value.trim():'',
+    status_lancamento:statusLancamento,status_analise:statusAnalise,aplicavel,
+    escopo_verificado:document.getElementById('clEscopoVerificado').value.trim(),
+    checklist:Object.fromEntries(CLIMOO_CHECKLIST.map(x=>[x.key,document.getElementById('clCheck_'+x.key).value])),
+    justificativa,divergencias:document.getElementById('clDivergencias').value.trim(),
+    providencia:document.getElementById('clProvidencia').value.trim(),
+    responsavel_resolucao:document.getElementById('clResponsavelResolucao').value.trim(),
+    prazo_regularizacao:document.getElementById('clPrazoRegularizacao').value,
+    data_conclusao:document.getElementById('clDataConclusao').value,
+    evidencias:linksText,observacoes:document.getElementById('clObservacoes').value.trim(),
+    updated_at:new Date().toISOString()
+  });
+  const idx=climooConferencias.findIndex(x=>climooChave(x)===climooChave(r));
+  if(idx>=0){r.id=climooConferencias[idx].id;climooConferencias[idx]=r;}else climooConferencias.push(r);
+  climooSalvarLocal();
+  let erroNuvem=null;
+  if(sb){
+    try{
+      const {data,error}=await sb.from('climoo_conferencias').upsert(climooPayload(r),{onConflict:'obra_slot,item_slot,ano,mes'}).select().single();
+      if(error)throw error;
+      const salvo=climooNormalizarRegistro(data);
+      const pos=climooConferencias.findIndex(x=>climooChave(x)===climooChave(salvo));
+      if(pos>=0)climooConferencias[pos]=salvo;
+      climooSalvarLocal();
+    }catch(e){erroNuvem=e;}
+  }else erroNuvem=new Error('Banco de dados indisponível nesta sessão.');
+  const tipoMensagem=erroNuvem?'O registro foi salvo neste navegador, mas não sincronizou com a nuvem. Verifique a conexão antes de usar em outro dispositivo.':'Conferência salva.';
+  fecharRegistroClimoo();renderClimooView();atualizarContadoresPainel();
+  if(erroNuvem)alert(tipoMensagem+'\n\n'+(erroNuvem.message||'Erro desconhecido'));
+}
+
 function renderAbasMes(lista) {
   const meses = [...new Set(tarefas.map(t => t.mes).filter(Boolean))].sort((a,b) => a.localeCompare(b));
   const div = document.getElementById('abasMes');

@@ -845,6 +845,74 @@ body.theme-dark .visual-reset{background:#151C23;color:var(--text);border-color:
 body.theme-dark .tracking-table thead th{background:#222D37;}
 body.theme-dark .tracking-table tbody tr:hover td{background:#222D37;}
 @media(max-width:700px){.tracking-page-header{flex-direction:column;gap:10px}.tracking-year-filter{padding:0}.tracking-table-wrap{border-radius:8px}}
+
+/* ===== CLIMOO: CONTROLE DETALHADO DE CONFERÊNCIA DO INVENTÁRIO DE GEE ===== */
+.climoo-detailed-view{min-width:0;}
+.climoo-page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin:4px 0 16px;}
+.climoo-filters{display:grid;grid-template-columns:repeat(4,minmax(135px,1fr));gap:10px;padding:13px;margin-bottom:12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);}
+.climoo-filters label{display:flex;flex-direction:column;gap:5px;min-width:0;color:var(--muted);font-size:10px;font-weight:700;}
+.climoo-filters select,.climoo-filters input{width:100%;min-width:0;height:35px;padding:0 9px;border:1px solid var(--line);border-radius:7px;background:var(--surface);color:var(--text);font:inherit;font-size:11px;font-weight:400;}
+.climoo-close-note{margin-bottom:12px;padding:10px 12px;border-left:3px solid var(--brand);background:var(--brand-soft);border-radius:5px;color:var(--text);font-size:11px;line-height:1.5;}
+.climoo-close-note.late{border-left-color:var(--red);}
+.climoo-kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:19px;}
+.climoo-kpi{min-width:0;padding:12px;border:1px solid var(--line);border-radius:9px;background:var(--surface);}
+.climoo-kpi span{display:block;color:var(--muted);font-size:10px;line-height:1.4;margin-bottom:7px;}
+.climoo-kpi strong{display:block;color:var(--brand-dark);font-size:22px;line-height:1.1;overflow-wrap:anywhere;}
+.climoo-kpi.warn strong{color:var(--amber);}
+.climoo-kpi.danger strong{color:var(--red);}
+.climoo-kpi.good strong{color:var(--green);}
+.climoo-work-overview{margin-bottom:18px;}
+.climoo-section-title{font-size:13px;font-weight:700;color:var(--brand-dark);margin-bottom:9px;}
+.climoo-work-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;}
+.climoo-work-card{padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);min-width:0;}
+.climoo-work-name{font-size:12px;font-weight:700;color:var(--text);margin-bottom:5px;overflow-wrap:anywhere;}
+.climoo-work-stats{font-size:10px;color:var(--muted);line-height:1.6;}
+.climoo-table-scroll{width:100%;overflow:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface);}
+.climoo-table{width:100%;min-width:1120px;border-collapse:separate;border-spacing:0;}
+.climoo-table thead th{padding:10px 9px;background:var(--brand-soft);border-bottom:1px solid var(--line);color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.035em;text-align:left;white-space:nowrap;}
+.climoo-table tbody td{padding:9px;border-bottom:1px solid var(--line);font-size:10px;color:var(--text);vertical-align:middle;}
+.climoo-table tbody tr:last-child td{border-bottom:0;}
+.climoo-table tbody tr:hover td{background:color-mix(in srgb,var(--brand-soft) 28%,var(--surface));}
+.climoo-row-work{font-weight:700;min-width:125px;}
+.climoo-row-item{min-width:170px;max-width:230px;line-height:1.4;}
+.climoo-value{white-space:nowrap;font-variant-numeric:tabular-nums;}
+.climoo-muted{color:var(--muted)!important;}
+.climoo-badge{display:inline-block;padding:4px 6px;border-radius:5px;font-size:9px;font-weight:700;line-height:1.25;white-space:normal;max-width:145px;}
+.climoo-badge.done{background:#E4F7ED;color:#16734D;}
+.climoo-badge.started{background:#E5F1FF;color:#1769AA;}
+.climoo-badge.pending{background:#FFF3D8;color:#A15C00;}
+.climoo-badge.late{background:#FDEBED;color:#C13D49;}
+.climoo-badge.neutral{background:#EEF1F3;color:#61717C;}
+.climoo-row-deadline{white-space:nowrap;font-size:10px;}
+.climoo-row-deadline.late{color:var(--red);font-weight:700;}
+.climoo-evidence-link{display:inline-flex;align-items:center;gap:4px;color:var(--brand);font-weight:700;text-decoration:none;white-space:nowrap;}
+.climoo-evidence-link:hover{text-decoration:underline;}
+.climoo-edit-btn{padding:6px 9px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--brand);font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap;}
+.climoo-edit-btn:hover{background:var(--brand-soft);}
+.climoo-footnote{margin-top:10px;color:var(--muted);font-size:10px;line-height:1.5;}
+.climoo-empty{padding:22px;text-align:center;color:var(--muted);font-size:12px;}
+.climoo-edit-modal,.climoo-config-modal{width:900px;max-width:96vw;max-height:calc(100vh - 24px);overflow-y:auto;}
+.climoo-config-modal{width:780px;}
+.climoo-modal-subtitle{margin:-4px 0 15px;color:var(--muted);font-size:11px;line-height:1.5;}
+.climoo-checklist{display:flex;flex-direction:column;gap:7px;padding:10px;border:1px solid var(--line);border-radius:8px;}
+.climoo-checklist-row{display:grid;grid-template-columns:minmax(0,1fr) 145px;gap:10px;align-items:center;font-size:11px;color:var(--text);}
+.climoo-checklist-row select{height:32px;width:100%;padding:0 7px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--text);font:inherit;}
+.climoo-field-help{display:block;margin-top:5px;color:var(--muted);font-size:10px;line-height:1.5;}
+.climoo-config-block{margin-top:17px;}
+.climoo-config-block h3{font-size:12px;color:var(--brand-dark);margin-bottom:9px;}
+.climoo-config-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
+.climoo-config-grid label{display:flex;flex-direction:column;gap:4px;color:var(--muted);font-size:10px;font-weight:700;}
+.climoo-config-grid input{height:35px;width:100%;padding:0 9px;border:1px solid var(--line);border-radius:7px;background:var(--surface);color:var(--text);font:inherit;font-size:11px;}
+body.theme-dark .climoo-table thead th{background:#222D37;}
+body.theme-dark .climoo-table tbody tr:hover td,body.theme-dark .climoo-edit-btn:hover{background:#222D37;}
+body.theme-dark .climoo-badge.done{background:#193B2D;color:#8DDCB7;}
+body.theme-dark .climoo-badge.started{background:#1B344A;color:#A6D2F5;}
+body.theme-dark .climoo-badge.pending{background:#47371E;color:#F0CA79;}
+body.theme-dark .climoo-badge.late{background:#48242B;color:#F3A2AB;}
+body.theme-dark .climoo-badge.neutral{background:#2A333C;color:#C0CBD4;}
+@media(max-width:1000px){.climoo-filters{grid-template-columns:repeat(3,minmax(120px,1fr));}.climoo-kpis{grid-template-columns:repeat(3,minmax(0,1fr));}.climoo-work-cards{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media(max-width:650px){.climoo-page-head{flex-direction:column;}.climoo-page-head .btn-primary{width:100%;justify-content:center;}.climoo-filters{grid-template-columns:repeat(2,minmax(0,1fr));padding:9px;gap:8px;}.climoo-kpis{grid-template-columns:repeat(2,minmax(0,1fr));}.climoo-work-cards,.climoo-config-grid{grid-template-columns:1fr;}.climoo-checklist-row{grid-template-columns:minmax(0,1fr) 125px;}}
+
 </style>
 </head>
 <body>
@@ -1117,7 +1185,114 @@ body.theme-dark .tracking-table tbody tr:hover td{background:#222D37;}
         </div>
         <p class="tracking-help">Preencha o acompanhamento de cada mês e clique em <strong>Salvar</strong> na respectiva linha.</p>
       </div>
+
+      <div id="climooDetailedView" class="climoo-detailed-view" style="display:none">
+        <div class="climoo-page-head">
+          <div>
+            <div class="project-page-title">Climoo · Conferência do inventário de GEE</div>
+            <div class="project-page-subtitle">Acompanhe os lançamentos mensais, evidências e pendências das obras até o fechamento previsto para o dia 30.</div>
+          </div>
+          <button type="button" class="btn-primary" onclick="abrirConfigClimoo()"><i class="ti ti-settings"></i> Configurar obras e itens</button>
+        </div>
+
+        <div class="climoo-filters">
+          <label>Ano<select id="climooFiltroAno" onchange="renderClimooView()"></select></label>
+          <label>Mês<select id="climooFiltroMes" onchange="renderClimooView()">
+            <option value="todos">Todos os meses</option>
+            <option value="1">Janeiro</option><option value="2">Fevereiro</option><option value="3">Março</option>
+            <option value="4">Abril</option><option value="5">Maio</option><option value="6">Junho</option>
+            <option value="7">Julho</option><option value="8">Agosto</option><option value="9">Setembro</option>
+            <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
+          </select></label>
+          <label>Obra<select id="climooFiltroObra" onchange="renderClimooView()"><option value="todas">Todas</option></select></label>
+          <label>Item<select id="climooFiltroItem" onchange="renderClimooView()"><option value="todos">Todos</option></select></label>
+          <label>Colaborador<input id="climooFiltroColaborador" type="search" placeholder="Filtrar nome" oninput="renderClimooView()"></label>
+          <label>Status do lançamento<select id="climooFiltroLancamento" onchange="renderClimooView()">
+            <option value="todos">Todos</option><option>Não iniciado</option><option>Em preenchimento</option><option>Lançado</option><option>Não se aplica</option><option>Aguardando esclarecimento</option>
+          </select></label>
+          <label>Status da análise<select id="climooFiltroAnalise" onchange="renderClimooView()">
+            <option value="todos">Todos</option><option>Aguardando análise</option><option>Em análise</option><option>Aprovado</option><option>Pendente de correção</option><option>Pendente de esclarecimento</option><option>Reprovado</option>
+          </select></label>
+        </div>
+
+        <div id="climooFechamento" class="climoo-close-note"></div>
+        <div id="climooKpis" class="climoo-kpis"></div>
+        <section class="climoo-work-overview">
+          <div class="climoo-section-title">Resumo das obras</div>
+          <div id="climooObrasResumo" class="climoo-work-cards"></div>
+        </section>
+
+        <div class="climoo-table-scroll">
+          <table class="climoo-table">
+            <thead><tr>
+              <th>Obra</th><th>Item do inventário</th><th>Mês</th><th>Colaborador</th><th>Quantidade / unidade</th>
+              <th>Status do lançamento</th><th>Status da análise</th><th>Prazo da pendência</th><th>Evidência</th><th>Ação</th>
+            </tr></thead>
+            <tbody id="climooLinhas"></tbody>
+          </table>
+        </div>
+        <p class="climoo-footnote">Importante: quantidade em branco significa “sem valor informado”; zero só é registrado quando digitado como 0. Ausência de lançamento não comprova ausência de consumo ou atividade. Os filtros mostram os meses e cadastros selecionados.</p>
+      </div>
     </main>
+  </div>
+</div>
+
+<!-- modal conferência Climoo -->
+<div class="modal-overlay" id="ovClimooRegistro">
+  <div class="modal climoo-edit-modal">
+    <h2 id="climooRegistroTitulo">Conferência mensal</h2>
+    <p id="climooRegistroSubtitulo" class="climoo-modal-subtitle"></p>
+    <div class="mgrid">
+      <div class="field"><label>Obra</label><input id="clObra" type="text" readonly></div>
+      <div class="field"><label>Item do inventário de GEE</label><input id="clItem" type="text" readonly></div>
+      <div class="field"><label>Mês de referência</label><input id="clMesAno" type="text" readonly></div>
+      <div class="field"><label>Item aplicável?</label><select id="clAplicavel" onchange="alternarAplicabilidadeClimoo()"><option value="true">Aplicável</option><option value="false">Não se aplica</option></select></div>
+      <div class="field"><label>Colaborador responsável pelo lançamento</label><input id="clColaborador" type="text" placeholder="Nome conforme cadastro / plataforma"></div>
+      <div class="field"><label>Data da verificação</label><input id="clDataVerificacao" type="date"></div>
+      <div class="field"><label>Quantidade lançada</label><input id="clValor" type="number" step="any" placeholder="Deixe vazio se não informado"></div>
+      <div class="field"><label>Unidade de medida</label><input id="clUnidade" type="text" placeholder="Conforme item / plataforma"></div>
+      <div class="field"><label>Status do lançamento</label><select id="clStatusLancamento">
+        <option>Não iniciado</option><option>Em preenchimento</option><option>Lançado</option><option>Não se aplica</option><option>Aguardando esclarecimento</option>
+      </select></div>
+      <div class="field"><label>Status da minha análise</label><select id="clStatusAnalise">
+        <option>Aguardando análise</option><option>Em análise</option><option>Aprovado</option><option>Pendente de correção</option><option>Pendente de esclarecimento</option><option>Reprovado</option>
+      </select></div>
+      <div class="field full"><label>O que foi verificado</label><textarea id="clEscopoVerificado" placeholder="Registre as conferências efetivamente realizadas."></textarea></div>
+      <div class="field full"><label>Checklist de conferência</label><div id="clChecklist" class="climoo-checklist"></div></div>
+      <div class="field full"><label>Justificativa da aprovação ou reprovação</label><textarea id="clJustificativa" placeholder="Registre os motivos reais da decisão, sem preenchimento automático."></textarea></div>
+      <div class="field full"><label>Divergências identificadas</label><textarea id="clDivergencias" placeholder="Descreva diferenças, ausência de dados ou dúvidas encontradas."></textarea></div>
+      <div class="field full"><label>Providência necessária</label><textarea id="clProvidencia" placeholder="O que deve ser corrigido, comprovado ou esclarecido?"></textarea></div>
+      <div class="field"><label>Responsável pela resolução</label><input id="clResponsavelResolucao" type="text" placeholder="Colaborador / setor"></div>
+      <div class="field"><label>Prazo para regularização</label><input id="clPrazoRegularizacao" type="date"></div>
+      <div class="field"><label>Data da conclusão</label><input id="clDataConclusao" type="date"></div>
+      <div class="field full"><label>Evidências e prints (um link por linha)</label><textarea id="clEvidencias" placeholder="Cole links para capturas de tela ou documentos armazenados em pasta corporativa."></textarea><small class="climoo-field-help">Use um link com acesso corporativo controlado (por exemplo, SharePoint ou Box). Esta versão guarda os links, não envia arquivos diretamente.</small></div>
+      <div class="field full"><label>Observações adicionais</label><textarea id="clObservacoes" placeholder="Informações complementares para o histórico mensal."></textarea></div>
+    </div>
+    <div class="mactions">
+      <button class="btn-cancel" type="button" onclick="fecharRegistroClimoo()">Cancelar</button>
+      <button class="btn-save" type="button" onclick="salvarRegistroClimoo()">Salvar conferência</button>
+    </div>
+  </div>
+</div>
+
+<!-- modal cadastro de obras e itens Climoo -->
+<div class="modal-overlay" id="ovClimooConfig">
+  <div class="modal climoo-config-modal">
+    <h2>Configurar obras e itens</h2>
+    <p class="climoo-modal-subtitle">Cadastre até 12 obras e 7 itens. O relatório enviado identifica Camaçari Rental e cinco itens; os demais campos ficam vazios para você preencher.</p>
+    <div class="climoo-config-block">
+      <h3>Obras (até 12)</h3>
+      <div id="climooConfigObras" class="climoo-config-grid"></div>
+    </div>
+    <div class="climoo-config-block">
+      <h3>Itens do inventário de GEE (até 7)</h3>
+      <div id="climooConfigItens" class="climoo-config-grid"></div>
+    </div>
+    <p class="climoo-field-help">Para manter o histórico correto, edite o nome na posição correspondente em vez de trocar a ordem de obras ou itens que já tenham registros.</p>
+    <div class="mactions">
+      <button class="btn-cancel" type="button" onclick="fecharConfigClimoo()">Cancelar</button>
+      <button class="btn-save" type="button" onclick="salvarConfigClimoo()">Salvar cadastros</button>
+    </div>
   </div>
 </div>
 
@@ -1397,6 +1572,10 @@ let nfs=[], nextNfId=5000, nfEditando=null;
 let ncs=[], nextNcId=6000, ncEditando=null;
 let gestaoSemanal=[], nextGestaoSemanalId=7000, gsEditando=null, gsDataReferencia='';
 let acompanhamentosMensais=[], anoAcompanhamentoAtual=new Date().getFullYear();
+const CLIMOO_OBRAS_PADRAO=['Camaçari Rental','','','','','','','','','','',''];
+const CLIMOO_ITENS_PADRAO=['Consumo de gases para solda','Consumo de óleo diesel no gerador','Consumo de óleo diesel no compressor','Consumo de acetileno para solda','Quantidade de colaboradores - Fossa séptica','',''];
+let climooObras=CLIMOO_OBRAS_PADRAO.slice(),climooItens=CLIMOO_ITENS_PADRAO.slice(),climooConferencias=[];
+let climooAnoAtual=new Date().getFullYear(),climooMesFiltro=String(new Date().getMonth()+1),climooRegistroAtual=null,climooRecebendoNuvem=false;
 let collapsedMes = {}, expandedTarefa = {}, microAlvo = null, mesesSelecionados = new Set(), painelSelecionado = '__dashboard__', projetoExpandido = {};
 
 function bc(s){ return s==='Pendente'?'b-p':s==='Aguardando'?'b-a':s==='Concluído'?'b-c':'b-s'; }
@@ -2184,6 +2363,8 @@ function iniciarSincronizacaoTempoReal() {
     .on('postgres_changes', { event:'*', schema:'public', table:'controle_ncs' }, () => receberNuvem())
     .on('postgres_changes', { event:'*', schema:'public', table:'gestao_semanal' }, () => receberNuvem())
     .on('postgres_changes', { event:'*', schema:'public', table:'acompanhamentos_mensais' }, () => receberNuvem())
+    .on('postgres_changes', { event:'*', schema:'public', table:'climoo_config' }, () => receberClimooNuvem())
+    .on('postgres_changes', { event:'*', schema:'public', table:'climoo_conferencias' }, () => receberClimooNuvem())
     .subscribe();
 }
 
@@ -2605,7 +2786,7 @@ function atualizarContadoresPainel() {
   const objetivos=document.getElementById('count-objetivos-metas');
   if(objetivos) objetivos.textContent=acompanhamentosMensais.filter(r=>r.tipo==='objetivos_metas'&&Number(r.ano)===year).length;
   const climoo=document.getElementById('count-climoo');
-  if(climoo) climoo.textContent=acompanhamentosMensais.filter(r=>r.tipo==='climoo'&&Number(r.ano)===year).length;
+  if(climoo) climoo.textContent=climooConferencias.filter(r=>Number(r.ano)===Number(climooAnoAtual)).length;
 }
 
 function fecharDropdownMeses(event){
@@ -2844,7 +3025,9 @@ function render() {
   const gsView=document.getElementById('gestaoSemanalView');
   const dashboardView=document.getElementById('dashboardGestaoView');
   const monthlyTrackingView=document.getElementById('monthlyTrackingView');
+  const climooDetailedView=document.getElementById('climooDetailedView');
   if(monthlyTrackingView) monthlyTrackingView.style.display='none';
+  if(climooDetailedView) climooDetailedView.style.display='none';
   if(painelSelecionado==='__dashboard__'){
     ['tarefasView','projetosView','nfsView','ncsView','calendarioView','reunioesView','gestaoSemanalView'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
     if(dashboardView)dashboardView.style.display='block';
@@ -2852,10 +3035,16 @@ function render() {
     return;
   }
   if(dashboardView)dashboardView.style.display='none';
-  if (['__objetivos_metas__','__climoo__'].includes(painelSelecionado)) {
+  if (painelSelecionado === '__climoo__') {
+    ['tarefasView','projetosView','nfsView','ncsView','calendarioView','reunioesView','gestaoSemanalView'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
+    if(climooDetailedView) climooDetailedView.style.display='block';
+    renderClimooView();
+    return;
+  }
+  if (painelSelecionado === '__objetivos_metas__') {
     ['tarefasView','projetosView','nfsView','ncsView','calendarioView','reunioesView','gestaoSemanalView'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
     if(monthlyTrackingView) monthlyTrackingView.style.display='block';
-    renderAcompanhamentoMensal(painelSelecionado==='__climoo__'?'climoo':'objetivos_metas');
+    renderAcompanhamentoMensal('objetivos_metas');
     return;
   }
   if (painelSelecionado === '__gestao_semanal__') {
@@ -3464,7 +3653,7 @@ function inicializarPreferenciasVisuais() {
 
 inicializarPreferenciasVisuais();
 
-carregarDados().then(() => { render(); iniciarSincronizacaoTempoReal(); });
+carregarDados().then(async () => { await carregarClimooDados(); render(); iniciarSincronizacaoTempoReal(); });
 
 /* ===== EDIÇÃO DE TAREFAS ===== */
 let tarefaEditando = null;

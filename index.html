@@ -854,7 +854,7 @@ body.theme-dark .tracking-table tbody tr:hover td{background:#222D37;}
 .climoo-filters select,.climoo-filters input{width:100%;min-width:0;height:35px;padding:0 9px;border:1px solid var(--line);border-radius:7px;background:var(--surface);color:var(--text);font:inherit;font-size:11px;font-weight:400;}
 .climoo-close-note{margin-bottom:12px;padding:10px 12px;border-left:3px solid var(--brand);background:var(--brand-soft);border-radius:5px;color:var(--text);font-size:11px;line-height:1.5;}
 .climoo-close-note.late{border-left-color:var(--red);}
-.climoo-kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:19px;}
+.climoo-kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin-bottom:19px;}
 .climoo-kpi{min-width:0;padding:12px;border:1px solid var(--line);border-radius:9px;background:var(--surface);}
 .climoo-kpi span{display:block;color:var(--muted);font-size:10px;line-height:1.4;margin-bottom:7px;}
 .climoo-kpi strong{display:block;color:var(--brand-dark);font-size:22px;line-height:1.1;overflow-wrap:anywhere;}
@@ -1251,7 +1251,7 @@ body.theme-dark .climoo-badge.neutral{background:#2A333C;color:#C0CBD4;}
       <div class="field"><label>Data da verificação</label><input id="clDataVerificacao" type="date"></div>
       <div class="field"><label>Quantidade lançada</label><input id="clValor" type="number" step="any" placeholder="Deixe vazio se não informado"></div>
       <div class="field"><label>Unidade de medida</label><input id="clUnidade" type="text" placeholder="Conforme item / plataforma"></div>
-      <div class="field"><label>Status do lançamento</label><select id="clStatusLancamento">
+      <div class="field"><label>Status do lançamento</label><select id="clStatusLancamento" onchange="climooLancamentoMudou()">
         <option>Não iniciado</option><option>Em preenchimento</option><option>Lançado</option><option>Não se aplica</option><option>Aguardando esclarecimento</option>
       </select></div>
       <div class="field"><label>Status da minha análise</label><select id="clStatusAnalise">
@@ -3029,12 +3029,43 @@ async function receberClimooNuvem(){
       sb.from('climoo_conferencias').select('*').order('ano').order('mes')
     ]);
     if(cfgErr)throw cfgErr;if(rowsErr)throw rowsErr;
+    const cfgLocal=climooConfigLocal();
     if(cfg){
-      climooObras=climooNormalizarSlots(cfg.obras,12,CLIMOO_OBRAS_PADRAO);
-      climooItens=climooNormalizarSlots(cfg.itens,7,CLIMOO_ITENS_PADRAO);
-      window.climooConfigUpdatedAt=cfg.updated_at||'';
+      const localMaisNovo=cfgLocal&&String(cfgLocal.updated_at||'')>String(cfg.updated_at||'');
+      if(localMaisNovo){
+        const localPayload={id:1,obras:climooNormalizarSlots(cfgLocal.obras,12,CLIMOO_OBRAS_PADRAO),itens:climooNormalizarSlots(cfgLocal.itens,7,CLIMOO_ITENS_PADRAO),updated_at:cfgLocal.updated_at};
+        const {data:cfgSincronizada,error}=await sb.from('climoo_config').upsert(localPayload,{onConflict:'id'}).select().single();
+        if(error)throw error;
+        climooObras=climooNormalizarSlots(cfgSincronizada.obras,12,CLIMOO_OBRAS_PADRAO);
+        climooItens=climooNormalizarSlots(cfgSincronizada.itens,7,CLIMOO_ITENS_PADRAO);
+        window.climooConfigUpdatedAt=cfgSincronizada.updated_at||cfgLocal.updated_at;
+      }else{
+        climooObras=climooNormalizarSlots(cfg.obras,12,CLIMOO_OBRAS_PADRAO);
+        climooItens=climooNormalizarSlots(cfg.itens,7,CLIMOO_ITENS_PADRAO);
+        window.climooConfigUpdatedAt=cfg.updated_at||'';
+      }
     }
-    if(rows)climooConferencias=rows.map(climooNormalizarRegistro);
+    const cloudRows=(rows||[]).map(climooNormalizarRegistro);
+    const cloudMap=new Map(cloudRows.map(r=>[climooChave(r),r]));
+    const localRows=climooConferencias.slice();
+    const uniao=new Map(cloudMap);
+    localRows.forEach(r=>{
+      const k=climooChave(r),c=uniao.get(k);
+      if(!c||String(r.updated_at||'')>String(c.updated_at||''))uniao.set(k,r);
+    });
+    climooConferencias=Array.from(uniao.values());
+    const pendentes=climooConferencias.filter(r=>{
+      const c=cloudMap.get(climooChave(r));
+      return !c||String(r.updated_at||'')>String(c.updated_at||'');
+    });
+    if(pendentes.length){
+      const {data,error}=await sb.from('climoo_conferencias').upsert(pendentes.map(climooPayload),{onConflict:'obra_slot,item_slot,ano,mes'}).select();
+      if(error)throw error;
+      (data||[]).forEach(d=>{
+        const novo=climooNormalizarRegistro(d),idx=climooConferencias.findIndex(r=>climooChave(r)===climooChave(novo));
+        if(idx>=0)climooConferencias[idx]=novo;
+      });
+    }
     climooSalvarLocal();atualizarContadoresPainel();
     const registroAberto=document.getElementById('ovClimooRegistro')?.classList.contains('open');
     const configAberta=document.getElementById('ovClimooConfig')?.classList.contains('open');
@@ -3110,7 +3141,7 @@ function climooLinksValidos(texto){
 function climooEvidenceCell(texto){
   const links=climooLinksValidos(texto);
   if(!links.length)return '<span class="climoo-muted">—</span>';
-  return '<a class="climoo-evidence-link" href="'+escHtml(links[0])+'" target="_blank" rel="noopener noreferrer"><i class="ti ti-paperclip"></i> Abrir '+links.length+'</a>';
+  return links.map((link,i)=>'<a class="climoo-evidence-link" href="'+escHtml(link)+'" target="_blank" rel="noopener noreferrer"><i class="ti ti-paperclip"></i> '+(i+1)+'</a>').join(' · ');
 }
 function climooPrazoCelula(r){
   if(!r.prazo_regularizacao)return '<span class="climoo-muted">—</span>';
@@ -3217,6 +3248,7 @@ function renderClimooView(){
     return '<div class="climoo-work-card"><div class="climoo-work-name">'+escHtml(obra)+'</div><div class="climoo-work-stats">'+c.aprovados+' aprovado(s) · '+c.pendentes+' pendência(s) de análise · '+c.naoIniciados+' não iniciado(s) · '+c.naoAplicaveis+' não aplicável(is)</div></div>';
   }).filter(Boolean).join('');
   resumo.innerHTML=workRows||'<div class="climoo-empty">Nenhuma obra cadastrada. Use “Configurar obras e itens” para incluir as obras reais.</div>';
+  atualizarContadoresPainel();
 }
 function renderClimooChecklist(checklist){
   const c=document.getElementById('clChecklist');
@@ -3239,7 +3271,7 @@ function abrirRegistroClimoo(obraSlot,itemSlot,mes,ano){
   document.getElementById('clObra').value=obra;
   document.getElementById('clItem').value=item;
   document.getElementById('clMesAno').value=CLIMOO_MESES[Number(mes)-1]+' de '+ano;
-  document.getElementById('clAplicavel').value=String(climooRegistroAtual.aplicavel!==false);
+  document.getElementById('clAplicavel').value=String(climooRegistroAtual.aplicavel!==false&&climooRegistroAtual.status_lancamento!=='Não se aplica');
   document.getElementById('clColaborador').value=climooRegistroAtual.colaborador;
   document.getElementById('clDataVerificacao').value=climooRegistroAtual.data_verificacao;
   document.getElementById('clValor').value=climooRegistroAtual.valor_lancado;
@@ -3266,14 +3298,20 @@ function alternarAplicabilidadeClimoo(naoAlterarStatus){
   if(!aplicavel)document.getElementById('clStatusLancamento').value='Não se aplica';
   else if(!naoAlterarStatus&&document.getElementById('clStatusLancamento').value==='Não se aplica')document.getElementById('clStatusLancamento').value='Não iniciado';
 }
+function climooLancamentoMudou(){
+  const status=document.getElementById('clStatusLancamento').value;
+  document.getElementById('clAplicavel').value=status==='Não se aplica'?'false':'true';
+  alternarAplicabilidadeClimoo(true);
+}
 function fecharRegistroClimoo(){
   document.getElementById('ovClimooRegistro').classList.remove('open');
   climooRegistroAtual=null;
 }
 async function salvarRegistroClimoo(){
   if(!climooRegistroAtual)return;
-  const aplicavel=document.getElementById('clAplicavel').value==='true';
-  const statusLancamento=aplicavel?document.getElementById('clStatusLancamento').value:'Não se aplica';
+  const statusLancamentoSelecionado=document.getElementById('clStatusLancamento').value;
+  const aplicavel=document.getElementById('clAplicavel').value==='true'&&statusLancamentoSelecionado!=='Não se aplica';
+  const statusLancamento=aplicavel?statusLancamentoSelecionado:'Não se aplica';
   const statusAnalise=document.getElementById('clStatusAnalise').value;
   const justificativa=document.getElementById('clJustificativa').value.trim();
   const linksText=document.getElementById('clEvidencias').value.trim();

@@ -2936,12 +2936,17 @@ async function salvarObraClimoo(){
 
 async function salvarAcompanhamentoMensal(tipo,ano,mes){
   const inputId=tipo==='climoo'?'cl':'om';
-  const feito=!!document.getElementById('am-feito-'+inputId+'-'+mes)?.checked;
   const observacoes=document.getElementById('am-obs-'+inputId+'-'+mes)?.value||'';
   const status=document.getElementById('am-status-'+inputId+'-'+mes)?.value||'Pendente';
   const obra=tipo==='climoo'?(obraClimooSelecionada==='__sem_obra__'?'':obraClimooSelecionada):'';
-  const registro={tipo,obra,ano:Number(ano),mes:Number(mes),feito,observacoes,status,updated_at:new Date().toISOString()};
-  const key=r=>r.tipo+'|'+String(r.obra||'')+'|'+Number(r.ano)+'|'+Number(r.mes);
+  if(tipo==='climoo'&&(!obra||!categoriaClimooSelecionada||categoriaClimooSelecionada==='__historico__')){
+    alert('Selecione uma obra e uma categoria aplicável para salvar o acompanhamento.');
+    return;
+  }
+  const categoria=tipo==='climoo'?categoriaClimooSelecionada:'';
+  const feito=tipo==='climoo'?status==='Concluído':!!document.getElementById('am-feito-'+inputId+'-'+mes)?.checked;
+  const registro={tipo,obra,categoria,ano:Number(ano),mes:Number(mes),feito,observacoes,status,updated_at:new Date().toISOString()};
+  const key=r=>r.tipo+'|'+String(r.obra||'')+'|'+String(r.categoria||'')+'|'+Number(r.ano)+'|'+Number(r.mes);
   const existente=acompanhamentosMensais.findIndex(r=>key(r)===key(registro));
   if(existente>=0)acompanhamentosMensais[existente]=registro;else acompanhamentosMensais.push(registro);
   salvarAcompanhamentosMensaisLocal();
@@ -2949,11 +2954,11 @@ async function salvarAcompanhamentoMensal(tipo,ano,mes){
   let erroNuvem=null;
   if(sb){
     try{
-      const {data,error}=await sb.from('acompanhamentos_mensais').upsert(registro,{onConflict:'tipo,obra,ano,mes'}).select().single();
+      const {data,error}=await sb.from('acompanhamentos_mensais').upsert(registro,{onConflict:'tipo,obra,categoria,ano,mes'}).select().single();
       if(error)throw error;
       if(data){
         const idx=acompanhamentosMensais.findIndex(r=>key(r)===key(registro));
-        if(idx>=0)acompanhamentosMensais[idx]={tipo:data.tipo,obra:String(data.obra||''),ano:Number(data.ano),mes:Number(data.mes),feito:!!data.feito,observacoes:data.observacoes||'',status:data.status||'Pendente',updated_at:data.updated_at||registro.updated_at};
+        if(idx>=0)acompanhamentosMensais[idx]={tipo:data.tipo,obra:String(data.obra||''),categoria:String(data.categoria||''),ano:Number(data.ano),mes:Number(data.mes),feito:!!data.feito,observacoes:data.observacoes||'',status:data.status||'Pendente',updated_at:data.updated_at||registro.updated_at};
         salvarAcompanhamentosMensaisLocal();
       }
     }catch(e){erroNuvem=e;}

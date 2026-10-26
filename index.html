@@ -864,6 +864,41 @@ body.theme-dark .tracking-table tbody tr:hover td{background:#222D37;}
 body.theme-dark .climoo-categoria-option{background:var(--surface);border-color:var(--line);}
 @media(max-width:620px){.climoo-categorias-lista{grid-template-columns:1fr}}
 
+
+/* ===== CLIMOO: STATUS E PAINEL RESUMIDO POR OBRA ===== */
+.tracking-status.status-concluido{background:#E6F6EC!important;border-color:#A5D7B7!important;color:#176B3A!important;font-weight:650;}
+.tracking-status.status-pendente{background:#FDEBED!important;border-color:#F0B4BB!important;color:#AD2634!important;font-weight:650;}
+.tracking-status.status-aguardando{background:#FFF1DB!important;border-color:#F0C27A!important;color:#965400!important;font-weight:650;}
+.tracking-status.status-atrasado{background:#FDEBED!important;border-color:#F0B4BB!important;color:#AD2634!important;font-weight:650;}
+body.theme-dark .tracking-status.status-concluido{background:#193B2D!important;border-color:#2D7650!important;color:#A8E7C2!important;}
+body.theme-dark .tracking-status.status-pendente,body.theme-dark .tracking-status.status-atrasado{background:#48242B!important;border-color:#87414B!important;color:#F3A5AF!important;}
+body.theme-dark .tracking-status.status-aguardando{background:#47371E!important;border-color:#8B682B!important;color:#F2CE83!important;}
+.climoo-dashboard{margin:10px 0 18px;padding:0 0 15px;border-bottom:1px solid var(--line);}
+.climoo-dashboard-heading{margin-bottom:10px;}
+.climoo-dashboard-title{font-size:13px;font-weight:750;color:var(--text);}
+.climoo-dashboard-subtitle{font-size:10px;color:var(--muted);margin-top:3px;line-height:1.45;}
+.climoo-dashboard-rows{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
+.climoo-dashboard-work{min-width:0;border:1px solid var(--line);border-radius:8px;background:var(--surface);padding:10px 11px;}
+.climoo-dashboard-work-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:7px;}
+.climoo-dashboard-work-name{font-size:12px;font-weight:700;color:var(--text);overflow-wrap:anywhere;}
+.climoo-dashboard-percent{font-size:12px;font-weight:750;white-space:nowrap;color:var(--text);}
+.climoo-dashboard-progress{height:5px;background:var(--line);border-radius:99px;overflow:hidden;margin-bottom:7px;}
+.climoo-dashboard-progress-fill{height:100%;background:#25965B;border-radius:99px;}
+.climoo-dashboard-progress-fill.low{background:#D94A55;}
+.climoo-dashboard-progress-fill.mid{background:#E39A2E;}
+.climoo-dashboard-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;color:var(--muted);font-size:10px;}
+.climoo-dashboard-details{margin-top:7px;}
+.climoo-dashboard-details summary{font-size:10px;color:var(--brand);cursor:pointer;user-select:none;}
+.climoo-dashboard-categories{display:flex;flex-direction:column;gap:7px;margin-top:8px;}
+.climoo-dashboard-category{min-width:0;}
+.climoo-dashboard-category-head{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:10px;color:var(--text);}
+.climoo-dashboard-category-name{min-width:0;overflow-wrap:anywhere;}
+.climoo-dashboard-category-value{color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums;}
+.climoo-dashboard-category .climoo-dashboard-progress{height:4px;margin:4px 0 0;}
+.climoo-dashboard-empty{font-size:11px;color:var(--muted);padding:8px 0;}
+body.theme-dark .climoo-dashboard-work{background:var(--surface);border-color:var(--line);}
+@media(max-width:760px){.climoo-dashboard-rows{grid-template-columns:1fr;}}
+
 </style>
 </head>
 <body>
@@ -1138,6 +1173,13 @@ body.theme-dark .climoo-categoria-option{background:var(--surface);border-color:
             <button type="button" class="tracking-save" onclick="salvarObraClimoo()">Cadastrar obra</button>
           </div>
         </div>
+        <section id="climooDashboardWrap" class="climoo-dashboard" style="display:none">
+          <div class="climoo-dashboard-heading">
+            <div class="climoo-dashboard-title">Resumo Climoo por obra</div>
+            <div class="climoo-dashboard-subtitle">Percentual calculado pelos meses com status Concluído nas categorias aplicáveis do ano selecionado.</div>
+          </div>
+          <div id="climooDashboardRows" class="climoo-dashboard-rows"></div>
+        </section>
         <div id="monthlyTrackingSummary" class="tracking-summary"></div>
         <div class="tracking-table-wrap">
           <table class="tracking-table">
@@ -2748,6 +2790,12 @@ function dataHoraAcompanhamento(v){
 function classeStatusAcompanhamento(status){
   return status==='Concluído'?'done':status==='Atrasado'?'late':status==='Aguardando'?'waiting':'';
 }
+function atualizarCorStatusAcompanhamento(select){
+  if(!select)return;
+  select.classList.remove('status-concluido','status-pendente','status-aguardando','status-atrasado');
+  const classes={'Concluído':'status-concluido','Pendente':'status-pendente','Aguardando':'status-aguardando','Atrasado':'status-atrasado'};
+  if(classes[select.value])select.classList.add(classes[select.value]);
+}
 function alterarObraClimoo(obra){
   obraClimooSelecionada=String(obra||'__sem_obra__');
   try{localStorage.setItem('ct_climoo_obra_selecionada',obraClimooSelecionada);}catch(e){}
@@ -2796,6 +2844,43 @@ async function salvarCategoriasClimoo(){
   atualizarContadoresPainel();
   if(erroNuvem)alert('As categorias foram guardadas neste navegador, mas não sincronizaram com a nuvem. Verifique a conexão e tente salvar novamente.\n\n'+(erroNuvem.message||'Erro desconhecido'));
 }
+function renderClimooDashboard(ano){
+  const target=document.getElementById('climooDashboardRows');
+  if(!target)return;
+  const obras=obrasClimoo.filter(nome=>String(nome||'').trim());
+  if(!obras.length){
+    target.innerHTML='<div class="climoo-dashboard-empty">Cadastre uma obra para visualizar o acompanhamento.</div>';
+    return;
+  }
+  target.innerHTML=obras.map(obra=>{
+    const categorias=CATEGORIAS_CLIMOO.filter(cat=>climooCategoriaAplicavel(obra,cat));
+    const dados=categorias.map(categoria=>{
+      const dozeMeses=MESES_ACOMPANHAMENTO.map((_,i)=>{
+        const reg=acompanhamentosMensais.find(r=>r.tipo==='climoo'&&String(r.obra||'')===obra&&String(r.categoria||'')===categoria&&Number(r.ano)===Number(ano)&&Number(r.mes)===i+1);
+        return reg||null;
+      });
+      const concluidos=dozeMeses.filter(r=>r&&r.status==='Concluído').length;
+      return {categoria,concluidos,total:12,pct:Math.round(concluidos/12*100)};
+    });
+    const previstos=dados.length*12;
+    const concluidos=dados.reduce((sum,r)=>sum+r.concluidos,0);
+    const pct=previstos?Math.round(concluidos/previstos*100):0;
+    const fillClass=pct===0?'low':pct<70?'mid':'';
+    const categoriaRows=dados.map(r=>{
+      const fc=r.pct===0?'low':r.pct<70?'mid':'';
+      return '<div class="climoo-dashboard-category">'+
+        '<div class="climoo-dashboard-category-head"><span class="climoo-dashboard-category-name">'+escHtml(r.categoria)+'</span><span class="climoo-dashboard-category-value">'+r.pct+'% · '+r.concluidos+'/12</span></div>'+
+        '<div class="climoo-dashboard-progress"><div class="climoo-dashboard-progress-fill '+fc+'" style="width:'+r.pct+'%"></div></div>'+
+      '</div>';
+    }).join('');
+    return '<article class="climoo-dashboard-work">'+
+      '<div class="climoo-dashboard-work-head"><div class="climoo-dashboard-work-name">'+escHtml(obra)+'</div><div class="climoo-dashboard-percent">'+pct+'%</div></div>'+
+      '<div class="climoo-dashboard-progress"><div class="climoo-dashboard-progress-fill '+fillClass+'" style="width:'+pct+'%"></div></div>'+
+      '<div class="climoo-dashboard-meta"><span>'+concluidos+' de '+previstos+' meses-categoria concluídos</span><span>'+categorias.length+' categorias</span></div>'+
+      '<details class="climoo-dashboard-details"><summary>Ver categorias e progresso</summary><div class="climoo-dashboard-categories">'+(categoriaRows||'<div class="climoo-dashboard-empty">Nenhuma categoria aplicável.</div>')+'</div></details>'+
+    '</article>';
+  }).join('');
+}
 function renderAcompanhamentoMensal(tipo){
   const title=document.getElementById('monthlyTrackingTitle');
   const subtitle=document.getElementById('monthlyTrackingSubtitle');
@@ -2817,6 +2902,9 @@ function renderAcompanhamentoMensal(tipo){
   yearSelect.innerHTML=[...anos].sort((a,b)=>b-a).map(y=>'<option value="'+y+'">'+y+'</option>').join('');
   yearSelect.value=String(ano);
 
+  const dashboard=document.getElementById('climooDashboardWrap');
+  if(dashboard)dashboard.style.display=tipo==='climoo'?'block':'none';
+  if(tipo==='climoo')renderClimooDashboard(ano);
   const tools=document.getElementById('climooObraTools');
   const obraSelect=document.getElementById('climooObraFiltro');
   const categoriaSelect=document.getElementById('climooCategoriaFiltro');
@@ -2866,7 +2954,7 @@ function renderAcompanhamentoMensal(tipo){
       const readOnly=historico?' disabled':'';
       return '<tr>'+
         '<td><span class="tracking-month">'+nome+'</span></td>'+
-        '<td><select class="tracking-status" id="am-status-'+inputId+'-'+mes+'" aria-label="Status de '+nome+'"'+readOnly+'>'+STATUS_ACOMPANHAMENTO.map(x=>'<option value="'+x+'" '+(status===x?'selected':'')+'>'+x+'</option>').join('')+'</select></td>'+
+        '<td><select class="tracking-status" id="am-status-'+inputId+'-'+mes+'" aria-label="Status de '+nome+'" onchange="atualizarCorStatusAcompanhamento(this)"'+readOnly+'>'+STATUS_ACOMPANHAMENTO.map(x=>'<option value="'+x+'" '+(status===x?'selected':'')+'>'+x+'</option>').join('')+'</select></td>'+
         '<td><textarea rows="1" class="tracking-observations" id="'+obsId+'" aria-label="Observações de '+nome+'" placeholder="Observações desta categoria..."'+(historico?' readonly':'')+'>'+escHtml(registro.observacoes||'')+'</textarea></td>'+
         '<td><div class="tracking-last-saved">'+escHtml(dataHoraAcompanhamento(registro.updated_at))+'</div></td>'+
         '<td><button type="button" class="tracking-save" '+(historico?'disabled':'')+' onclick="salvarAcompanhamentoMensal(\'climoo\','+ano+','+mes+')" aria-label="Salvar '+nome+'">'+(historico?'Histórico':'Salvar')+'</button></td>'+
@@ -2876,7 +2964,7 @@ function renderAcompanhamentoMensal(tipo){
       '<td><span class="tracking-month">'+nome+'</span></td>'+
       '<td><label class="tracking-check"><input type="checkbox" id="am-feito-'+inputId+'-'+mes+'" '+(registro.feito?'checked':'')+'><span>Feito</span></label></td>'+
       '<td><textarea rows="1" class="tracking-observations" id="'+obsId+'" aria-label="Observações de '+nome+'" placeholder="Observações do mês...">'+escHtml(registro.observacoes||'')+'</textarea></td>'+
-      '<td><select class="tracking-status" id="am-status-'+inputId+'-'+mes+'" aria-label="Status de '+nome+'">'+STATUS_ACOMPANHAMENTO.map(x=>'<option value="'+x+'" '+(status===x?'selected':'')+'>'+x+'</option>').join('')+'</select></td>'+
+      '<td><select class="tracking-status" id="am-status-'+inputId+'-'+mes+'" aria-label="Status de '+nome+'" onchange="atualizarCorStatusAcompanhamento(this)">'+STATUS_ACOMPANHAMENTO.map(x=>'<option value="'+x+'" '+(status===x?'selected':'')+'>'+x+'</option>').join('')+'</select></td>'+
       '<td><div class="tracking-last-saved">'+escHtml(dataHoraAcompanhamento(registro.updated_at))+'</div></td>'+
       '<td><button type="button" class="tracking-save" onclick="salvarAcompanhamentoMensal(\''+tipo+'\','+ano+','+mes+')" aria-label="Salvar '+nome+'">Salvar</button></td>'+
       '</tr>';
@@ -2885,6 +2973,7 @@ function renderAcompanhamentoMensal(tipo){
   tbody.innerHTML=categoriaSemOpcao
     ?'<tr><td colspan="5" class="tracking-empty">Nenhuma categoria está marcada como aplicável para esta obra. Use “Categorias da obra” para reativar alguma.</td></tr>'
     :rows;
+  tbody.querySelectorAll('.tracking-status').forEach(atualizarCorStatusAcompanhamento);
   const registrosAno=acompanhamentosMensais.filter(r=>
     r.tipo===tipo&&String(r.obra||'')===obra&&String(r.categoria||'')===categoria&&Number(r.ano)===ano
   );

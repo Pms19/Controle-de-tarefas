@@ -853,6 +853,17 @@ body.theme-dark .tracking-table tbody tr:hover td{background:#222D37;}
 .climoo-obra-add{display:flex;align-items:center;gap:6px;flex:1;min-width:245px;justify-content:flex-end;}
 .climoo-obra-add input{height:35px;min-width:140px;max-width:270px;width:100%;padding:0 9px;border:1px solid var(--line);border-radius:7px;background:var(--surface);color:var(--text);font:inherit;font-size:12px;}
 @media(max-width:700px){.climoo-obra-tools{align-items:stretch;flex-direction:column}.climoo-obra-tools select,.climoo-obra-add{width:100%;min-width:0;max-width:none}.climoo-obra-add input{max-width:none;flex:1}}
+
+/* ===== CATEGORIAS CLIMOO POR OBRA ===== */
+.climoo-categorias-btn{height:35px;white-space:nowrap;font-size:11px;padding:0 10px;}
+.climoo-categoria-modal{width:650px;max-width:95vw;max-height:calc(100vh - 30px);overflow:auto;}
+.climoo-categoria-instructions{font-size:12px;line-height:1.5;color:var(--muted);margin:0 0 14px;}
+.climoo-categorias-lista{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;}
+.climoo-categoria-option{display:flex;align-items:flex-start;gap:8px;border:1px solid var(--line);border-radius:7px;padding:9px;font-size:11px;line-height:1.4;color:var(--text);cursor:pointer;}
+.climoo-categoria-option input{margin-top:1px;accent-color:var(--brand);flex:0 0 auto;}
+body.theme-dark .climoo-categoria-option{background:var(--surface);border-color:var(--line);}
+@media(max-width:620px){.climoo-categorias-lista{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -1119,6 +1130,9 @@ body.theme-dark .tracking-table tbody tr:hover td{background:#222D37;}
         <div id="climooObraTools" class="climoo-obra-tools" style="display:none">
           <label for="climooObraFiltro">Obra</label>
           <select id="climooObraFiltro" onchange="alterarObraClimoo(this.value)" aria-label="Filtrar acompanhamento por obra"></select>
+          <label for="climooCategoriaFiltro">Categoria</label>
+          <select id="climooCategoriaFiltro" onchange="alterarCategoriaClimoo(this.value)" aria-label="Filtrar por categoria"></select>
+          <button type="button" class="btn-cancel climoo-categorias-btn" onclick="abrirCategoriasClimoo()">Categorias da obra</button>
           <div class="climoo-obra-add">
             <input id="novaObraClimoo" type="text" maxlength="120" placeholder="Cadastrar nome da obra" aria-label="Nome da nova obra" onkeydown="if(event.key==='Enter'){event.preventDefault();salvarObraClimoo()}">
             <button type="button" class="tracking-save" onclick="salvarObraClimoo()">Cadastrar obra</button>
@@ -1127,13 +1141,26 @@ body.theme-dark .tracking-table tbody tr:hover td{background:#222D37;}
         <div id="monthlyTrackingSummary" class="tracking-summary"></div>
         <div class="tracking-table-wrap">
           <table class="tracking-table">
-            <thead><tr><th>Mês</th><th>Feito?</th><th>Observações</th><th>Status</th><th>Última atualização</th><th>Ação</th></tr></thead>
+            <thead id="monthlyTrackingHead"><tr><th>Mês</th><th>Feito?</th><th>Observações</th><th>Status</th><th>Última atualização</th><th>Ação</th></tr></thead>
             <tbody id="monthlyTrackingRows"></tbody>
           </table>
         </div>
         <p class="tracking-help">Preencha o acompanhamento de cada mês e clique em <strong>Salvar</strong> na respectiva linha.</p>
       </div>
     </main>
+  </div>
+</div>
+
+<!-- modal de categorias por obra - Climoo -->
+<div class="modal-overlay" id="ovCategoriasClimoo">
+  <div class="modal climoo-categoria-modal">
+    <h2>Categorias da obra</h2>
+    <p class="climoo-categoria-instructions">Marque somente as categorias aplicáveis a esta obra. As desmarcadas ficam ocultas no acompanhamento desta obra; os registros anteriores não são apagados. Você pode reativá-las depois.</p>
+    <div id="climooCategoriasLista" class="climoo-categorias-lista"></div>
+    <div class="mactions">
+      <button class="btn-cancel" type="button" onclick="fecharCategoriasClimoo()">Cancelar</button>
+      <button class="btn-save" type="button" onclick="salvarCategoriasClimoo()">Salvar categorias</button>
+    </div>
   </div>
 </div>
 
@@ -1414,6 +1441,7 @@ let ncs=[], nextNcId=6000, ncEditando=null;
 let gestaoSemanal=[], nextGestaoSemanalId=7000, gsEditando=null, gsDataReferencia='';
 let acompanhamentosMensais=[], anoAcompanhamentoAtual=new Date().getFullYear();
 let obrasClimoo=[], obraClimooSelecionada='__sem_obra__';
+let categoriaClimooSelecionada='Consumo de gasolina em veículos leves', categoriasClimooConfig=[];
 let collapsedMes = {}, expandedTarefa = {}, microAlvo = null, mesesSelecionados = new Set(), painelSelecionado = '__dashboard__', projetoExpandido = {};
 
 function bc(s){ return s==='Pendente'?'b-p':s==='Aguardando'?'b-a':s==='Concluído'?'b-c':'b-s'; }

@@ -1649,12 +1649,13 @@ async function carregarDados() {
 
       const catKey=r=>String(r.obra||'')+'|'+String(r.categoria||'');
       const catLocalMap=new Map(categoriasClimooConfig.map(r=>[catKey(r),r]));
-      const catCloudMap=new Map((cloudCategorias||[]).map(r=>[catKey(r),{obra:String(r.obra||''),categoria:String(r.categoria||''),aplicavel:r.aplicavel!==false,updated_at:r.updated_at||''}]));
-      catLocalMap.forEach((r,k)=>{const c=catCloudMap.get(k);if(!c||String(r.updated_at||'')>String(c.updated_at||''))catCloudMap.set(k,r);});
-      categoriasClimooConfig=[...catCloudMap.values()];
+      const catCloudVersionMap=new Map((cloudCategorias||[]).map(r=>[catKey(r),{obra:String(r.obra||''),categoria:String(r.categoria||''),aplicavel:r.aplicavel!==false,updated_at:r.updated_at||''}]));
+      const catMergedMap=new Map(catCloudVersionMap);
+      catLocalMap.forEach((r,k)=>{const c=catMergedMap.get(k);if(!c||String(r.updated_at||'')>String(c.updated_at||''))catMergedMap.set(k,r);});
+      categoriasClimooConfig=[...catMergedMap.values()];
       localStorage.setItem('ct_climoo_categorias_config',JSON.stringify(categoriasClimooConfig));
       const catCloudKeys=new Set((cloudCategorias||[]).map(catKey));
-      const catsToSync=categoriasClimooConfig.filter(r=>!catCloudKeys.has(catKey(r)) || String(r.updated_at||'')>String((catCloudMap.get(catKey(r))||{}).updated_at||''));
+      const catsToSync=categoriasClimooConfig.filter(r=>!catCloudKeys.has(catKey(r)) || String(r.updated_at||'')>String((catCloudVersionMap.get(catKey(r))||{}).updated_at||''));
       if(catsToSync.length){
         const {error:syncCatErr}=await sb.from('climoo_categorias_obra').upsert(catsToSync,{onConflict:'obra,categoria'});
         if(syncCatErr)console.warn('Não foi possível sincronizar a aplicabilidade das categorias:',syncCatErr.message||syncCatErr);

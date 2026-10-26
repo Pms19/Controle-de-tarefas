@@ -1517,10 +1517,13 @@ async function carregarDados() {
     const gsLocal = localStorage.getItem('gestao_semanal');
     if (gsLocal) { gestaoSemanal = JSON.parse(gsLocal); nextGestaoSemanalId = parseInt(localStorage.getItem('ct_nextGestaoSemanalId')||7000); }
     const mensalLocal=localStorage.getItem('ct_acompanhamentos_mensais');
-    if(mensalLocal) acompanhamentosMensais=JSON.parse(mensalLocal).map(r=>({...r,obra:String(r.obra||'')}));
+    if(mensalLocal) acompanhamentosMensais=JSON.parse(mensalLocal).map(r=>({...r,obra:String(r.obra||''),categoria:String(r.categoria||'')}));
     const obrasLocal=localStorage.getItem('ct_climoo_obras');
     if(obrasLocal) obrasClimoo=JSON.parse(obrasLocal).map(x=>String(x||'').trim()).filter(Boolean);
+    const catLocal=localStorage.getItem('ct_climoo_categorias_config');
+    if(catLocal) categoriasClimooConfig=JSON.parse(catLocal).map(r=>({...r,obra:String(r.obra||''),categoria:String(r.categoria||''),aplicavel:r.aplicavel!==false}));
     obraClimooSelecionada=localStorage.getItem('ct_climoo_obra_selecionada')||'__sem_obra__';
+    categoriaClimooSelecionada=localStorage.getItem('ct_climoo_categoria_selecionada')||CATEGORIAS_CLIMOO[0];
   } catch(e) {}
 
   if (!SYNC_ENABLED || !sb) return;
@@ -1611,6 +1614,8 @@ async function carregarDados() {
       if(mensaisErr) throw mensaisErr;
       const {data:cloudObras,error:obrasErr}=await sb.from('climoo_obras').select('*').order('nome');
       if(obrasErr) throw obrasErr;
+      const {data:cloudCategorias,error:categoriasErr}=await sb.from('climoo_categorias_obra').select('*').order('obra').order('categoria');
+      if(categoriasErr) throw categoriasErr;
       const cloudObraNames=new Set((cloudObras||[]).map(x=>String(x.nome||'').trim()).filter(Boolean));
       const localObraNames=obrasClimoo.slice();
       obrasClimoo=Array.from(new Set([...cloudObraNames,...localObraNames])).filter(Boolean).sort((a,b)=>a.localeCompare(b,'pt-BR'));
@@ -1620,10 +1625,11 @@ async function carregarDados() {
         if(obrasSyncErr)console.warn('Não foi possível sincronizar todas as obras Climoo:',obrasSyncErr.message||obrasSyncErr);
       }
       localStorage.setItem('ct_climoo_obras',JSON.stringify(obrasClimoo));
-      const locais=[...acompanhamentosMensais].map(r=>({...r,obra:String(r.obra||'')}));
-      const chave=r=>String(r.tipo)+'|'+String(r.obra||'')+'|'+Number(r.ano)+'|'+Number(r.mes);
+
+      const chave=r=>String(r.tipo)+'|'+String(r.obra||'')+'|'+String(r.categoria||'')+'|'+Number(r.ano)+'|'+Number(r.mes);
+      const locais=[...acompanhamentosMensais].map(r=>({...r,obra:String(r.obra||''),categoria:String(r.categoria||'')}));
       const cloudMap=new Map((cloudMensais||[]).map(r=>[chave(r),{
-        tipo:r.tipo,obra:String(r.obra||''),ano:Number(r.ano),mes:Number(r.mes),feito:!!r.feito,
+        tipo:r.tipo,obra:String(r.obra||''),categoria:String(r.categoria||''),ano:Number(r.ano),mes:Number(r.mes),feito:!!r.feito,
         observacoes:r.observacoes||'',status:r.status||'Pendente',updated_at:r.updated_at||''
       }]));
       const uniao=new Map(cloudMap);
@@ -1631,13 +1637,26 @@ async function carregarDados() {
         const k=chave(r),atual=uniao.get(k);
         if(!atual || String(r.updated_at||'')>String(atual.updated_at||'')) uniao.set(k,r);
       });
-      acompanhamentosMensais=[...uniao.values()].map(r=>({...r,obra:String(r.obra||'')}));
+      acompanhamentosMensais=[...uniao.values()].map(r=>({...r,obra:String(r.obra||''),categoria:String(r.categoria||'')}));
       localStorage.setItem('ct_acompanhamentos_mensais',JSON.stringify(acompanhamentosMensais));
       const cloudKeys=new Set((cloudMensais||[]).map(chave));
       const faltantes=acompanhamentosMensais.filter(r=>!cloudKeys.has(chave(r)) || (cloudMap.has(chave(r)) && String(r.updated_at||'')>String(cloudMap.get(chave(r)).updated_at||'')));
       if(faltantes.length){
-        const {error:syncAMErr}=await sb.from('acompanhamentos_mensais').upsert(faltantes,{onConflict:'tipo,obra,ano,mes'});
+        const {error:syncAMErr}=await sb.from('acompanhamentos_mensais').upsert(faltantes,{onConflict:'tipo,obra,categoria,ano,mes'});
         if(syncAMErr) console.warn('Não foi possível sincronizar alguns registros mensais:',syncAMErr.message||syncAMErr);
+      }
+
+      const catKey=r=>String(r.obra||'')+'|'+String(r.categoria||'');
+      const catLocalMap=new Map(categoriasClimooConfig.map(r=>[catKey(r),r]));
+      const catCloudMap=new Map((cloudCategorias||[]).map(r=>[catKey(r),{obra:String(r.obra||''),categoria:String(r.categoria||''),aplicavel:r.aplicavel!==false,updated_at:r.updated_at||''}]));
+      catLocalMap.forEach((r,k)=>{const c=catCloudMap.get(k);if(!c||String(r.updated_at||'')>String(c.updated_at||''))catCloudMap.set(k,r);});
+      categoriasClimooConfig=[...catCloudMap.values()];
+      localStorage.setItem('ct_climoo_categorias_config',JSON.stringify(categoriasClimooConfig));
+      const catCloudKeys=new Set((cloudCategorias||[]).map(catKey));
+      const catsToSync=categoriasClimooConfig.filter(r=>!catCloudKeys.has(catKey(r)) || String(r.updated_at||'')>String((catCloudMap.get(catKey(r))||{}).updated_at||''));
+      if(catsToSync.length){
+        const {error:syncCatErr}=await sb.from('climoo_categorias_obra').upsert(catsToSync,{onConflict:'obra,categoria'});
+        if(syncCatErr)console.warn('Não foi possível sincronizar a aplicabilidade das categorias:',syncCatErr.message||syncCatErr);
       }
         } catch(e) { console.warn('Não foi possível carregar os acompanhamentos mensais da nuvem:',e.message||e); }
   } catch(e) { console.warn('Banco indisponível; usando cópia local:', e.message || e); }
@@ -2244,6 +2263,7 @@ function iniciarSincronizacaoTempoReal() {
     .on('postgres_changes', { event:'*', schema:'public', table:'gestao_semanal' }, () => receberNuvem())
     .on('postgres_changes', { event:'*', schema:'public', table:'acompanhamentos_mensais' }, () => receberNuvem())
     .on('postgres_changes', { event:'*', schema:'public', table:'climoo_obras' }, () => receberNuvem())
+    .on('postgres_changes', { event:'*', schema:'public', table:'climoo_categorias_obra' }, () => receberNuvem())
     .subscribe();
 }
 
@@ -2263,6 +2283,7 @@ async function receberNuvem() {
     const { data: cloudGestaoSemanal } = await sb.from('gestao_semanal').select('*').order('data',{ascending:false}).order('id',{ascending:false});
     const { data: cloudAcompanhamentosMensais } = await sb.from('acompanhamentos_mensais').select('*').order('ano').order('mes');
     const { data: cloudClimooObras } = await sb.from('climoo_obras').select('*').order('nome');
+    const { data: cloudClimooCategorias } = await sb.from('climoo_categorias_obra').select('*').order('obra').order('categoria');
     if (!cloudTasks) return;
     tarefas = cloudTasks.map(t => ({ id:Number(t.id), mes:t.mes||'', assunto:t.assunto||'', atividade:t.atividade||'', descricao:t.descricao||'', solicitante:t.solicitante||'', responsavel:t.responsavel||'', onde:t.onde||'', prioridade:t.prioridade||'', status:t.status||'', prazo:t.prazo||'', data_conclusao:t.data_conclusao||'', micros:[] }));
     (cloudMicros||[]).forEach(m => { const t=tarefas.find(x=>String(x.id)===String(m.tarefa_id)); if(t) t.micros.push({id:Number(m.id),desc:m.descricao||'',responsavel:m.responsavel||'',prazo:m.prazo||'',status:m.status||'',prio:m.prio||'',data_conclusao:m.data_conclusao||''}); });
@@ -2296,8 +2317,12 @@ async function receberNuvem() {
       salvarGestaoSemanalLocal();
     }
     if(cloudAcompanhamentosMensais){
-      acompanhamentosMensais=cloudAcompanhamentosMensais.map(r=>({tipo:r.tipo,obra:String(r.obra||''),ano:Number(r.ano),mes:Number(r.mes),feito:!!r.feito,observacoes:r.observacoes||'',status:r.status||'Pendente',updated_at:r.updated_at||''}));
+      acompanhamentosMensais=cloudAcompanhamentosMensais.map(r=>({tipo:r.tipo,obra:String(r.obra||''),categoria:String(r.categoria||''),ano:Number(r.ano),mes:Number(r.mes),feito:!!r.feito,observacoes:r.observacoes||'',status:r.status||'Pendente',updated_at:r.updated_at||''}));
       localStorage.setItem('ct_acompanhamentos_mensais',JSON.stringify(acompanhamentosMensais));
+    }
+    if(cloudClimooCategorias){
+      categoriasClimooConfig=cloudClimooCategorias.map(r=>({obra:String(r.obra||''),categoria:String(r.categoria||''),aplicavel:r.aplicavel!==false,updated_at:r.updated_at||''}));
+      localStorage.setItem('ct_climoo_categorias_config',JSON.stringify(categoriasClimooConfig));
     }
     if(cloudClimooObras){
       obrasClimoo=Array.from(new Set(cloudClimooObras.map(r=>String(r.nome||'').trim()).filter(Boolean))).sort((a,b)=>a.localeCompare(b,'pt-BR'));
@@ -2686,6 +2711,24 @@ function alternarDropdownMeses(){
 
 const MESES_ACOMPANHAMENTO=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 const STATUS_ACOMPANHAMENTO=['Atrasado','Aguardando','Pendente','Concluído'];
+const CATEGORIAS_CLIMOO=[
+  'Consumo de gasolina em veículos leves',
+  'Consumo de GLP em empilhadeiras',
+  'Consumo de óleo diesel em veículos leves',
+  'Consumo de etanol em veículos leves',
+  'Consumo de óleo diesel em veículos pesados',
+  'Consumo de óleo diesel no gerador',
+  'Consumo de óleo diesel no compressor',
+  'Consumo de acetileno para solda',
+  'Recarga de extintores CO₂',
+  'Recarga de R-410A em ar-condicionado',
+  'Consumo de lubrificantes',
+  'Consumo de tintas à base de solvente',
+  'Consumo de solvente',
+  'Consumo de gases para solda',
+  'Quantidade de colaboradores - Fossa séptica',
+  'Consumo de energia elétrica (MWh)'
+];
 function salvarAcompanhamentosMensaisLocal(){
   try{localStorage.setItem('ct_acompanhamentos_mensais',JSON.stringify(acompanhamentosMensais));}catch(e){}
 }

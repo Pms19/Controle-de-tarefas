@@ -1522,7 +1522,8 @@ async function carregarDados() {
     if(obrasLocal) obrasClimoo=JSON.parse(obrasLocal).map(x=>String(x||'').trim()).filter(Boolean);
     const catLocal=localStorage.getItem('ct_climoo_categorias_config');
     if(catLocal) categoriasClimooConfig=JSON.parse(catLocal).map(r=>({...r,obra:String(r.obra||''),categoria:String(r.categoria||''),aplicavel:r.aplicavel!==false}));
-    obraClimooSelecionada=localStorage.getItem('ct_climoo_obra_selecionada')||'__sem_obra__';
+    const obraLocalSelecionada=localStorage.getItem('ct_climoo_obra_selecionada')||'';
+    obraClimooSelecionada=obraLocalSelecionada==='__sem_obra__'?'':obraLocalSelecionada;
     categoriaClimooSelecionada=localStorage.getItem('ct_climoo_categoria_selecionada')||CATEGORIAS_CLIMOO[0];
   } catch(e) {}
 
@@ -2751,17 +2752,61 @@ function alterarObraClimoo(obra){
   try{localStorage.setItem('ct_climoo_obra_selecionada',obraClimooSelecionada);}catch(e){}
   renderAcompanhamentoMensal('climoo');
 }
+function alterarCategoriaClimoo(categoria){
+  categoriaClimooSelecionada=String(categoria||'');
+  try{localStorage.setItem('ct_climoo_categoria_selecionada',categoriaClimooSelecionada);}catch(e){}
+  renderAcompanhamentoMensal('climoo');
+}
+function climooCategoriaAplicavel(obra,categoria){
+  const cfg=categoriasClimooConfig.find(r=>r.obra===obra&&r.categoria===categoria);
+  return !cfg||cfg.aplicavel!==false;
+}
+function abrirCategoriasClimoo(){
+  const obra=obraClimooSelecionada==='__sem_obra__'?'':obraClimooSelecionada;
+  if(!obra){alert('Selecione ou cadastre uma obra antes de configurar as categorias.');return;}
+  const lista=document.getElementById('climooCategoriasLista');
+  lista.innerHTML=CATEGORIAS_CLIMOO.map((categoria,i)=>
+    '<label class="climoo-categoria-option"><input type="checkbox" id="climooCatAplicavel'+i+'" '+(climooCategoriaAplicavel(obra,categoria)?'checked':'')+'>'+
+    '<span>'+escHtml(categoria)+'</span></label>'
+  ).join('');
+  document.getElementById('ovCategoriasClimoo').classList.add('open');
+}
+function fecharCategoriasClimoo(){document.getElementById('ovCategoriasClimoo').classList.remove('open');}
+async function salvarCategoriasClimoo(){
+  const obra=obraClimooSelecionada==='__sem_obra__'?'':obraClimooSelecionada;
+  if(!obra){alert('Selecione uma obra para salvar as categorias aplicáveis.');return;}
+  const updated_at=new Date().toISOString();
+  const novas=CATEGORIAS_CLIMOO.map((categoria,i)=>({
+    obra,categoria,aplicavel:!!document.getElementById('climooCatAplicavel'+i)?.checked,updated_at
+  }));
+  const map=new Map(categoriasClimooConfig.map(r=>[r.obra+'|'+r.categoria,r]));
+  novas.forEach(r=>map.set(r.obra+'|'+r.categoria,r));
+  categoriasClimooConfig=Array.from(map.values());
+  try{localStorage.setItem('ct_climoo_categorias_config',JSON.stringify(categoriasClimooConfig));}catch(e){}
+  let erroNuvem=null;
+  if(sb){
+    try{
+      const {error}=await sb.from('climoo_categorias_obra').upsert(novas,{onConflict:'obra,categoria'});
+      if(error)throw error;
+    }catch(e){erroNuvem=e;}
+  }else erroNuvem=new Error('O banco de dados não está disponível nesta sessão.');
+  fecharCategoriasClimoo();
+  renderAcompanhamentoMensal('climoo');
+  atualizarContadoresPainel();
+  if(erroNuvem)alert('As categorias foram guardadas neste navegador, mas não sincronizaram com a nuvem. Verifique a conexão e tente salvar novamente.\n\n'+(erroNuvem.message||'Erro desconhecido'));
+}
 function renderAcompanhamentoMensal(tipo){
   const title=document.getElementById('monthlyTrackingTitle');
   const subtitle=document.getElementById('monthlyTrackingSubtitle');
   const yearSelect=document.getElementById('anoAcompanhamento');
   const tbody=document.getElementById('monthlyTrackingRows');
+  const head=document.getElementById('monthlyTrackingHead');
   if(!title||!subtitle||!yearSelect||!tbody)return;
   const ano=Number(yearSelect.value||anoAcompanhamentoAtual||new Date().getFullYear());
   anoAcompanhamentoAtual=ano;
   title.textContent=tipo==='climoo'?'Climoo':'Objetivos e Metas';
   subtitle.textContent=tipo==='climoo'
-    ?'Acompanhamento mensal dos lançamentos de emissões atmosféricas por obra.'
+    ?'Acompanhe cada categoria por obra e ano, mês a mês.'
     :'Acompanhamento mensal do lançamento dos objetivos e metas.';
   const anos=new Set();
   const atual=new Date().getFullYear();
@@ -2773,25 +2818,59 @@ function renderAcompanhamentoMensal(tipo){
 
   const tools=document.getElementById('climooObraTools');
   const obraSelect=document.getElementById('climooObraFiltro');
+  const categoriaSelect=document.getElementById('climooCategoriaFiltro');
   let obra='';
+  let categoria='';
+  let historico=false;
   if(tipo==='climoo'){
     if(tools)tools.style.display='flex';
     if(obraSelect){
-      const selecionada=obraClimooSelecionada;
+      const selecionada=obraClimooSelecionada||obrasClimoo[0]||'__sem_obra__';
       obraSelect.innerHTML='<option value="__sem_obra__">Sem obra cadastrada (registros anteriores)</option>'+
         obrasClimoo.map(nome=>'<option value="'+escHtml(nome)+'">'+escHtml(nome)+'</option>').join('');
-      obraSelect.value=Array.from(obraSelect.options).some(o=>o.value===selecionada)?selecionada:'__sem_obra__';
+      obraSelect.value=Array.from(obraSelect.options).some(o=>o.value===selecionada)?selecionada:(obrasClimoo[0]||'__sem_obra__');
       obraClimooSelecionada=obraSelect.value;
+      try{localStorage.setItem('ct_climoo_obra_selecionada',obraClimooSelecionada);}catch(e){}
       obra=obraClimooSelecionada==='__sem_obra__'?'':obraClimooSelecionada;
     }
-  }else if(tools){tools.style.display='none';}
+    if(categoriaSelect){
+      const ativas=obra?CATEGORIAS_CLIMOO.filter(cat=>climooCategoriaAplicavel(obra,cat)):[];
+      const temHistorico=acompanhamentosMensais.some(r=>r.tipo==='climoo'&&String(r.obra||'')===obra&&String(r.categoria||'')===''&&Number(r.ano)===ano&&String(r.observacoes||'').trim());
+      const opcoes=ativas.map(cat=>'<option value="'+escHtml(cat)+'">'+escHtml(cat)+'</option>');
+      if(temHistorico)opcoes.push('<option value="__historico__">Observações anteriores (geral)</option>');
+      if(!opcoes.length)opcoes.push('<option value="">Nenhuma categoria aplicável</option>');
+      categoriaSelect.innerHTML=opcoes.join('');
+      const desejada=categoriaClimooSelecionada;
+      categoriaSelect.value=Array.from(categoriaSelect.options).some(o=>o.value===desejada)?desejada:(ativas[0]|| (temHistorico?'__historico__':''));
+      categoriaClimooSelecionada=categoriaSelect.value;
+      try{localStorage.setItem('ct_climoo_categoria_selecionada',categoriaClimooSelecionada);}catch(e){}
+      historico=categoriaClimooSelecionada==='__historico__';
+      categoria=historico?'':categoriaClimooSelecionada;
+    }
+    if(head)head.innerHTML='<tr><th>Mês</th><th>Status</th><th>Observações</th><th>Última atualização</th><th>Ação</th></tr>';
+  }else{
+    if(tools)tools.style.display='none';
+    if(head)head.innerHTML='<tr><th>Mês</th><th>Feito?</th><th>Observações</th><th>Status</th><th>Última atualização</th><th>Ação</th></tr>';
+  }
 
   const rows=MESES_ACOMPANHAMENTO.map((nome,idx)=>{
     const mes=idx+1;
-    const registro=acompanhamentosMensais.find(r=>r.tipo===tipo&&String(r.obra||'')===obra&&Number(r.ano)===ano&&Number(r.mes)===mes)||{feito:false,observacoes:'',status:'Pendente',updated_at:''};
+    const registro=acompanhamentosMensais.find(r=>
+      r.tipo===tipo&&String(r.obra||'')===obra&&String(r.categoria||'')===categoria&&Number(r.ano)===ano&&Number(r.mes)===mes
+    )||{feito:false,observacoes:'',status:'Pendente',updated_at:''};
     const status=STATUS_ACOMPANHAMENTO.includes(registro.status)?registro.status:'Pendente';
     const inputId=tipo==='climoo'?'cl':'om';
     const obsId='am-obs-'+inputId+'-'+mes;
+    if(tipo==='climoo'){
+      const readOnly=historico?' disabled':'';
+      return '<tr>'+
+        '<td><span class="tracking-month">'+nome+'</span></td>'+
+        '<td><select class="tracking-status" id="am-status-'+inputId+'-'+mes+'" aria-label="Status de '+nome+'"'+readOnly+'>'+STATUS_ACOMPANHAMENTO.map(x=>'<option value="'+x+'" '+(status===x?'selected':'')+'>'+x+'</option>').join('')+'</select></td>'+
+        '<td><textarea rows="1" class="tracking-observations" id="'+obsId+'" aria-label="Observações de '+nome+'" placeholder="Observações desta categoria..."'+(historico?' readonly':'')+'>'+escHtml(registro.observacoes||'')+'</textarea></td>'+
+        '<td><div class="tracking-last-saved">'+escHtml(dataHoraAcompanhamento(registro.updated_at))+'</div></td>'+
+        '<td><button type="button" class="tracking-save" '+(historico?'disabled':'')+' onclick="salvarAcompanhamentoMensal(\'climoo\','+ano+','+mes+')" aria-label="Salvar '+nome+'">'+(historico?'Histórico':'Salvar')+'</button></td>'+
+        '</tr>';
+    }
     return '<tr>'+
       '<td><span class="tracking-month">'+nome+'</span></td>'+
       '<td><label class="tracking-check"><input type="checkbox" id="am-feito-'+inputId+'-'+mes+'" '+(registro.feito?'checked':'')+'><span>Feito</span></label></td>'+
@@ -2801,8 +2880,13 @@ function renderAcompanhamentoMensal(tipo){
       '<td><button type="button" class="tracking-save" onclick="salvarAcompanhamentoMensal(\''+tipo+'\','+ano+','+mes+')" aria-label="Salvar '+nome+'">Salvar</button></td>'+
       '</tr>';
   }).join('');
-  tbody.innerHTML=rows;
-  const registrosAno=acompanhamentosMensais.filter(r=>r.tipo===tipo&&String(r.obra||'')===obra&&Number(r.ano)===ano);
+  const categoriaSemOpcao=tipo==='climoo'&&!categoria&&!historico;
+  tbody.innerHTML=categoriaSemOpcao
+    ?'<tr><td colspan="5" class="tracking-empty">Nenhuma categoria está marcada como aplicável para esta obra. Use “Categorias da obra” para reativar alguma.</td></tr>'
+    :rows;
+  const registrosAno=acompanhamentosMensais.filter(r=>
+    r.tipo===tipo&&String(r.obra||'')===obra&&String(r.categoria||'')===categoria&&Number(r.ano)===ano
+  );
   const concluidos=MESES_ACOMPANHAMENTO.filter((_,idx)=>{
     const r=registrosAno.find(x=>Number(x.mes)===idx+1);
     return r&&r.status==='Concluído';
@@ -2812,7 +2896,11 @@ function renderAcompanhamentoMensal(tipo){
     return r&&r.feito;
   }).length;
   const summary=document.getElementById('monthlyTrackingSummary');
-  if(summary)summary.innerHTML='<strong>'+feitos+' de 12 meses</strong> marcados como feitos · <strong>'+concluidos+' de 12</strong> com status Concluído'+(tipo==='climoo'?' · <strong>'+escHtml(obra||'Sem obra cadastrada')+'</strong>':'');
+  if(summary){
+    summary.innerHTML=tipo==='climoo'
+      ?'<strong>'+concluidos+' de 12 meses</strong> com status Concluído'+(historico?' · Histórico de observações anteriores':' · '+escHtml(obra||'Sem obra cadastrada')+' · '+escHtml(categoria||'Observações gerais'))
+      :'<strong>'+feitos+' de 12 meses</strong> marcados como feitos · <strong>'+concluidos+' de 12</strong> com status Concluído';
+  }
 }
 async function salvarObraClimoo(){
   const input=document.getElementById('novaObraClimoo');

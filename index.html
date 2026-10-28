@@ -3332,7 +3332,7 @@ async function salvarDemandaRotineira(){
       if(sb){const {error}=await sb.from('demandas_rotineiras').update({demanda:nome,ano,updated_at:new Date().toISOString()}).eq('id',d.id);if(error)throw error;}
     }else{
       const novo={demanda:nome,ano,...Object.fromEntries(DR_MESES.map(m=>[m.key,false])),observacoes:''};
-      if(sb){const {data,error}=await sb.from('demandas_rotineiras').insert({demanda:nome,ano}).select('*').single();if(error)throw error;Object.assign(novo,{id:Number(data.id),...Object.fromEntries(DR_MESES.map(m=>[m.key,!!data[m.key])),observacoes:data.observacoes||'',updated_at:data.updated_at||''});}
+      if(sb){const {data,error}=await sb.from('demandas_rotineiras').insert({demanda:nome,ano}).select('*').single();if(error)throw error;Object.assign(novo,{id:Number(data.id),...Object.fromEntries(DR_MESES.map(m=>[m.key,!!data[m.key]])),observacoes:data.observacoes||'',updated_at:data.updated_at||''});}
       else novo.id=Date.now();
       demandasRotineiras.push(novo);
     }

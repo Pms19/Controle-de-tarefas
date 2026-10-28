@@ -3329,7 +3329,8 @@ async function salvarDemandaRotineira(){
     if(demandaRotineiraEditando!==null){
       const d=demandasRotineiras.find(x=>x.id===demandaRotineiraEditando);if(!d)return;
       const antigo={demanda:d.demanda,ano:d.ano};d.demanda=nome;d.ano=ano;
-      if(sb){const {error}=await sb.from('demandas_rotineiras').update({demanda:nome,ano,updated_at:new Date().toISOString()}).eq('id',d.id);if(error)throw error;}
+      try{if(sb){const {error}=await sb.from('demandas_rotineiras').update({demanda:nome,ano,updated_at:new Date().toISOString()}).eq('id',d.id);if(error)throw error;}}
+      catch(e){d.demanda=antigo.demanda;d.ano=antigo.ano;throw e;}
     }else{
       const novo={demanda:nome,ano,...Object.fromEntries(DR_MESES.map(m=>[m.key,false])),observacoes:''};
       if(sb){const {data,error}=await sb.from('demandas_rotineiras').insert({demanda:nome,ano}).select('*').single();if(error)throw error;Object.assign(novo,{id:Number(data.id),...Object.fromEntries(DR_MESES.map(m=>[m.key,!!data[m.key]])),observacoes:data.observacoes||'',updated_at:data.updated_at||''});}

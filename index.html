@@ -899,6 +899,39 @@ body.theme-dark .tracking-status.status-aguardando{background:#47371E!important;
 body.theme-dark .climoo-dashboard-work{background:var(--surface);border-color:var(--line);}
 @media(max-width:760px){.climoo-dashboard-rows{grid-template-columns:1fr;}}
 
+
+/* ===== DEMANDAS ROTINEIRAS ===== */
+.demandas-rotineiras-view{min-width:0;}
+.dr-page-header{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:16px;}
+.dr-header-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap;}
+.dr-header-actions label{font-size:12px;font-weight:600;color:var(--muted);}
+.dr-header-actions select{height:40px;min-width:105px;padding:0 10px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--brand-dark);font:inherit;}
+.dr-header-actions .btn-primary{height:40px;}
+.dr-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:14px;}
+.dr-summary-card{background:#fff;border:1px solid var(--line);border-radius:11px;padding:13px 15px;}
+.dr-summary-card span{display:block;color:var(--muted);font-size:12px;margin-bottom:5px;}
+.dr-summary-card strong{font-size:22px;color:var(--brand-dark);}
+.dr-table-wrap{width:100%;overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:#fff;-webkit-overflow-scrolling:touch;}
+.dr-table{min-width:1200px;width:100%;border-collapse:separate;border-spacing:0;table-layout:auto;}
+.dr-table th{padding:11px 9px;background:#F2F7FA;color:#577182;border-bottom:1px solid var(--line);font-size:10px;text-align:center;white-space:nowrap;}
+.dr-table th:first-child{text-align:left;min-width:230px;}
+.dr-table th:nth-last-child(2){min-width:210px;text-align:left;}
+.dr-table th:last-child{min-width:90px;}
+.dr-table td{padding:8px 7px;border-bottom:1px solid #EAF0F3;text-align:center;vertical-align:middle;font-size:12px;}
+.dr-table tbody tr:last-child td{border-bottom:0;}
+.dr-table tbody tr:hover td{background:#FAFCFD;}
+.dr-demand-name{text-align:left!important;min-width:230px;font-weight:600;color:var(--brand-dark);padding:10px 12px!important;}
+.dr-month-btn{display:inline-flex;align-items:center;justify-content:center;gap:4px;min-width:36px;height:32px;padding:0 7px;border:1px solid #D9E3E9;border-radius:8px;background:#F7F9FA;color:#7C8D98;font:inherit;font-size:11px;font-weight:700;cursor:pointer;transition:background .15s,border-color .15s;}
+.dr-month-btn:hover{border-color:var(--brand);background:var(--brand-soft);}
+.dr-month-btn.done{background:#E6F7EF;border-color:#A9E4C8;color:#147A4A;}
+.dr-month-btn:disabled{opacity:.6;cursor:wait;}
+.dr-observacoes{width:100%;min-width:190px;min-height:34px;padding:7px 8px;border:1px solid #DCE5EA;border-radius:7px;background:#fff;color:var(--text);font:inherit;font-size:12px;resize:vertical;}
+.dr-observacoes:focus{outline:2px solid #CFE5F1;border-color:var(--brand);}
+.dr-action-btn{border:0;background:transparent;color:#708594;border-radius:7px;padding:6px;cursor:pointer;font-size:15px;}
+.dr-action-btn:hover{background:#FDEBED;color:#C13D49;}
+.dr-help{display:flex;align-items:center;gap:6px;margin-top:11px;color:var(--muted);font-size:12px;}
+.dr-empty{text-align:center!important;padding:30px 14px!important;color:var(--muted);}
+@media(max-width:700px){.dr-page-header{align-items:flex-start;flex-direction:column;}.dr-header-actions{width:100%;}.dr-header-actions .btn-primary{flex:1;justify-content:center;}.dr-summary{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;}.dr-summary-card{padding:10px 8px;}.dr-summary-card span{font-size:10px;}.dr-summary-card strong{font-size:18px;}.dr-help{align-items:flex-start;line-height:1.4;}}
 </style>
 </head>
 <body>
@@ -985,6 +1018,7 @@ body.theme-dark .climoo-dashboard-work{background:var(--surface);border-color:va
       <button class="sidebar-btn" data-painel="Documentos" onclick="selecionarPainel('Documentos')"><i class="ti ti-file-text"></i> Documentos <span class="sidebar-count" id="count-Documentos">0</span></button>
       <button class="sidebar-btn" data-painel="Auditoria" onclick="selecionarPainel('Auditoria')"><i class="ti ti-clipboard-check"></i> Auditoria <span class="sidebar-count" id="count-Auditoria">0</span></button>
       <button class="sidebar-btn" data-painel="__objetivos_metas__" onclick="selecionarPainel('__objetivos_metas__')"><i class="ti ti-target-arrow"></i> Objetivos e Metas <span class="sidebar-count" id="count-objetivos-metas">0</span></button>
+      <button class="sidebar-btn" data-painel="__demandas_rotineiras__" onclick="selecionarPainel('__demandas_rotineiras__')"><i class="ti ti-repeat"></i> Demandas Rotineiras <span class="sidebar-count" id="count-demandas-rotineiras">0</span></button>
 
       <div class="sidebar-group-label">Outros</div>
       <button class="sidebar-btn" data-painel="Assuntos pendentes" onclick="selecionarPainel('Assuntos pendentes')"><i class="ti ti-inbox"></i> Assuntos pendentes <span class="sidebar-count" id="count-Assuntos-pendentes">0</span></button>
@@ -1189,7 +1223,43 @@ body.theme-dark .climoo-dashboard-work{background:var(--surface);border-color:va
         </div>
         <p class="tracking-help">Preencha o acompanhamento de cada mês e clique em <strong>Salvar</strong> na respectiva linha.</p>
       </div>
+
+      <div id="demandasRotineirasView" class="demandas-rotineiras-view" style="display:none">
+        <div class="dr-page-header">
+          <div>
+            <div class="project-page-title">Demandas Rotineiras</div>
+            <div class="project-page-subtitle">Cadastre suas demandas recorrentes e marque cada mês como concluído com um clique.</div>
+          </div>
+          <div class="dr-header-actions">
+            <label for="drAnoFiltro">Ano</label>
+            <select id="drAnoFiltro" onchange="alterarAnoDemandasRotineiras(this.value)" aria-label="Filtrar demandas por ano"></select>
+            <button class="btn-primary" type="button" onclick="abrirModalDemandaRotineira()"><i class="ti ti-plus"></i> Nova demanda</button>
+          </div>
+        </div>
+        <div id="drResumo" class="dr-summary"></div>
+        <div class="dr-table-wrap">
+          <table class="dr-table">
+            <thead><tr><th>Demanda</th><th>Jan</th><th>Fev</th><th>Mar</th><th>Abr</th><th>Mai</th><th>Jun</th><th>Jul</th><th>Ago</th><th>Set</th><th>Out</th><th>Nov</th><th>Dez</th><th>Observações</th><th>Ações</th></tr></thead>
+            <tbody id="drTabela"></tbody>
+          </table>
+        </div>
+        <p class="dr-help"><i class="ti ti-info-circle"></i> Clique no botão de cada mês para alternar entre Pendente e Feito. As alterações são salvas automaticamente.</p>
+      </div>
     </main>
+  </div>
+</div>
+
+<div class="modal-overlay" id="ovDemandaRotineira">
+  <div class="modal">
+    <h2 id="drModalTitulo">Nova demanda rotineira</h2>
+    <div class="mgrid">
+      <div class="field full"><label for="drNome">Demanda <span style="color:#c0392b">*</span></label><input type="text" id="drNome" maxlength="250" placeholder="Ex.: Atualizar indicadores mensais"><div class="err" id="drNomeErro">Informe o nome da demanda.</div></div>
+      <div class="field"><label for="drAno">Ano</label><select id="drAno"></select></div>
+    </div>
+    <div class="mactions">
+      <button class="btn-cancel" type="button" onclick="fecharModalDemandaRotineira()">Cancelar</button>
+      <button class="btn-save" type="button" onclick="salvarDemandaRotineira()">Salvar demanda</button>
+    </div>
   </div>
 </div>
 
@@ -2305,6 +2375,7 @@ function iniciarSincronizacaoTempoReal() {
     .on('postgres_changes', { event:'*', schema:'public', table:'controle_nfs' }, () => receberNuvem())
     .on('postgres_changes', { event:'*', schema:'public', table:'controle_ncs' }, () => receberNuvem())
     .on('postgres_changes', { event:'*', schema:'public', table:'gestao_semanal' }, () => receberNuvem())
+    .on('postgres_changes', { event:'*', schema:'public', table:'demandas_rotineiras' }, () => carregarDemandasRotineiras())
     .on('postgres_changes', { event:'*', schema:'public', table:'acompanhamentos_mensais' }, () => receberNuvem())
     .on('postgres_changes', { event:'*', schema:'public', table:'climoo_obras' }, () => receberNuvem())
     .on('postgres_changes', { event:'*', schema:'public', table:'climoo_categorias_obra' }, () => receberNuvem())
@@ -2736,6 +2807,8 @@ function atualizarContadoresPainel() {
     if(el) el.textContent=tarefas.filter(t=>ctAssuntoTarefa(t.assunto)===a).length;
   });
   const year=Number(anoAcompanhamentoAtual||new Date().getFullYear());
+  const drCount=document.getElementById('count-demandas-rotineiras');
+  if(drCount)drCount.textContent=demandasRotineiras.length;
   const objetivos=document.getElementById('count-objetivos-metas');
   if(objetivos) objetivos.textContent=acompanhamentosMensais.filter(r=>r.tipo==='objetivos_metas'&&Number(r.ano)===year).length;
   const climoo=document.getElementById('count-climoo');
@@ -3180,6 +3253,111 @@ function mostrarAtrasadas() {
   }, 50);
 }
 
+const DR_MESES = [
+  {key:'janeiro',label:'Jan'},{key:'fevereiro',label:'Fev'},{key:'marco',label:'Mar'},
+  {key:'abril',label:'Abr'},{key:'maio',label:'Mai'},{key:'junho',label:'Jun'},
+  {key:'julho',label:'Jul'},{key:'agosto',label:'Ago'},{key:'setembro',label:'Set'},
+  {key:'outubro',label:'Out'},{key:'novembro',label:'Nov'},{key:'dezembro',label:'Dez'}
+];
+let demandasRotineiras=[], anoDemandasRotineiras=new Date().getFullYear(), demandaRotineiraEditando=null;
+function drEsc(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+function salvarDemandasRotineirasLocal(){try{localStorage.setItem('ct_demandas_rotineiras',JSON.stringify(demandasRotineiras));}catch(e){}}
+function popularAnosDemandasRotineiras(){
+  const anos=new Set(); const atual=new Date().getFullYear();
+  for(let y=atual-3;y<=atual+3;y++)anos.add(y);
+  demandasRotineiras.forEach(d=>{if(Number.isInteger(Number(d.ano)))anos.add(Number(d.ano));});
+  anos.add(Number(anoDemandasRotineiras));
+  const html=[...anos].sort((a,b)=>b-a).map(y=>'<option value="'+y+'">'+y+'</option>').join('');
+  ['drAnoFiltro','drAno'].forEach(id=>{const el=document.getElementById(id);if(el){const prev=id==='drAnoFiltro'?anoDemandasRotineiras:(el.value||anoDemandasRotineiras);el.innerHTML=html;el.value=String(prev);}});
+}
+async function carregarDemandasRotineiras(){
+  try{
+    const local=localStorage.getItem('ct_demandas_rotineiras');
+    if(local)demandasRotineiras=JSON.parse(local);
+    if(sb){
+      const {data,error}=await sb.from('demandas_rotineiras').select('*').order('ano',{ascending:false}).order('demanda');
+      if(error)throw error;
+      if(data&&data.length){
+        demandasRotineiras=data.map(d=>({id:Number(d.id),demanda:d.demanda||'',ano:Number(d.ano),...Object.fromEntries(DR_MESES.map(m=>[m.key,!!d[m.key]])),observacoes:d.observacoes||'',updated_at:d.updated_at||''}));
+        salvarDemandasRotineirasLocal();
+      }else if(demandasRotineiras.length){
+        const rows=demandasRotineiras.map(d=>({demanda:d.demanda,ano:Number(d.ano),...Object.fromEntries(DR_MESES.map(m=>[m.key,!!d[m.key]])),observacoes:d.observacoes||''}));
+        const {data:inserted,error:insertErr}=await sb.from('demandas_rotineiras').insert(rows).select('*');
+        if(insertErr)throw insertErr;
+        demandasRotineiras=(inserted||[]).map(d=>({id:Number(d.id),demanda:d.demanda||'',ano:Number(d.ano),...Object.fromEntries(DR_MESES.map(m=>[m.key,!!d[m.key]])),observacoes:d.observacoes||'',updated_at:d.updated_at||''}));
+        salvarDemandasRotineirasLocal();
+      }
+    }
+  }catch(e){console.error('Não foi possível carregar Demandas Rotineiras:',e); }
+  popularAnosDemandasRotineiras();
+  if(painelSelecionado==='__demandas_rotineiras__')renderDemandasRotineiras();
+  atualizarContadoresPainel();
+}
+function alterarAnoDemandasRotineiras(ano){anoDemandasRotineiras=Number(ano)||new Date().getFullYear();renderDemandasRotineiras();}
+function renderDemandasRotineiras(){
+  popularAnosDemandasRotineiras();
+  const yearEl=document.getElementById('drAnoFiltro');
+  if(yearEl)yearEl.value=String(anoDemandasRotineiras);
+  const lista=demandasRotineiras.filter(d=>Number(d.ano)===Number(anoDemandasRotineiras)).sort((a,b)=>a.demanda.localeCompare(b.demanda,'pt-BR'));
+  const total=lista.length, feitas=lista.reduce((n,d)=>n+DR_MESES.filter(m=>d[m.key]).length,0), possiveis=total*12;
+  const resumo=document.getElementById('drResumo');
+  if(resumo)resumo.innerHTML='<div class="dr-summary-card"><span>Demandas do ano</span><strong>'+total+'</strong></div><div class="dr-summary-card"><span>Meses concluídos</span><strong>'+feitas+'</strong></div><div class="dr-summary-card"><span>Conclusão anual</span><strong>'+(possiveis?Math.round(feitas/possiveis*100):0)+'%</strong></div>';
+  const tbody=document.getElementById('drTabela');if(!tbody)return;
+  if(!lista.length){tbody.innerHTML='<tr><td class="dr-empty" colspan="15">Nenhuma demanda cadastrada para '+anoDemandasRotineiras+'. Clique em “Nova demanda” para começar.</td></tr>';return;}
+  tbody.innerHTML=lista.map(d=>'<tr><td class="dr-demand-name">'+drEsc(d.demanda)+'</td>'+
+    DR_MESES.map(m=>'<td><button type="button" class="dr-month-btn '+(d[m.key]?'done':'')+'" aria-label="'+drEsc(m.label)+' '+(d[m.key]?'feito':'pendente')+'" title="'+m.label+': '+(d[m.key]?'Feito':'Pendente')+'" onclick="alternarMesDemandaRotineira('+d.id+',\''+m.key+'\')">'+(d[m.key]?'<i class="ti ti-check"></i>':'—')+'</button></td>').join('')+
+    '<td><input class="dr-observacoes" type="text" maxlength="1000" value="'+drEsc(d.observacoes||'')+'" placeholder="Adicionar observações..." aria-label="Observações de '+drEsc(d.demanda)+'" onchange="salvarObservacoesDemandaRotineira('+d.id+',this.value)" onkeydown="if(event.key===\'Enter\'){event.preventDefault();this.blur();}"></td>'+
+    '<td><button type="button" class="dr-action-btn" title="Editar demanda" aria-label="Editar demanda" onclick="editarDemandaRotineira('+d.id+')"><i class="ti ti-pencil"></i></button><button type="button" class="dr-action-btn" title="Excluir demanda" aria-label="Excluir demanda" onclick="excluirDemandaRotineira('+d.id+')"><i class="ti ti-trash"></i></button></td></tr>').join('');
+}
+function abrirModalDemandaRotineira(id=null){
+  demandaRotineiraEditando=id===null?null:Number(id);
+  const d=demandaRotineiraEditando===null?null:demandasRotineiras.find(x=>x.id===demandaRotineiraEditando);
+  document.getElementById('drModalTitulo').textContent=d?'Editar demanda rotineira':'Nova demanda rotineira';
+  document.getElementById('drNome').value=d?.demanda||'';
+  document.getElementById('drAno').value=String(d?.ano||anoDemandasRotineiras);
+  document.getElementById('drNomeErro').style.display='none';
+  document.getElementById('ovDemandaRotineira').classList.add('open');
+  setTimeout(()=>document.getElementById('drNome').focus(),50);
+}
+function editarDemandaRotineira(id){abrirModalDemandaRotineira(id);}
+function fecharModalDemandaRotineira(){document.getElementById('ovDemandaRotineira').classList.remove('open');demandaRotineiraEditando=null;}
+async function salvarDemandaRotineira(){
+  const nome=document.getElementById('drNome').value.trim(),ano=Number(document.getElementById('drAno').value)||anoDemandasRotineiras;
+  if(!nome){document.getElementById('drNomeErro').style.display='block';document.getElementById('drNome').focus();return;}
+  document.getElementById('drNomeErro').style.display='none';
+  try{
+    if(demandaRotineiraEditando!==null){
+      const d=demandasRotineiras.find(x=>x.id===demandaRotineiraEditando);if(!d)return;
+      const antigo={demanda:d.demanda,ano:d.ano};d.demanda=nome;d.ano=ano;
+      if(sb){const {error}=await sb.from('demandas_rotineiras').update({demanda:nome,ano,updated_at:new Date().toISOString()}).eq('id',d.id);if(error)throw error;}
+    }else{
+      const novo={demanda:nome,ano,...Object.fromEntries(DR_MESES.map(m=>[m.key,false])),observacoes:''};
+      if(sb){const {data,error}=await sb.from('demandas_rotineiras').insert({demanda:nome,ano}).select('*').single();if(error)throw error;Object.assign(novo,{id:Number(data.id),...Object.fromEntries(DR_MESES.map(m=>[m.key,!!data[m.key])),observacoes:data.observacoes||'',updated_at:data.updated_at||''});}
+      else novo.id=Date.now();
+      demandasRotineiras.push(novo);
+    }
+    anoDemandasRotineiras=ano;salvarDemandasRotineirasLocal();fecharModalDemandaRotineira();popularAnosDemandasRotineiras();renderDemandasRotineiras();atualizarContadoresPainel();
+  }catch(e){alert('Não foi possível salvar a demanda.\n\nDetalhes: '+(e.message||'erro desconhecido'));}
+}
+async function alternarMesDemandaRotineira(id,mes){
+  const d=demandasRotineiras.find(x=>Number(x.id)===Number(id));if(!d)return;
+  const anterior=!!d[mes];d[mes]=!anterior;salvarDemandasRotineirasLocal();renderDemandasRotineiras();
+  try{if(sb){const payload={[mes]:d[mes],updated_at:new Date().toISOString()};const {error}=await sb.from('demandas_rotineiras').update(payload).eq('id',d.id);if(error)throw error;}}
+  catch(e){d[mes]=anterior;salvarDemandasRotineirasLocal();renderDemandasRotineiras();alert('Não foi possível salvar a conclusão do mês.\n\nDetalhes: '+(e.message||'erro desconhecido'));}
+}
+async function salvarObservacoesDemandaRotineira(id,valor){
+  const d=demandasRotineiras.find(x=>Number(x.id)===Number(id));if(!d)return;
+  const anterior=d.observacoes||'';d.observacoes=valor;salvarDemandasRotineirasLocal();
+  try{if(sb){const {error}=await sb.from('demandas_rotineiras').update({observacoes:valor,updated_at:new Date().toISOString()}).eq('id',d.id);if(error)throw error;}}
+  catch(e){d.observacoes=anterior;salvarDemandasRotineirasLocal();renderDemandasRotineiras();alert('Não foi possível salvar as observações.\n\nDetalhes: '+(e.message||'erro desconhecido'));}
+}
+async function excluirDemandaRotineira(id){
+  const d=demandasRotineiras.find(x=>Number(x.id)===Number(id));if(!d||!confirm('Excluir a demanda "'+d.demanda+'" e todo o acompanhamento mensal de '+d.ano+'?'))return;
+  const anterior=demandasRotineiras.slice();demandasRotineiras=demandasRotineiras.filter(x=>Number(x.id)!==Number(id));salvarDemandasRotineirasLocal();renderDemandasRotineiras();atualizarContadoresPainel();
+  try{if(sb){const {error}=await sb.from('demandas_rotineiras').delete().eq('id',Number(id));if(error)throw error;}}
+  catch(e){demandasRotineiras=anterior;salvarDemandasRotineirasLocal();renderDemandasRotineiras();alert('Não foi possível excluir a demanda.\n\nDetalhes: '+(e.message||'erro desconhecido'));}
+}
+
 function render() {
   atualizarDashboard();
   atualizarContadoresPainel();
@@ -3191,6 +3369,8 @@ function render() {
   const dashboardView=document.getElementById('dashboardGestaoView');
   const monthlyTrackingView=document.getElementById('monthlyTrackingView');
   if(monthlyTrackingView) monthlyTrackingView.style.display='none';
+  const demandasView=document.getElementById('demandasRotineirasView');
+  if(demandasView)demandasView.style.display='none';
   if(painelSelecionado==='__dashboard__'){
     ['tarefasView','projetosView','nfsView','ncsView','calendarioView','reunioesView','gestaoSemanalView'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
     if(dashboardView)dashboardView.style.display='block';
@@ -3198,6 +3378,13 @@ function render() {
     return;
   }
   if(dashboardView)dashboardView.style.display='none';
+  if(painelSelecionado==='__demandas_rotineiras__'){
+    ['tarefasView','projetosView','nfsView','ncsView','calendarioView','reunioesView','gestaoSemanalView'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
+    if(dashboardView)dashboardView.style.display='none';
+    if(demandasView)demandasView.style.display='block';
+    renderDemandasRotineiras();
+    return;
+  }
   if (['__objetivos_metas__','__climoo__'].includes(painelSelecionado)) {
     ['tarefasView','projetosView','nfsView','ncsView','calendarioView','reunioesView','gestaoSemanalView'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
     if(monthlyTrackingView) monthlyTrackingView.style.display='block';
@@ -3768,6 +3955,7 @@ document.getElementById('ovReuniaoAcao').addEventListener('click',e=>{if(e.targe
 document.getElementById('ovNF').addEventListener('click',e=>{if(e.target===e.currentTarget)fecharModalNF();});
 document.getElementById('ovNC').addEventListener('click',e=>{if(e.target===e.currentTarget)fecharModalNC();});
 document.getElementById('ovGestaoSemanal').addEventListener('click',e=>{if(e.target===e.currentTarget)fecharModalGestaoSemanal();});
+document.getElementById('ovDemandaRotineira').addEventListener('click',e=>{if(e.target===e.currentTarget)fecharModalDemandaRotineira();});
 
 
 function ctMisturarCores(hexA, hexB, pesoA) {
@@ -3810,7 +3998,7 @@ function inicializarPreferenciasVisuais() {
 
 inicializarPreferenciasVisuais();
 
-carregarDados().then(() => { render(); iniciarSincronizacaoTempoReal(); });
+carregarDados().then(async () => { await carregarDemandasRotineiras(); render(); iniciarSincronizacaoTempoReal(); });
 
 /* ===== EDIÇÃO DE TAREFAS ===== */
 let tarefaEditando = null;

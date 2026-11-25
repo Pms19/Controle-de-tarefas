@@ -181,6 +181,26 @@ th:nth-child(9),td:nth-child(9){width:14%}
 .err { font-size:12px; color:#c0392b; margin-top:4px; display:none; }
 .empty-state { text-align:center; padding:3rem 1rem; color:#aaa; font-size:14px; }
 
+
+/* ===== QUADRO KANBAN ===== */
+.kanban-toolbar{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:16px}
+.kanban-toolbar h2{font-size:20px;color:var(--brand-dark);margin-bottom:4px}
+.kanban-toolbar p{font-size:13px;color:var(--muted)}
+.kanban-board{display:grid;grid-template-columns:repeat(4,minmax(220px,1fr));gap:12px;align-items:start;overflow-x:auto;padding-bottom:10px}
+.kanban-column{background:#EDF3F6;border:1px solid var(--line);border-radius:12px;min-height:300px;padding:10px}
+.kanban-column.drag-over{outline:2px dashed var(--brand);background:var(--brand-soft)}
+.kanban-column-head{display:flex;align-items:center;justify-content:space-between;padding:5px 4px 12px;font-size:13px;font-weight:700;color:var(--brand-dark)}
+.kanban-count{font-size:11px;background:#fff;border:1px solid var(--line);border-radius:20px;padding:2px 8px;color:var(--muted)}
+.kanban-card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:9px;box-shadow:0 2px 5px rgba(15,76,110,.04);cursor:grab}
+.kanban-card:active{cursor:grabbing}
+.kanban-card-title{font-size:13px;font-weight:650;line-height:1.4;color:var(--text);margin-bottom:8px}
+.kanban-card-meta{font-size:11px;color:var(--muted);display:flex;flex-wrap:wrap;gap:7px;margin-top:6px}
+.kanban-card-actions{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:10px}
+.kanban-card-actions button{border:1px solid var(--line);background:#fff;color:var(--brand);border-radius:7px;padding:5px 8px;font-size:11px;cursor:pointer}
+.kanban-card-actions select{max-width:125px;border:1px solid var(--line);border-radius:7px;padding:5px;font-size:11px;background:#fff;color:var(--text)}
+.kanban-empty{font-size:12px;color:#8A9AA5;text-align:center;padding:28px 8px;border:1px dashed #C7D5DD;border-radius:8px}
+@media(max-width:900px){.kanban-board{grid-template-columns:repeat(4,minmax(245px,1fr))}}
+@media(max-width:700px){.kanban-toolbar{align-items:flex-start;flex-direction:column}.kanban-toolbar .btn-primary{width:100%}.kanban-board{grid-template-columns:repeat(4,minmax(250px,1fr));}}
 /* ===== AJUSTE RESPONSIVO PARA CELULAR ===== */
 @media (max-width: 700px) {
   html, body { width:100%; max-width:100%; overflow-x:hidden; }
@@ -1017,6 +1037,7 @@ body.theme-dark .climoo-dashboard-work{background:var(--surface);border-color:va
       <div class="sidebar-group-label">Qualidade</div>
       <button class="sidebar-btn" data-painel="Documentos" onclick="selecionarPainel('Documentos')"><i class="ti ti-file-text"></i> Documentos <span class="sidebar-count" id="count-Documentos">0</span></button>
       <button class="sidebar-btn" data-painel="Auditoria" onclick="selecionarPainel('Auditoria')"><i class="ti ti-clipboard-check"></i> Auditoria <span class="sidebar-count" id="count-Auditoria">0</span></button>
+      <button class="sidebar-btn" data-painel="__kanban__" onclick="selecionarPainel('__kanban__')"><i class="ti ti-layout-kanban"></i> Quadro Kanban</button>
       <button class="sidebar-btn" data-painel="__demandas_rotineiras__" onclick="selecionarPainel('__demandas_rotineiras__')"><i class="ti ti-repeat"></i> Demandas Rotineiras <span class="sidebar-count" id="count-demandas-rotineiras">0</span></button>
 
       <div class="sidebar-group-label">Outros</div>
@@ -1043,6 +1064,14 @@ body.theme-dark .climoo-dashboard-work{background:var(--surface);border-color:va
         </div>
         <section class="mg-panel"><div class="mg-panel-head"><div><h3>Projetos</h3></div><button type="button" class="mg-link-btn" onclick="selecionarPainel('__projetos__')">Ver todos <i class="ti ti-arrow-up-right"></i></button></div><div id="mgProjetos" class="mg-project-grid"></div></section>
         <section class="mg-panel"><div class="mg-panel-head"><div><h3>Entregas do mês</h3></div></div><div id="mgEntregas" class="mg-delivery-list"></div></section>
+      </div>
+
+      <div id="kanbanView" class="kanban-view" style="display:none">
+        <div class="kanban-toolbar">
+          <div><h2>Quadro Kanban</h2><p>Organize suas atividades arrastando os cartões entre as etapas.</p></div>
+          <button class="btn-primary" onclick="abrirModalTarefa()"><i class="ti ti-plus"></i> Nova tarefa</button>
+        </div>
+        <div id="kanbanBoard" class="kanban-board"></div>
       </div>
 
       <div id="tarefasView">
@@ -3358,6 +3387,40 @@ async function excluirDemandaRotineira(id){
   catch(e){demandasRotineiras=anterior;salvarDemandasRotineirasLocal();renderDemandasRotineiras();alert('Não foi possível excluir a demanda.\n\nDetalhes: '+(e.message||'erro desconhecido'));}
 }
 
+
+const KANBAN_COLUNAS=[{status:'Pendente',titulo:'A fazer'},{status:'Aguardando',titulo:'Aguardando'},{status:'__andamento__',titulo:'Em andamento'},{status:'Concluído',titulo:'Concluído'}];
+function renderKanban(){
+  const board=document.getElementById('kanbanBoard');if(!board)return;
+  const cards=tarefas.filter(t=>!window.kanbanBusca||((t.atividade||'').toLowerCase().includes(window.kanbanBusca)));
+  board.innerHTML=KANBAN_COLUNAS.map(col=>{
+    const lista=cards.filter(t=>{
+      const st=t.status||'Pendente';
+      if(col.status==='__andamento__')return st==='Em andamento';
+      return st===col.status;
+    });
+    return '<section class="kanban-column" data-kanban-status="'+col.status+'" ondragover="kanbanDragOver(event)" ondragleave="kanbanDragLeave(event)" ondrop="kanbanDrop(event,'+"'"+col.status+"'"+')">'+
+      '<div class="kanban-column-head"><span>'+col.titulo+'</span><span class="kanban-count">'+lista.length+'</span></div>'+
+      (lista.length?lista.map(t=>'<article class="kanban-card" draggable="true" ondragstart="kanbanDragStart(event,'+Number(t.id)+')">'+
+        '<div class="kanban-card-title">'+ctEscapeHtml(t.atividade||'Sem título')+'</div>'+
+        '<div class="kanban-card-meta">'+(t.assunto?'<span>'+ctEscapeHtml(t.assunto)+'</span>':'')+(t.responsavel?'<span><i class="ti ti-user"></i> '+ctEscapeHtml(t.responsavel)+'</span>':'')+(t.prazo?'<span><i class="ti ti-calendar"></i> '+ctEscapeHtml(ctFormatarData(t.prazo))+'</span>':'')+'</div>'+
+        (t.descricao?'<div class="kanban-card-meta">'+ctEscapeHtml(t.descricao)+'</div>':'')+
+        '<div class="kanban-card-actions"><button type="button" onclick="abrirModalEditarTarefa('+Number(t.id)+')"><i class="ti ti-pencil"></i> Editar</button><select aria-label="Mover cartão" onchange="moverTarefaKanban('+Number(t.id)+',this.value)"><option value="">Mover para...</option><option value="Pendente">A fazer</option><option value="Aguardando">Aguardando</option><option value="Em andamento">Em andamento</option><option value="Concluído">Concluído</option></select></div></article>').join(''):'<div class="kanban-empty">Solte tarefas aqui</div>')+'</section>';
+  }).join('');
+}
+function ctEscapeHtml(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function ctFormatarData(v){if(!v)return '';const p=String(v).split('-');return p.length===3?p[2]+'/'+p[1]+'/'+p[0]:v;}
+function kanbanDragStart(e,id){e.dataTransfer.setData('text/plain',String(id));e.dataTransfer.effectAllowed='move';}
+function kanbanDragOver(e){e.preventDefault();e.currentTarget.classList.add('drag-over');}
+function kanbanDragLeave(e){e.currentTarget.classList.remove('drag-over');}
+async function kanbanDrop(e,status){e.preventDefault();e.currentTarget.classList.remove('drag-over');const id=Number(e.dataTransfer.getData('text/plain'));if(id)moverTarefaKanban(id,status==='__andamento__'?'Em andamento':status);}
+async function moverTarefaKanban(id,status){
+  const t=tarefas.find(x=>Number(x.id)===Number(id));if(!t||!status)return;
+  const anterior=t.status||'';t.status=status;t.data_conclusao=status==='Concluído'?(t.data_conclusao||ctHojeISO()):'';
+  localStorage.setItem('tarefas',JSON.stringify(tarefas));
+  renderKanban();atualizarDashboard();
+  try{if(sb){const {error}=await sb.from('tarefas').update({status:t.status,data_conclusao:t.data_conclusao||null,updated_at:new Date().toISOString()}).eq('id',Number(t.id));if(error)throw error;}}
+  catch(e){t.status=anterior;t.data_conclusao='';localStorage.setItem('tarefas',JSON.stringify(tarefas));renderKanban();alert('Não foi possível mover a tarefa no banco de dados. '+(e.message||''));}
+}
 function render() {
   atualizarDashboard();
   atualizarContadoresPainel();
@@ -3369,6 +3432,8 @@ function render() {
   const dashboardView=document.getElementById('dashboardGestaoView');
   const monthlyTrackingView=document.getElementById('monthlyTrackingView');
   if(monthlyTrackingView) monthlyTrackingView.style.display='none';
+  const kanbanView=document.getElementById('kanbanView');
+  if(kanbanView)kanbanView.style.display='none';
   const demandasView=document.getElementById('demandasRotineirasView');
   if(demandasView)demandasView.style.display='none';
   if(painelSelecionado==='__dashboard__'){
@@ -3378,6 +3443,13 @@ function render() {
     return;
   }
   if(dashboardView)dashboardView.style.display='none';
+  if(painelSelecionado==='__kanban__'){
+    ['tarefasView','projetosView','nfsView','ncsView','calendarioView','reunioesView','gestaoSemanalView'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
+    if(dashboardView)dashboardView.style.display='none';
+    if(kanbanView)kanbanView.style.display='block';
+    renderKanban();
+    return;
+  }
   if(painelSelecionado==='__demandas_rotineiras__'){
     ['tarefasView','projetosView','nfsView','ncsView','calendarioView','reunioesView','gestaoSemanalView'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
     if(dashboardView)dashboardView.style.display='none';

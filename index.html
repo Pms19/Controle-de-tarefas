@@ -1029,7 +1029,7 @@ body.theme-dark .climoo-dashboard-work{background:var(--surface);border-color:va
   <div class="app-layout">
     <aside class="sidebar">
       <div class="sidebar-title">Gestão</div>
-      <button class="sidebar-btn active" data-painel="__dashboard__" onclick="selecionarPainel('__dashboard__')"><i class="ti ti-chart-dots-3"></i> Visão da gestão</button>
+      
       <button class="sidebar-btn" data-painel="__calendario__" onclick="selecionarPainel('__calendario__')"><i class="ti ti-calendar-event"></i> Calendário <span class="sidebar-count" id="count-calendario">0</span></button>
       <button class="sidebar-btn" data-painel="__projetos__" onclick="selecionarPainel('__projetos__')"><i class="ti ti-briefcase-2"></i> Projetos <span class="sidebar-count" id="count-projetos">0</span></button>
       <button class="sidebar-btn" data-painel="__nfs__" onclick="selecionarPainel('__nfs__')"><i class="ti ti-receipt"></i> Controle de NFs <span class="sidebar-count" id="count-nfs">0</span></button>
@@ -1582,7 +1582,7 @@ let gestaoSemanal=[], nextGestaoSemanalId=7000, gsEditando=null, gsDataReferenci
 let acompanhamentosMensais=[], anoAcompanhamentoAtual=new Date().getFullYear();
 let obrasClimoo=[], obraClimooSelecionada='__sem_obra__';
 let categoriaClimooSelecionada='Consumo de gasolina em veículos leves', categoriasClimooConfig=[];
-let collapsedMes = {}, expandedTarefa = {}, microAlvo = null, mesesSelecionados = new Set(), painelSelecionado = '__dashboard__', projetoExpandido = {};
+let collapsedMes = {}, expandedTarefa = {}, microAlvo = null, mesesSelecionados = new Set(), painelSelecionado = '__kanban__', projetoExpandido = {};
 
 function bc(s){ return s==='Pendente'?'b-p':s==='Aguardando'?'b-a':s==='Concluído'?'b-c':'b-s'; }
 function mbc(s){ return s==='Pendente'?'mb-p':s==='Aguardando'?'mb-a':s==='Concluído'?'mb-c':'mb-s'; }

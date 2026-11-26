@@ -199,6 +199,14 @@ th:nth-child(9),td:nth-child(9){width:14%}
 .kanban-card-actions button{border:1px solid var(--line);background:#fff;color:var(--brand);border-radius:7px;padding:5px 8px;font-size:11px;cursor:pointer}
 .kanban-card-actions select{max-width:125px;border:1px solid var(--line);border-radius:7px;padding:5px;font-size:11px;background:#fff;color:var(--text)}
 .kanban-empty{font-size:12px;color:#8A9AA5;text-align:center;padding:28px 8px;border:1px dashed #C7D5DD;border-radius:8px}
+.kanban-card.priority-alta{border-left:5px solid #D92D20}
+.kanban-card.priority-media{border-left:5px solid #E5A000}
+.kanban-card.priority-baixa{border-left:5px solid #239B62}
+.kanban-priority{display:inline-flex;align-items:center;gap:5px;border-radius:20px;padding:3px 8px;font-size:10px;font-weight:750;letter-spacing:.02em}
+.kanban-priority.alta{background:#FDE8E7;color:#B42318}
+.kanban-priority.media{background:#FFF3CD;color:#8A5A00}
+.kanban-priority.baixa{background:#E5F5EC;color:#167447}
+.kanban-priority.sem{background:#EEF2F5;color:#647784}
 @media(max-width:900px){.kanban-board{grid-template-columns:repeat(4,minmax(245px,1fr))}}
 @media(max-width:700px){.kanban-toolbar{align-items:flex-start;flex-direction:column}.kanban-toolbar .btn-primary{width:100%}.kanban-board{grid-template-columns:repeat(4,minmax(250px,1fr));}}
 /* ===== AJUSTE RESPONSIVO PARA CELULAR ===== */
@@ -3400,11 +3408,17 @@ function renderKanban(){
     });
     return '<section class="kanban-column" data-kanban-status="'+col.status+'" ondragover="kanbanDragOver(event)" ondragleave="kanbanDragLeave(event)" ondrop="kanbanDrop(event,'+"'"+col.status+"'"+')">'+
       '<div class="kanban-column-head"><span>'+col.titulo+'</span><span class="kanban-count">'+lista.length+'</span></div>'+
-      (lista.length?lista.map(t=>'<article class="kanban-card" draggable="true" ondragstart="kanbanDragStart(event,'+Number(t.id)+')">'+
+      (lista.length?lista.map(t=>{
+        const prio=String(t.prioridade||'').toLowerCase();
+        const prioClasse=prio==='alta'?'alta':(prio==='média'||prio==='media')?'media':prio==='baixa'?'baixa':'sem';
+        const prioTexto=t.prioridade||'Sem prioridade';
+        const cardClasse=prioClasse==='sem'?'':' priority-'+prioClasse;
+        return '<article class="kanban-card'+cardClasse+'" draggable="true" ondragstart="kanbanDragStart(event,'+Number(t.id)+')">'+
         '<div class="kanban-card-title">'+ctEscapeHtml(t.atividade||'Sem título')+'</div>'+
-        '<div class="kanban-card-meta">'+(t.assunto?'<span>'+ctEscapeHtml(t.assunto)+'</span>':'')+(t.responsavel?'<span><i class="ti ti-user"></i> '+ctEscapeHtml(t.responsavel)+'</span>':'')+(t.prazo?'<span><i class="ti ti-calendar"></i> '+ctEscapeHtml(ctFormatarData(t.prazo))+'</span>':'')+'</div>'+
+        '<div class="kanban-card-meta"><span class="kanban-priority '+prioClasse+'"><i class="ti ti-flag"></i> '+ctEscapeHtml(prioTexto)+'</span>'+(t.assunto?'<span>'+ctEscapeHtml(t.assunto)+'</span>':'')+(t.responsavel?'<span><i class="ti ti-user"></i> '+ctEscapeHtml(t.responsavel)+'</span>':'')+(t.prazo?'<span><i class="ti ti-calendar"></i> '+ctEscapeHtml(ctFormatarData(t.prazo))+'</span>':'')+'</div>'+
         (t.descricao?'<div class="kanban-card-meta">'+ctEscapeHtml(t.descricao)+'</div>':'')+
-        '<div class="kanban-card-actions"><button type="button" onclick="abrirModalEditarTarefa('+Number(t.id)+')"><i class="ti ti-pencil"></i> Editar</button><select aria-label="Mover cartão" onchange="moverTarefaKanban('+Number(t.id)+',this.value)"><option value="">Mover para...</option><option value="Pendente">A fazer</option><option value="Aguardando">Aguardando</option><option value="Em andamento">Em andamento</option><option value="Concluído">Concluído</option></select></div></article>').join(''):'<div class="kanban-empty">Solte tarefas aqui</div>')+'</section>';
+        '<div class="kanban-card-actions"><button type="button" onclick="abrirModalEditarTarefa('+Number(t.id)+')"><i class="ti ti-pencil"></i> Editar</button><select aria-label="Mover cartão" onchange="moverTarefaKanban('+Number(t.id)+',this.value)"><option value="">Mover para...</option><option value="Pendente">A fazer</option><option value="Aguardando">Aguardando</option><option value="Em andamento">Em andamento</option><option value="Concluído">Concluído</option></select></div></article>';
+      }).join(''):'<div class="kanban-empty">Solte tarefas aqui</div>')+'</section>';
   }).join('');
 }
 function ctEscapeHtml(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
